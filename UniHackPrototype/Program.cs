@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using MyAspNetVueApp.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using MyAspNetVueApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
