@@ -9,12 +9,15 @@ export default {
             isSubmissionFaliure: false,
             submissionError: '',
 
+            carousel: 0,
+
             forename: '',
             surname: '',
             username: '',
             birthYear: 2000,
             birthMonth: 1,
             birthDay: 1,
+            gender: '',
             major: '',
             email: '',
             password: '',
@@ -50,6 +53,8 @@ export default {
                 birthYear: this.birthYear,
                 birthMonth: this.birthMonth,
                 birthDay: this.birthDay,
+                gender: this.gender,
+                major: this.major,
                 email: this.email,
                 password: this.password,
             }
@@ -71,17 +76,22 @@ export default {
         <v-card-title>WELCOME TO UNICENTRE</v-card-title>
     </v-card>
     <v-container :style="{ width: '600px'}">
-        <v-card class="pl-10 pr-10 pb-5">
+        <v-card color="primary" class="pl-10 pr-10 pb-5">
             <v-card-title>SIGN-UP</v-card-title>
             <v-form @submit.prevent="submitSignUp">
                 <v-carousel
+                    v-model="carousel"
+                    progress="secondary"
                     :continuous="false"
                     :show-arrows="false"
+                    delimiter-icon="mdi-square"
+                    hide-delimiter-background
+                    hide-delimiters
                 >
                     <v-carousel-item>
-                            <v-text-field label="Forename" v-model="forename" required></v-text-field>
-                            <v-text-field label="Surname" v-model="surname" required></v-text-field>
-                            <v-text-field label="Username" v-model="username" required></v-text-field>
+                            <v-text-field label="Forename" variant="underlined" solo flat v-model="forename" required></v-text-field>
+                            <v-text-field label="Surname" variant="underlined" v-model="surname" required></v-text-field>
+                            <v-text-field label="Username" variant="underlined" v-model="username" required></v-text-field>
                             <v-card-subtitle>Date Of Birth</v-card-subtitle>
                             <v-row>
                                 <v-col cols="12" sm="4">
@@ -106,14 +116,27 @@ export default {
                                     </v-select>
                                 </v-col>
                             </v-row>
-                            <v-text-field label="Major" v-model="major" required></v-text-field>
+                            <v-row>
+                                <v-col cols="12" sm="4">
+                                    <v-select 
+                                    label="Gender"
+                                    v-model="gender"
+                                    :items="['Male', 'Female']" required>
+                                </v-select>
+                                </v-col>
+                                <v-col cols="12" sm="8">
+                                    <v-text-field label="Major" variant="underlined" v-model="major" required></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-btn label="next" text="next" color="secondary" @click="carousel = 1" class="ma-10"></v-btn>
                     </v-carousel-item>
                     <v-carousel-item>
-                        <v-text-field label="Email" v-model="email" type="email" required></v-text-field>
-                        <v-text-field label="Password" v-model="password" type="password" required></v-text-field>
-                        <v-text-field label="Confirm Password" v-model="confirmPassword" type="password" required></v-text-field>    
+                        <v-text-field label="Email" v-model="email" type="email" variant="underlined" required></v-text-field>
+                        <v-text-field label="Password" v-model="password" type="password" variant="underlined" required></v-text-field>
+                        <v-text-field label="Confirm Password" v-model="confirmPassword" variant="underlined" type="password" required></v-text-field>    
                         <v-card-subtitle v-if="isSubmissionFaliure" :style="{ color: 'red'}">{{ submissionError }}</v-card-subtitle> 
-                        <v-btn color="primary" type="submit" @click="submitSignUp" block>Sign-Up</v-btn>
+                        <v-btn color="secondary" type="submit" @click="submitSignUp" block>Sign-Up</v-btn>
+                        <v-btn label="back" text="back" color="secondary" @click="carousel = 0" class="ma-10"></v-btn>
                     </v-carousel-item>
                 </v-carousel>
             </v-form>
