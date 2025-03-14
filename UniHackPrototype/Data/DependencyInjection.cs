@@ -19,7 +19,9 @@ public static class DependencyInjection
         services.AddCors(options =>
         {
             options.AddPolicy("AllowVueApp", policy =>
-                policy.WithOrigins("http://localhost:5173")
+                policy.SetIsOriginAllowed(origin => 
+                    origin.StartsWith("http://localhost") || 
+                    origin.StartsWith("https://localhost"))
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials());

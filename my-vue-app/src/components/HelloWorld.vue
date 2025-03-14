@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import type { User } from "../interfaces/User";
+import { User } from "../interfaces/User";
 
 const users = ref<User[]>([]);
 const newUser = ref("");
@@ -50,13 +50,14 @@ onMounted(fetchUsers);
       <p v-if="errorMessage" style="color: red">{{ errorMessage }}</p>
 
       <p v-if="successMessage" style="color: green">{{ successMessage }}</p>
+      <p>{{ users.length }}</p>
+      <input v-model="newUser" placeholder="Enter name" />
+      <button @click="addUser">Add User</button>
 
       <ul>
         <li v-for="user in users" :key="user.id">{{ user.name }}</li>
       </ul>
 
-      <input v-model="newUser" placeholder="Enter name" />
-      <button @click="addUser">Add User</button>
     </div>
 </template>
 
