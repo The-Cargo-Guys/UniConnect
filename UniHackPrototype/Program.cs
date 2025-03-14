@@ -2,21 +2,7 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowVueApp", policy =>
-        policy.WithOrigins("http://localhost:5173") 
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials());
-});
-
-builder.Services.AddDbContext<AppDbContext>();
-
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
@@ -29,14 +15,12 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowVueApp");
 
 app.UseHttpsRedirection();
-
-
-app.MapControllers(); 
-
+app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
 }
 

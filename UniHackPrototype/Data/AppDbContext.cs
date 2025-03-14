@@ -7,10 +7,15 @@ namespace MyAspNetVueApp.Data
     {
         public DbSet<User> Users { get; set; }
 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var connectionString = "Data Source=app.db"; 
-            options.UseSqlite(connectionString);
+            if (!options.IsConfigured)
+            {
+                var connectionString = "Data Source=app.db";
+                options.UseSqlite(connectionString);
+            }
         }
     }
 }
