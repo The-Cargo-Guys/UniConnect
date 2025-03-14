@@ -25,16 +25,12 @@ export default {
             password: '',
             confirmPassword: '',
 
-            days: [],
+            days: [1],
             months: Array.from({length: 12}, (_, i) => ((i + 1))),
             years: Array.from({length: 106}, (_, i) => ((1920 + i)))
         }
     },
     methods: {
-        getDate() {
-
-        },
-        
         isFormValid() {
             if (this.password === this.confirmPassword) {
                 return true;
@@ -74,7 +70,7 @@ export default {
         },
 
         updateDaysInMonth() {
-            const d = new Date(this.birthYear, this.birthMonth + 1, 0);
+            const d = new Date(this.birthYear, this.birthMonth, 0);
             this.days = Array.from({length: d.getDate()}, (_, i) => ((i + 1)));
         }
     },
@@ -132,6 +128,7 @@ export default {
                                 <v-col cols="12" sm="4">
                                     <v-select 
                                         label="Day"
+                                        v-model="birthDay"
                                         :items="days">
                                     </v-select>
                                 </v-col>
