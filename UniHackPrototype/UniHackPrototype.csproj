@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
+	<WarningsAsErrors>Nullable</WarningsAsErrors>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-UniHackPrototype-236e72c6-416c-4b5f-8649-5f4b5d78eac9</UserSecretsId>
   </PropertyGroup>
