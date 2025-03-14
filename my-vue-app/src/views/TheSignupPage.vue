@@ -1,6 +1,7 @@
 <script lang="ts">
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+
 const router = useRouter();
 
 export default {
@@ -10,12 +11,12 @@ export default {
             submissionError: '',
 
             carousel: 0,
-
+            
             forename: '',
             surname: '',
             username: '',
-            birthYear: 2000,
-            birthMonth: 1,
+            birthYear: new Date().getFullYear(),
+            birthMonth: new Date().getMonth(),
             birthDay: 1,
             gender: '',
             major: '',
@@ -23,12 +24,16 @@ export default {
             password: '',
             confirmPassword: '',
 
-            days: Array.from({length: 31}, (_, i) => ((i + 1))),
+            days: [],
             months: Array.from({length: 12}, (_, i) => ((i + 1))),
             years: Array.from({length: 106}, (_, i) => ((1920 + i)))
         }
     },
     methods: {
+        getDate() {
+
+        },
+        
         isFormValid() {
             if (this.password === this.confirmPassword) {
                 console.log("123");
@@ -66,7 +71,16 @@ export default {
                     this.submissionError = error.data;
                 }
             );
+        },
+
+        updateDaysInMonth() {
+            const d = new Date(this.birthYear, this.birthMonth + 1, 0);
+            this.days = Array.from({length: d.getDate()}, (_, i) => ((i + 1)));
         }
+    },
+    watch: {
+        birthYear: 'updateDaysInMonth',
+        birthMonth: 'updateDaysInMonth'
     }
 }
 </script>
@@ -98,6 +112,7 @@ export default {
                                     <v-select 
                                         label="Year"
                                         v-model="birthYear"
+                                        @change="updateDaysInMonth"
                                         :items="years">
                                     </v-select>
                                 </v-col>
@@ -105,13 +120,13 @@ export default {
                                     <v-select 
                                         label="Month"
                                         v-model="birthMonth"
+                                        @change="updateDaysInMonth"
                                         :items="months">
                                     </v-select>
                                 </v-col>
                                 <v-col cols="12" sm="4">
                                     <v-select 
                                         label="Day"
-                                        v-model="birthDay"
                                         :items="days">
                                     </v-select>
                                 </v-col>
