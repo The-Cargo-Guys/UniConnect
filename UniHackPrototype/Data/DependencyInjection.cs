@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyAspNetVueApp.Data;
+using UniHack.Repositories;
 
 public static class DependencyInjection
 {
@@ -8,6 +9,12 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite("Data Source=app.db"));
+
+        services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<ISocietyRepository, SocietyRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddCors(options =>
         {
