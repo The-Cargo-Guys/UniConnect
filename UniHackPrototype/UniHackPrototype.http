@@ -1,0 +1,6 @@
+@UniHackPrototype_HostAddress = http://localhost:5258
+
+GET {{UniHackPrototype_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
