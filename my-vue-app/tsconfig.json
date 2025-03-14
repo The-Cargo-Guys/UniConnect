@@ -31,7 +31,12 @@
     "noUnusedLocals": true, // Report errors on unused local variables.
     "noUnusedParameters": true // Report errors on unused parameters in functions
   },
-  "include": ["./**/*.ts", "eslint.config.js"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "eslint.config.js"
+  ],
   "exclude": [
     "node_modules/**/*"
   ]
