@@ -20,6 +20,7 @@ export default {
             birthDay: 1,
             gender: '',
             major: '',
+            yearInDegree: 1,
             email: '',
             password: '',
             confirmPassword: '',
@@ -36,7 +37,6 @@ export default {
         
         isFormValid() {
             if (this.password === this.confirmPassword) {
-                console.log("123");
                 return true;
             }
 
@@ -47,7 +47,6 @@ export default {
             if (!this.isFormValid()) {
                 this.isSubmissionFaliure = true,
                 this.submissionError = "Password and Confirm Password do not match."
-                console.log("123");
                 return;
             }
 
@@ -59,6 +58,7 @@ export default {
                 birthMonth: this.birthMonth,
                 birthDay: this.birthDay,
                 gender: this.gender,
+                yearInDegree: this.yearInDegree,
                 major: this.major,
                 email: this.email,
                 password: this.password,
@@ -103,9 +103,14 @@ export default {
                     hide-delimiters
                 >
                     <v-carousel-item>
-                            <v-text-field label="Forename" variant="underlined" solo flat v-model="forename" required></v-text-field>
-                            <v-text-field label="Surname" variant="underlined" v-model="surname" required></v-text-field>
-                            <v-text-field label="Username" variant="underlined" v-model="username" required></v-text-field>
+                            <v-row>
+                                <v-col cols="12" sm="6">
+                                    <v-text-field label="Forename" variant="underlined" solo flat v-model="forename" required></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-text-field label="Surname" variant="underlined" v-model="surname" required></v-text-field>
+                                </v-col>
+                            </v-row>
                             <v-card-subtitle>Date Of Birth</v-card-subtitle>
                             <v-row>
                                 <v-col cols="12" sm="4">
@@ -137,8 +142,20 @@ export default {
                                     label="Gender"
                                     v-model="gender"
                                     :items="['Male', 'Female']" required>
-                                </v-select>
+                                    </v-select>
                                 </v-col>
+                                <v-col cols="12" sm="8">
+                                    <v-text-field label="Username" variant="underlined" v-model="username" required></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12" sm="4">
+                                    <v-select 
+                                    label="Year in Degree"
+                                    v-model="yearInDegree"
+                                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]" required>
+                                    </v-select>
+                                </v-col>                               
                                 <v-col cols="12" sm="8">
                                     <v-text-field label="Major" variant="underlined" v-model="major" required></v-text-field>
                                 </v-col>
