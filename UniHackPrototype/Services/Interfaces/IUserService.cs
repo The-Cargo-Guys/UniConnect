@@ -1,6 +1,4 @@
-﻿using MyAspNetVueApp.Models;
-
-namespace UniHackPrototype.Services
+﻿namespace UniHack.Services.Services
 {
 	public interface IUserService
 	{

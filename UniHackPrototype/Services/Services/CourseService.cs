@@ -1,6 +1,6 @@
 ﻿namespace UniHack.Services.Services
 {
-	public class CourseService
-	{
+	public class CourseService : ICourseService
+    {
 	}
 }

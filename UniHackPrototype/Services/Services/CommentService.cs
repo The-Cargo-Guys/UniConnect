@@ -1,6 +1,6 @@
 ﻿namespace UniHack.Services.Services
 {
-	public class CommentService
-	{
-	}
+	public class CommentService : ICommentService
+    {
+    }
 }
