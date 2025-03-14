@@ -1,9 +1,14 @@
 <script lang="ts">
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 export default {
     data() {
         return {
+            isSubmissionFaliure: false,
+            submissionError: '',
+
             forename: '',
             surname: '',
             username: '',
@@ -16,23 +21,25 @@ export default {
             confirmPassword: '',
 
             days: Array.from({length: 31}, (_, i) => ((i + 1))),
-
             months: Array.from({length: 12}, (_, i) => ((i + 1))),
-
             years: Array.from({length: 106}, (_, i) => ((1920 + i)))
         }
     },
     methods: {
         isFormValid() {
-            if (this.password !== this.currentPassword) {
-                return false;
+            if (this.password === this.confirmPassword) {
+                console.log("123");
+                return true;
             }
 
-            return true;
+            return false;
         },
 
         submitSignUp() {
-            if (this.isFormValid()) {
+            if (!this.isFormValid()) {
+                this.isSubmissionFaliure = true,
+                this.submissionError = "Password and Confirm Password do not match."
+                console.log("123");
                 return;
             }
 
@@ -46,14 +53,12 @@ export default {
                 email: this.email,
                 password: this.password,
             }
-            console.log("gi");
+
             axios.post("signupURL", signUpForm).then(
-                (response) => {
-                    var result = response.data;
-                    console.log(result);
-                },
+                () => { router.push("/"); },
                 (error) => {
-                    console.log(error);
+                    this.isSubmissionFaliure = true;
+                    this.submissionError = error.data;
                 }
             );
         }
@@ -77,7 +82,7 @@ export default {
                             <v-text-field label="Forename" v-model="forename" required></v-text-field>
                             <v-text-field label="Surname" v-model="surname" required></v-text-field>
                             <v-text-field label="Username" v-model="username" required></v-text-field>
-                            <v-text>Date Of Birth</v-text>
+                            <v-card-subtitle>Date Of Birth</v-card-subtitle>
                             <v-row>
                                 <v-col cols="12" sm="4">
                                     <v-select 
@@ -106,7 +111,8 @@ export default {
                     <v-carousel-item>
                         <v-text-field label="Email" v-model="email" type="email" required></v-text-field>
                         <v-text-field label="Password" v-model="password" type="password" required></v-text-field>
-                        <v-text-field label="Confirm Password" v-model="confirmPassword" type="password" required></v-text-field>     
+                        <v-text-field label="Confirm Password" v-model="confirmPassword" type="password" required></v-text-field>    
+                        <v-card-subtitle v-if="isSubmissionFaliure" :style="{ color: 'red'}">{{ submissionError }}</v-card-subtitle> 
                         <v-btn color="primary" type="submit" @click="submitSignUp" block>Sign-Up</v-btn>
                     </v-carousel-item>
                 </v-carousel>

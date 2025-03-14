@@ -5,7 +5,9 @@ export default {
     data() {
         return {
             email: '',
-            password: ''
+            password: '',
+            isSubmissionFaliure: false,
+            submissionFalure: ''
         }
     },
     methods: {
@@ -16,7 +18,8 @@ export default {
         
         submitLogin() {
             if (this.isFormValid()) {
-                console.log("111");
+                this.validationError = 'Invalid login.  Please check the email and password, and try again';
+                this.isValidationError = true;
                 return;
             }
 
@@ -27,11 +30,11 @@ export default {
 
             axios.post("loginUrl", loginForm).then(
                 (response) => {
-                    var result = response.data;
-                    console.log(result);
+                    console.log(response.data);
                 },
                 (error) => {
-                    console.log(error);
+                    this.isSubmissionFaliure = true;
+                    this.submissionFalure = error.data;
                 }
             );
         }
@@ -50,7 +53,7 @@ export default {
                 <v-form>
                     <v-text-field label="Email" type="email" required></v-text-field>
                     <v-text-field label="Password" type="password" required></v-text-field>
-
+                    <v-card-subtitle v-if="isSubmissionFaliure" :style="{ color: 'red'}">{{ submissionFalure }}</v-card-subtitle>
                     <v-btn color="primary" type="submit" @click="submitLogin" block>Login</v-btn>
                 </v-form>
 
