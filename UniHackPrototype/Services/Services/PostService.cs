@@ -1,6 +1,6 @@
 ﻿namespace UniHack.Services.Services
 {
-	public class PostService
-	{
+	public class PostService : IPostService
+    {
 	}
 }
