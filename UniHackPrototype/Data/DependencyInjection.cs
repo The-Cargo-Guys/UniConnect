@@ -2,6 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using MyAspNetVueApp.Data;
 using UniHack.Repositories;
+using UniHack.Repositories.Interfaces;
+using UniHack.Services;
+using UniHack.Services.Interfaces;
 using UniHack.Services.Services;
 
 public static class DependencyInjection
