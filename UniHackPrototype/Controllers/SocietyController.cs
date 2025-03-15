@@ -69,7 +69,6 @@ namespace UniHack.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public IActionResult CreateSociety([FromBody] Society model)
         {
             // Validate model

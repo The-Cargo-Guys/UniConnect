@@ -1389,6 +1389,7 @@ export class Course implements ICourse {
     imagePathBanner?: string | undefined;
     tags?: Tag[] | undefined;
     members?: User[] | undefined;
+    createdAt?: Date;
 
     constructor(data?: ICourse) {
         if (data) {
@@ -1415,6 +1416,7 @@ export class Course implements ICourse {
                 for (let item of _data["members"])
                     this.members!.push(User.fromJS(item));
             }
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
         }
     }
 
@@ -1441,6 +1443,7 @@ export class Course implements ICourse {
             for (let item of this.members)
                 data["members"].push(item.toJSON());
         }
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -1452,6 +1455,7 @@ export interface ICourse {
     imagePathBanner?: string | undefined;
     tags?: Tag[] | undefined;
     members?: User[] | undefined;
+    createdAt?: Date;
 }
 
 export class LoginModel implements ILoginModel {
@@ -1501,6 +1505,7 @@ export class Society implements ISociety {
     imagePathBanner?: string | undefined;
     tags?: Tag[] | undefined;
     members?: User[] | undefined;
+    createdAt?: Date;
 
     constructor(data?: ISociety) {
         if (data) {
@@ -1527,6 +1532,7 @@ export class Society implements ISociety {
                 for (let item of _data["members"])
                     this.members!.push(User.fromJS(item));
             }
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
         }
     }
 
@@ -1553,6 +1559,7 @@ export class Society implements ISociety {
             for (let item of this.members)
                 data["members"].push(item.toJSON());
         }
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -1564,6 +1571,7 @@ export interface ISociety {
     imagePathBanner?: string | undefined;
     tags?: Tag[] | undefined;
     members?: User[] | undefined;
+    createdAt?: Date;
 }
 
 export class Tag implements ITag {
