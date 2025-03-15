@@ -9,16 +9,6 @@ namespace UniHackPrototype.Models
         [Key]
         public Guid Id { get; set; }
 
-        public string Value
-        {
-            get
-            {
-				return Value;
-			}
-            set
-            {
-				value = value.ToLower();
-			}
-        }
+        public string Value { get; set; } = string.Empty;
     }
 }
