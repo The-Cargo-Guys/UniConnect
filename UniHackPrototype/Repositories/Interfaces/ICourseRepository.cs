@@ -1,8 +1,6 @@
 ﻿using UniHackPrototype.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace UniHack.Repositories
+namespace UniHack.Repositories.Interfaces
 {
 	public interface ICourseRepository
 	{
