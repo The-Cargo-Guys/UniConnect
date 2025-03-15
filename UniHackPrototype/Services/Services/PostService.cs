@@ -110,6 +110,29 @@ namespace UniHack.Services
 			return _postRepository.UpdateAsync(post).Result;
 		}
 
+		public bool AddUpvote(Guid id)
+		{
+			var post = _postRepository.GetByIdAsync(id).Result;
+			if (post == null)
+			{
+				return false;
+			}
+			post.Upvotes++;
+			return _postRepository.UpdateAsync(post).Result;
+		}
+
+		public bool RemoveUpvote(Guid id)
+		{
+			var post = _postRepository.GetByIdAsync(id).Result;
+			if (post == null)
+			{
+				return false;
+			}
+			if (post.Upvotes > 0)
+				post.Upvotes--;
+			return _postRepository.UpdateAsync(post).Result;
+		}
+
         public List<Post> GetPostsByTags(List<Tag> Tags)
         {
             return _postRepository

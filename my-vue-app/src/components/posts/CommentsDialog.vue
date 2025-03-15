@@ -1,9 +1,16 @@
 <script setup lang="ts">
-const props = defineProps({
-	enabled: Boolean,
-});
+import { Comment } from "src/apiClient";
+import { ref, computed, watch } from "vue";
+
+const props = defineProps(["enabled", "comments", "topCommentLiked"]);
+var comments: Comment[] = props.comments;
+var commentLiked = ref(new Array(comments.length).fill(false));
 
 const emit = defineEmits(["update:enabled"]);
+
+function toggleLike(index: number) {
+	commentLiked.value[index] = !commentLiked.value[index];
+}
 </script>
 
 <template>
@@ -14,11 +21,21 @@ const emit = defineEmits(["update:enabled"]);
 	>
 		<template v-slot:default="{ isActive }">
 			<v-card>
-				<v-card-text> This will have the comments. </v-card-text>
-
+				<v-card-text>
+					<div v-for="(comment, index) in comments" class="ma-6" :key="index">
+						<div class="d-flex justify-space-between">
+							<p class="font-weight-bold">{{ comment.author?.name }}</p>
+							<v-icon
+								:color="commentLiked[index] ? 'red' : 'black'"
+								:icon="commentLiked[index] ? 'mdi-heart' : 'mdi-heart-outline'"
+								@click="toggleLike(index)"
+							></v-icon>
+						</div>
+						<p>{{ comment.content }}</p>
+					</div>
+				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-
 					<v-btn text="Close" @click="isActive.value = false"></v-btn>
 				</v-card-actions>
 			</v-card>

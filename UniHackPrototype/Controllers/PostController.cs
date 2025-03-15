@@ -26,7 +26,7 @@ namespace UniHack.Controllers
             _courseService = courseService;
         }
 
-        [HttpPost]
+        [HttpPost("add-post")]
         public IActionResult CreatePost([FromBody] Post request)
         {
             if (request == null || string.IsNullOrWhiteSpace(request.Title) || string.IsNullOrWhiteSpace(request.Content))
@@ -47,7 +47,7 @@ namespace UniHack.Controllers
             }
 
             Community? community;
-			if (request.CommunityType == Enums.CommunityType.Course)
+            if (request.CommunityType == Enums.CommunityType.Course)
             {
                 community = _courseService.GetCourseById(request.CommunityId);
             }
@@ -69,6 +69,34 @@ namespace UniHack.Controllers
             }
 
             return Ok(new { message = "Post created successfully." });
+        }
+
+        [HttpPost("add-upvote/{id}")]
+        public IActionResult AddUpvote(Guid id)
+        {
+            if (Guid.Empty == id)
+            {
+                return BadRequest("Post ID is required.");
+            }
+            if (!_postService.AddUpvote(id))
+            {
+                return BadRequest("Upvote failed.");
+            }
+            return Ok(new { message = "Upvote added successfully." });
+        }
+
+        [HttpPost("remove-upvote/{id}")]
+        public IActionResult RemoveUpvote(Guid id)
+        {
+            if (Guid.Empty == id)
+            {
+                return BadRequest("Post ID is required.");
+            }
+            if (!_postService.RemoveUpvote(id))
+            {
+                return BadRequest("Upvote removal failed.");
+            }
+            return Ok(new { message = "Upvote removed successfully." });
         }
     }
 }

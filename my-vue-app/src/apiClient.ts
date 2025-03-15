@@ -666,6 +666,264 @@ export class Client {
     /**
      * @return OK
      */
+    eventsGET(): Promise<void> {
+        let url_ = this.baseUrl + "/api/events";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processEventsGET(_response);
+        });
+    }
+
+    protected processEventsGET(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    eventsPOST(body: Event | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/events";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processEventsPOST(_response);
+        });
+    }
+
+    protected processEventsPOST(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getEvent(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/get-event/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetEvent(_response);
+        });
+    }
+
+    protected processGetEvent(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    society(societyId: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/events/society/{societyId}";
+        if (societyId === undefined || societyId === null)
+            throw new Error("The parameter 'societyId' must be defined.");
+        url_ = url_.replace("{societyId}", encodeURIComponent("" + societyId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSociety(_response);
+        });
+    }
+
+    protected processSociety(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param days (optional) 
+     * @return OK
+     */
+    upcoming(days: number | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/events/upcoming?";
+        if (days === null)
+            throw new Error("The parameter 'days' cannot be null.");
+        else if (days !== undefined)
+            url_ += "days=" + encodeURIComponent("" + days) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpcoming(_response);
+        });
+    }
+
+    protected processUpcoming(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    update(id: string, body: Event | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/events/update/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdate(_response);
+        });
+    }
+
+    protected processUpdate(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    delete(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/events/delete/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     getFyp(userId: string): Promise<void> {
         let url_ = this.baseUrl + "/api/for-you/GetFyp/{userId}";
         if (userId === undefined || userId === null)
@@ -685,6 +943,39 @@ export class Client {
     }
 
     protected processGetFyp(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    posts(): Promise<void> {
+        let url_ = this.baseUrl + "/api/for-you/posts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPosts(_response);
+        });
+    }
+
+    protected processPosts(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -769,8 +1060,8 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    posts(body: Post | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/posts";
+    addPost(body: Post | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/posts/add-post";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -784,11 +1075,83 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPosts(_response);
+            return this.processAddPost(_response);
         });
     }
 
-    protected processPosts(response: Response): Promise<void> {
+    protected processAddPost(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    addUpvote(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/posts/add-upvote/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddUpvote(_response);
+        });
+    }
+
+    protected processAddUpvote(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    removeUpvote(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/posts/remove-upvote/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRemoveUpvote(_response);
+        });
+    }
+
+    protected processRemoveUpvote(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1388,7 +1751,6 @@ export interface IComment {
 
 export class Community implements ICommunity {
     id?: string;
-    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1408,7 +1770,6 @@ export class Community implements ICommunity {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -1436,7 +1797,6 @@ export class Community implements ICommunity {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -1457,7 +1817,6 @@ export class Community implements ICommunity {
 
 export interface ICommunity {
     id?: string;
-    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1473,7 +1832,6 @@ export enum CommunityType {
 
 export class Course implements ICourse {
     id?: string;
-    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1493,7 +1851,6 @@ export class Course implements ICourse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -1521,7 +1878,6 @@ export class Course implements ICourse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -1542,7 +1898,6 @@ export class Course implements ICourse {
 
 export interface ICourse {
     id?: string;
-    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1557,6 +1912,8 @@ export class Event implements IEvent {
     description?: string | undefined;
     imagePathBanner?: string | undefined;
     date?: Date;
+    societyId?: string;
+    society?: Society;
 
     constructor(data?: IEvent) {
         if (data) {
@@ -1574,6 +1931,8 @@ export class Event implements IEvent {
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.societyId = _data["societyId"];
+            this.society = _data["society"] ? Society.fromJS(_data["society"]) : <any>undefined;
         }
     }
 
@@ -1591,6 +1950,8 @@ export class Event implements IEvent {
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["societyId"] = this.societyId;
+        data["society"] = this.society ? this.society.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -1601,6 +1962,8 @@ export interface IEvent {
     description?: string | undefined;
     imagePathBanner?: string | undefined;
     date?: Date;
+    societyId?: string;
+    society?: Society;
 }
 
 export class LoginRequest implements ILoginRequest {
@@ -1789,7 +2152,6 @@ export interface IRegisterRequest {
 
 export class Society implements ISociety {
     id?: string;
-    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1810,7 +2172,6 @@ export class Society implements ISociety {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -1843,7 +2204,6 @@ export class Society implements ISociety {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -1869,7 +2229,6 @@ export class Society implements ISociety {
 
 export interface ISociety {
     id?: string;
-    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;

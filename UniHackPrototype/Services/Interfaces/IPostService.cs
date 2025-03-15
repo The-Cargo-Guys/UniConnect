@@ -16,5 +16,7 @@ namespace UniHack.Services.Interfaces
 		bool DeletePost(Guid id);
 		bool AddPostTag(Guid id, Tag tag);
 		bool RemovePostTag(Guid id, Tag tag);
-	}
+		bool AddUpvote(Guid id);
+        bool RemoveUpvote(Guid id);
+    }
 }

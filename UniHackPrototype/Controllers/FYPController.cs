@@ -46,7 +46,14 @@ namespace UniHack.Controllers
 			return Ok(posts);
 		}
 
-		[HttpGet("societies")]
+		[HttpGet("posts")]
+		public IActionResult GetAllPosts()
+        {
+            var posts = _postService.GetAllPosts();
+            return Ok(posts);
+        }
+
+        [HttpGet("societies")]
 		public IActionResult GetRecommendedSocieties()
 		{
 			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

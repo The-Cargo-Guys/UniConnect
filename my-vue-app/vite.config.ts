@@ -21,7 +21,6 @@ export default defineConfig({
         changeOrigin: true,
         secure: false, // ✅ Allows self-signed SSL certs (if needed)
         ws: true, // ✅ Supports WebSockets (useful for real-time features)
-        rewrite: (path) => path.replace(/^\/api/, ""), // ✅ Removes /api prefix when forwarding
       },
     },
   },
