@@ -50,7 +50,7 @@ namespace UniHack.Services
 				Name = name,
 				Description = description ?? string.Empty,
 				ImagePathBanner = imagePath ?? string.Empty,
-				Tags = tags?.ToList() ?? new List<string>(),
+				Tags = tags?.ToList() ?? [],
 				Members = []
 			};
 

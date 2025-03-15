@@ -16,7 +16,7 @@ namespace UniHackPrototype.Data
             return false;
         }
 
-        private bool IsValidUtsEmail(string email)
+        public bool IsValidUtsEmail(string email)
         {
             return email.EndsWith("@uts.edu.au", StringComparison.OrdinalIgnoreCase);
         }
