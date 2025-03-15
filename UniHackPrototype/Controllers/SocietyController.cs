@@ -56,9 +56,9 @@ namespace UniHack.Controllers
         }
 
         [HttpGet("by-tag")]
-        public IActionResult GetSocietiesByTag([FromQuery] string tag)
+        public IActionResult GetSocietiesByTag([FromQuery] Tag tag)
         {
-            if (string.IsNullOrWhiteSpace(tag))
+            if (string.IsNullOrWhiteSpace(tag.Value))
             {
                 return BadRequest("Tag is required");
             }
@@ -227,7 +227,7 @@ namespace UniHack.Controllers
                 return NotFound("Society not found");
             }
 
-            if (string.IsNullOrWhiteSpace(model.Tag))
+            if (string.IsNullOrWhiteSpace(model.Tag.Value))
             {
                 return BadRequest("Tag is required");
             }
@@ -246,7 +246,7 @@ namespace UniHack.Controllers
 
         [HttpDelete("{id}/tags")]
         [Authorize]
-        public IActionResult RemoveSocietyTag(Guid id, [FromQuery] string tag)
+        public IActionResult RemoveSocietyTag(Guid id, [FromQuery] Tag tag)
         {
             // Check if society exists
             var society = _societyService.GetSocietyById(id);
@@ -255,7 +255,7 @@ namespace UniHack.Controllers
                 return NotFound("Society not found");
             }
 
-            if (string.IsNullOrWhiteSpace(tag))
+            if (string.IsNullOrWhiteSpace(tag.Value))
             {
                 return BadRequest("Tag is required");
             }
@@ -293,7 +293,7 @@ namespace UniHack.Controllers
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
-        public List<string>? Tags { get; set; }
+        public List<Tag>? Tags { get; set; }
     }
 
     public class UpdateSocietyModel
@@ -301,11 +301,11 @@ namespace UniHack.Controllers
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
-        public List<string>? Tags { get; set; }
+        public List<Tag>? Tags { get; set; }
     }
 
     public class TagModel
     {
-        public string Tag { get; set; } = string.Empty;
+        public required Tag Tag { get; set; }
     }
 }

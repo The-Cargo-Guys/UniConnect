@@ -53,7 +53,7 @@ namespace UniHack.Repositories
 				.ToListAsync();
 		}
 
-		public async Task<List<Post>> GetByTagAsync(string tag)
+		public async Task<List<Post>> GetByTagAsync(Tag tag)
 		{
 			return await _context.Posts
 				.Include(p => p.Author)

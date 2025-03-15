@@ -1,5 +1,8 @@
 ﻿using MyAspNetVueApp.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UniHackPrototype.Models
 {
@@ -7,11 +10,23 @@ namespace UniHackPrototype.Models
     {
         [Key]
         public Guid Id { get; set; }
+
         public string Title { get; set; } = string.Empty;
+
         public string Content { get; set; } = string.Empty;
-        public ICollection<string> Tags { get; set; } = new List<string>();
+
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public required User Author { get; set; }
-        public required Community Community { get; set; }
+
+        public Guid AuthorId { get; set; }
+
+        [ForeignKey(nameof(AuthorId))]
+        public User Author { get; set; } = null!;
+
+        public Guid CommunityId { get; set; }
+
+        [ForeignKey(nameof(CommunityId))]
+        public Community Community { get; set; } = null!;
     }
 }

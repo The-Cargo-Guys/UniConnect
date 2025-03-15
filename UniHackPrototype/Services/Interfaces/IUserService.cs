@@ -1,6 +1,7 @@
 ﻿using MyAspNetVueApp.Models;
 using System;
 using System.Collections.Generic;
+using UniHackPrototype.Models;
 
 namespace UniHack.Services.Interfaces
 {
@@ -13,9 +14,9 @@ namespace UniHack.Services.Interfaces
 		bool UpdateUser(User user);
 		bool DeleteUser(Guid id);
 		bool AuthenticateUser(string email, string password);
-		bool UpdateUserProfile(Guid id, string? name, string? bio, string? university, string? degree, string? imagePath, IEnumerable<string>? tags);
+		bool UpdateUserProfile(Guid id, string? name, string? bio, string? university, string? degree, string? imagePath, IEnumerable<Tag>? tags);
 		bool UpdateUserPassword(Guid id, string currentPassword, string newPassword);
-		bool AddUserTag(Guid id, string tag);
-		bool RemoveUserTag(Guid id, string tag);
+		bool AddUserTag(Guid id, Tag tag);
+		bool RemoveUserTag(Guid id, Tag tag);
 	}
 }

@@ -426,15 +426,20 @@ export class Client {
     }
 
     /**
-     * @param tag (optional) 
+     * @param id (optional) 
+     * @param value (optional) 
      * @return OK
      */
-    byTag(tag: string | undefined): Promise<void> {
+    byTag(id: string | undefined, value: string | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/courses/by-tag?";
-        if (tag === null)
-            throw new Error("The parameter 'tag' cannot be null.");
-        else if (tag !== undefined)
-            url_ += "tag=" + encodeURIComponent("" + tag) + "&";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        if (value === null)
+            throw new Error("The parameter 'value' cannot be null.");
+        else if (value !== undefined)
+            url_ += "Value=" + encodeURIComponent("" + value) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -619,18 +624,23 @@ export class Client {
     }
 
     /**
-     * @param tag (optional) 
+     * @param idQuery (optional) 
+     * @param value (optional) 
      * @return OK
      */
-    tagsDELETE(id: string, tag: string | undefined): Promise<void> {
+    tagsDELETE(idPath: string, idQuery: string | undefined, value: string | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/courses/{id}/tags?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (tag === null)
-            throw new Error("The parameter 'tag' cannot be null.");
-        else if (tag !== undefined)
-            url_ += "tag=" + encodeURIComponent("" + tag) + "&";
+        if (idPath === undefined || idPath === null)
+            throw new Error("The parameter 'idPath' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + idPath));
+        if (idQuery === null)
+            throw new Error("The parameter 'idQuery' cannot be null.");
+        else if (idQuery !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + idQuery) + "&";
+        if (value === null)
+            throw new Error("The parameter 'value' cannot be null.");
+        else if (value !== undefined)
+            url_ += "Value=" + encodeURIComponent("" + value) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1017,15 +1027,20 @@ export class Client {
     }
 
     /**
-     * @param tag (optional) 
+     * @param id (optional) 
+     * @param value (optional) 
      * @return OK
      */
-    byTag2(tag: string | undefined): Promise<void> {
+    byTag2(id: string | undefined, value: string | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/societies/by-tag?";
-        if (tag === null)
-            throw new Error("The parameter 'tag' cannot be null.");
-        else if (tag !== undefined)
-            url_ += "tag=" + encodeURIComponent("" + tag) + "&";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        if (value === null)
+            throw new Error("The parameter 'value' cannot be null.");
+        else if (value !== undefined)
+            url_ += "Value=" + encodeURIComponent("" + value) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1174,18 +1189,23 @@ export class Client {
     }
 
     /**
-     * @param tag (optional) 
+     * @param idQuery (optional) 
+     * @param value (optional) 
      * @return OK
      */
-    tagsDELETE2(id: string, tag: string | undefined): Promise<void> {
+    tagsDELETE2(idPath: string, idQuery: string | undefined, value: string | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/societies/{id}/tags?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (tag === null)
-            throw new Error("The parameter 'tag' cannot be null.");
-        else if (tag !== undefined)
-            url_ += "tag=" + encodeURIComponent("" + tag) + "&";
+        if (idPath === undefined || idPath === null)
+            throw new Error("The parameter 'idPath' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + idPath));
+        if (idQuery === null)
+            throw new Error("The parameter 'idQuery' cannot be null.");
+        else if (idQuery !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + idQuery) + "&";
+        if (value === null)
+            throw new Error("The parameter 'value' cannot be null.");
+        else if (value !== undefined)
+            url_ += "Value=" + encodeURIComponent("" + value) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1366,7 +1386,7 @@ export class CreateCourseModel implements ICreateCourseModel {
     name?: string | undefined;
     description?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 
     constructor(data?: ICreateCourseModel) {
         if (data) {
@@ -1385,7 +1405,7 @@ export class CreateCourseModel implements ICreateCourseModel {
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
-                    this.tags!.push(item);
+                    this.tags!.push(Tag.fromJS(item));
             }
         }
     }
@@ -1405,7 +1425,7 @@ export class CreateCourseModel implements ICreateCourseModel {
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
-                data["tags"].push(item);
+                data["tags"].push(item.toJSON());
         }
         return data;
     }
@@ -1415,14 +1435,14 @@ export interface ICreateCourseModel {
     name?: string | undefined;
     description?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 }
 
 export class CreateSocietyModel implements ICreateSocietyModel {
     name?: string | undefined;
     description?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 
     constructor(data?: ICreateSocietyModel) {
         if (data) {
@@ -1441,7 +1461,7 @@ export class CreateSocietyModel implements ICreateSocietyModel {
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
-                    this.tags!.push(item);
+                    this.tags!.push(Tag.fromJS(item));
             }
         }
     }
@@ -1461,7 +1481,7 @@ export class CreateSocietyModel implements ICreateSocietyModel {
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
-                data["tags"].push(item);
+                data["tags"].push(item.toJSON());
         }
         return data;
     }
@@ -1471,7 +1491,7 @@ export interface ICreateSocietyModel {
     name?: string | undefined;
     description?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 }
 
 export class LoginModel implements ILoginModel {
@@ -1514,10 +1534,11 @@ export interface ILoginModel {
     password?: string | undefined;
 }
 
-export class TagModel implements ITagModel {
-    tag?: string | undefined;
+export class Tag implements ITag {
+    id?: string;
+    value?: string | undefined;
 
-    constructor(data?: ITagModel) {
+    constructor(data?: ITag) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1528,7 +1549,49 @@ export class TagModel implements ITagModel {
 
     init(_data?: any) {
         if (_data) {
-            this.tag = _data["tag"];
+            this.id = _data["id"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): Tag {
+        data = typeof data === 'object' ? data : {};
+        let result = new Tag();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface ITag {
+    id?: string;
+    value?: string | undefined;
+}
+
+export class TagModel implements ITagModel {
+    tag!: Tag;
+
+    constructor(data?: ITagModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.tag = new Tag();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.tag = _data["tag"] ? Tag.fromJS(_data["tag"]) : new Tag();
         }
     }
 
@@ -1541,20 +1604,20 @@ export class TagModel implements ITagModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["tag"] = this.tag;
+        data["tag"] = this.tag ? this.tag.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface ITagModel {
-    tag?: string | undefined;
+    tag: Tag;
 }
 
 export class UpdateCourseModel implements IUpdateCourseModel {
     name?: string | undefined;
     description?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 
     constructor(data?: IUpdateCourseModel) {
         if (data) {
@@ -1573,7 +1636,7 @@ export class UpdateCourseModel implements IUpdateCourseModel {
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
-                    this.tags!.push(item);
+                    this.tags!.push(Tag.fromJS(item));
             }
         }
     }
@@ -1593,7 +1656,7 @@ export class UpdateCourseModel implements IUpdateCourseModel {
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
-                data["tags"].push(item);
+                data["tags"].push(item.toJSON());
         }
         return data;
     }
@@ -1603,7 +1666,7 @@ export interface IUpdateCourseModel {
     name?: string | undefined;
     description?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 }
 
 export class UpdateProfileModel implements IUpdateProfileModel {
@@ -1612,7 +1675,7 @@ export class UpdateProfileModel implements IUpdateProfileModel {
     university?: string | undefined;
     degree?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 
     constructor(data?: IUpdateProfileModel) {
         if (data) {
@@ -1633,7 +1696,7 @@ export class UpdateProfileModel implements IUpdateProfileModel {
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
-                    this.tags!.push(item);
+                    this.tags!.push(Tag.fromJS(item));
             }
         }
     }
@@ -1655,7 +1718,7 @@ export class UpdateProfileModel implements IUpdateProfileModel {
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
-                data["tags"].push(item);
+                data["tags"].push(item.toJSON());
         }
         return data;
     }
@@ -1667,14 +1730,14 @@ export interface IUpdateProfileModel {
     university?: string | undefined;
     degree?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 }
 
 export class UpdateSocietyModel implements IUpdateSocietyModel {
     name?: string | undefined;
     description?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 
     constructor(data?: IUpdateSocietyModel) {
         if (data) {
@@ -1693,7 +1756,7 @@ export class UpdateSocietyModel implements IUpdateSocietyModel {
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
-                    this.tags!.push(item);
+                    this.tags!.push(Tag.fromJS(item));
             }
         }
     }
@@ -1713,7 +1776,7 @@ export class UpdateSocietyModel implements IUpdateSocietyModel {
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
-                data["tags"].push(item);
+                data["tags"].push(item.toJSON());
         }
         return data;
     }
@@ -1723,7 +1786,7 @@ export interface IUpdateSocietyModel {
     name?: string | undefined;
     description?: string | undefined;
     imagePath?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
 }
 
 export class User implements IUser {
@@ -1736,7 +1799,7 @@ export class User implements IUser {
     bio?: string | undefined;
     university?: string | undefined;
     degree?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
     isAdmin?: boolean;
 
     constructor(data?: IUser) {
@@ -1762,7 +1825,7 @@ export class User implements IUser {
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
-                    this.tags!.push(item);
+                    this.tags!.push(Tag.fromJS(item));
             }
             this.isAdmin = _data["isAdmin"];
         }
@@ -1789,7 +1852,7 @@ export class User implements IUser {
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
-                data["tags"].push(item);
+                data["tags"].push(item.toJSON());
         }
         data["isAdmin"] = this.isAdmin;
         return data;
@@ -1806,7 +1869,7 @@ export interface IUser {
     bio?: string | undefined;
     university?: string | undefined;
     degree?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
     isAdmin?: boolean;
 }
 

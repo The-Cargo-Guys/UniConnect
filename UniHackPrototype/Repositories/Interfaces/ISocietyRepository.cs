@@ -9,7 +9,7 @@ namespace UniHack.Repositories
 		Task<List<Society>> GetAllAsync();
 		Task<Society?> GetByIdAsync(Guid id);
 		Task<List<Society>> GetByNameAsync(string name);
-		Task<List<Society>> GetByTagAsync(string tag);
+		Task<List<Society>> GetByTagAsync(Tag tag);
 		Task<List<Society>> GetByMemberIdAsync(Guid memberId);
 		Task<bool> AddAsync(Society society);
 		Task<bool> UpdateAsync(Society society);
