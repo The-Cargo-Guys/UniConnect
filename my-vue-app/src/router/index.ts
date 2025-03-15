@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
-import { TheCommunitiesPage, TheHomePage, TheSocietiesPage, TheRegistryPage, TheCallbackPage, TheAddSocietyPage  } from '../views';
+import { TheCommunitiesPage, TheHomePage, TheSocietiesPage, TheRegistryPage, TheCallbackPage, TheAddSocietyPage, TheSocietiesDetailsPage  } from '../views';
 
 const routes: Array<RouteRecordRaw> = [
     { path: '/', component: TheHomePage },
@@ -8,6 +8,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/register', component: TheRegistryPage },
     { path: '/callback', component: TheCallbackPage },
     { path: "/add-society", component: TheAddSocietyPage },
+    { path: "/societies/:id", name: "SocietiesDetails", component: TheSocietiesDetailsPage },
     { path: '/:pathMatch(.*)*', redirect: '/' },
 ];
 
