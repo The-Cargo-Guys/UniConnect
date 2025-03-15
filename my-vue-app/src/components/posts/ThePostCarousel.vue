@@ -47,6 +47,7 @@ async function fetchData() {
 	height: 100%;
 	overflow-y: scroll;
 	padding-right: 5px;
+	margin-bottom: 15px;
 }
 
 .loading-container {
