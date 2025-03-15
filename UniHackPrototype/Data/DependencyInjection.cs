@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyAspNetVueApp.Data;
+using UniHack.Controllers;
+using UniHack.ForYouPageNamespace;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services;
@@ -30,7 +32,10 @@ namespace UniHack.Data
 			services.AddScoped<ISocietyService, SocietyService>();
 			services.AddScoped<IUserService, UserService>();
 
-			services.AddCors(options =>
+            //Fyp
+            services.AddScoped<IForYouPageLogic, ForYouPageLogic>();
+
+            services.AddCors(options =>
 			{
 				options.AddPolicy("AllowVueApp", policy =>
 					policy.SetIsOriginAllowed(origin =>

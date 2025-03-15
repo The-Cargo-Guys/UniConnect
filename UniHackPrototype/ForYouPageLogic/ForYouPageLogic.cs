@@ -3,9 +3,9 @@ using UniHack.Services.Interfaces;
 using UniHack.Services.Services;
 using UniHackPrototype.Models;
 
-namespace UniHack.ForYouPage
+namespace UniHack.ForYouPageNamespace
 {
-    public class ForYouPageLogic
+    public class ForYouPageLogic : IForYouPageLogic
     {
         private readonly IPostService _postService;
         public ForYouPageLogic(IPostService postService)
