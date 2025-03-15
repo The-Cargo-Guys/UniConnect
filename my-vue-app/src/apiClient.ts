@@ -168,8 +168,8 @@ export class Client {
     /**
      * @return OK
      */
-    coursesGET2(id: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/{id}";
+    getById(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/get-by-id/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -182,52 +182,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCoursesGET2(_response);
+            return this.processGetById(_response);
         });
     }
 
-    protected processCoursesGET2(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    coursesPUT(id: string, body: Course | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCoursesPUT(_response);
-        });
-    }
-
-    protected processCoursesPUT(response: Response): Promise<void> {
+    protected processGetById(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -245,49 +204,11 @@ export class Client {
     /**
      * @return OK
      */
-    coursesDELETE(id: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCoursesDELETE(_response);
-        });
-    }
-
-    protected processCoursesDELETE(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param name (optional) 
-     * @return OK
-     */
-    search(name: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/search?";
-        if (name === null)
-            throw new Error("The parameter 'name' cannot be null.");
-        else if (name !== undefined)
-            url_ += "name=" + encodeURIComponent("" + name) + "&";
+    search(name: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/courses/search/{name}";
+        if (name === undefined || name === null)
+            throw new Error("The parameter 'name' must be defined.");
+        url_ = url_.replace("{name}", encodeURIComponent("" + name));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -317,25 +238,20 @@ export class Client {
     }
 
     /**
-     * @param id (optional) 
-     * @param value (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    byTag(id: string | undefined, value: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/by-tag?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
-        if (value === null)
-            throw new Error("The parameter 'value' cannot be null.");
-        else if (value !== undefined)
-            url_ += "Value=" + encodeURIComponent("" + value) + "&";
+    byTag(body: Tag | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/courses/by-tag";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "GET",
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
@@ -396,30 +312,32 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    membersPOST(id: string, userId: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/{id}/members/{userId}";
+    updateCourse(id: string, body: Course | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/update-course/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (userId === undefined || userId === null)
-            throw new Error("The parameter 'userId' must be defined.");
-        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
-            method: "POST",
+            body: content_,
+            method: "PUT",
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processMembersPOST(_response);
+            return this.processUpdateCourse(_response);
         });
     }
 
-    protected processMembersPOST(response: Response): Promise<void> {
+    protected processUpdateCourse(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -437,8 +355,83 @@ export class Client {
     /**
      * @return OK
      */
-    membersDELETE(id: string, userId: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/{id}/members/{userId}";
+    deleteCourse(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/delete-course/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteCourse(_response);
+        });
+    }
+
+    protected processDeleteCourse(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    addMember(id: string, userId: string): Promise<void> {
+        let url_ = this.baseUrl + "/add-member/{id}/{userId}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddMember(_response);
+        });
+    }
+
+    protected processAddMember(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    removeMember(id: string, userId: string): Promise<void> {
+        let url_ = this.baseUrl + "/remove-member/{id}/{userId}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -454,11 +447,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processMembersDELETE(_response);
+            return this.processRemoveMember(_response);
         });
     }
 
-    protected processMembersDELETE(response: Response): Promise<void> {
+    protected processRemoveMember(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -477,8 +470,8 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    tagsPOST(id: string, body: Tag | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/{id}/tags";
+    addCourseTag(id: string, body: Tag | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/add-course-tag/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -495,11 +488,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processTagsPOST(_response);
+            return this.processAddCourseTag(_response);
         });
     }
 
-    protected processTagsPOST(response: Response): Promise<void> {
+    protected processAddCourseTag(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -519,8 +512,8 @@ export class Client {
      * @param value (optional) 
      * @return OK
      */
-    tagsDELETE(idPath: string, idQuery: string | undefined, value: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/{id}/tags?";
+    removeTags(idPath: string, idQuery: string | undefined, value: string | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/courses/remove-tags/{id}?";
         if (idPath === undefined || idPath === null)
             throw new Error("The parameter 'idPath' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + idPath));
@@ -541,11 +534,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processTagsDELETE(_response);
+            return this.processRemoveTags(_response);
         });
     }
 
-    protected processTagsDELETE(response: Response): Promise<void> {
+    protected processRemoveTags(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -563,8 +556,8 @@ export class Client {
     /**
      * @return OK
      */
-    posts(id: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/courses/{id}/posts";
+    getPosts(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/courses/get-posts/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -577,11 +570,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPosts(_response);
+            return this.processGetPosts(_response);
         });
     }
 
-    protected processPosts(response: Response): Promise<void> {
+    protected processGetPosts(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -635,7 +628,7 @@ export class Client {
     /**
      * @return OK
      */
-    societiesGET(): Promise<void> {
+    societies(): Promise<void> {
         let url_ = this.baseUrl + "/api/for-you/societies";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -646,11 +639,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSocietiesGET(_response);
+            return this.processSocieties(_response);
         });
     }
 
-    protected processSocietiesGET(response: Response): Promise<void> {
+    protected processSocieties(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -668,7 +661,7 @@ export class Client {
     /**
      * @return OK
      */
-    coursesGET3(): Promise<void> {
+    coursesGET2(): Promise<void> {
         let url_ = this.baseUrl + "/api/for-you/courses";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -679,11 +672,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCoursesGET3(_response);
+            return this.processCoursesGET2(_response);
         });
     }
 
-    protected processCoursesGET3(response: Response): Promise<void> {
+    protected processCoursesGET2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -701,7 +694,7 @@ export class Client {
     /**
      * @return OK
      */
-    societiesGET2(): Promise<void> {
+    societies2(): Promise<void> {
         let url_ = this.baseUrl + "/api/societies";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -712,11 +705,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSocietiesGET2(_response);
+            return this.processSocieties2(_response);
         });
     }
 
-    protected processSocietiesGET2(response: Response): Promise<void> {
+    protected processSocieties2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -734,8 +727,8 @@ export class Client {
     /**
      * @return OK
      */
-    societiesGET3(id: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/{id}";
+    getSociety(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/get-society/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -748,52 +741,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSocietiesGET3(_response);
+            return this.processGetSociety(_response);
         });
     }
 
-    protected processSocietiesGET3(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    societiesPUT(id: string, body: Society | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSocietiesPUT(_response);
-        });
-    }
-
-    protected processSocietiesPUT(response: Response): Promise<void> {
+    protected processGetSociety(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -811,49 +763,11 @@ export class Client {
     /**
      * @return OK
      */
-    societiesDELETE(id: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSocietiesDELETE(_response);
-        });
-    }
-
-    protected processSocietiesDELETE(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param name (optional) 
-     * @return OK
-     */
-    search2(name: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/search?";
-        if (name === null)
-            throw new Error("The parameter 'name' cannot be null.");
-        else if (name !== undefined)
-            url_ += "name=" + encodeURIComponent("" + name) + "&";
+    search2(name: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/societies/search/{name}";
+        if (name === undefined || name === null)
+            throw new Error("The parameter 'name' must be defined.");
+        url_ = url_.replace("{name}", encodeURIComponent("" + name));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -883,25 +797,20 @@ export class Client {
     }
 
     /**
-     * @param id (optional) 
-     * @param value (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    byTag2(id: string | undefined, value: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/by-tag?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
-        if (value === null)
-            throw new Error("The parameter 'value' cannot be null.");
-        else if (value !== undefined)
-            url_ += "Value=" + encodeURIComponent("" + value) + "&";
+    byTag2(body: Tag | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/societies/by-tag";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "GET",
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
@@ -964,30 +873,32 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    membersPOST2(id: string, userId: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/{id}/members/{userId}";
+    updateSociety(id: string, body: Society | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/update-society/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (userId === undefined || userId === null)
-            throw new Error("The parameter 'userId' must be defined.");
-        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
-            method: "POST",
+            body: content_,
+            method: "PUT",
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processMembersPOST2(_response);
+            return this.processUpdateSociety(_response);
         });
     }
 
-    protected processMembersPOST2(response: Response): Promise<void> {
+    protected processUpdateSociety(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1005,11 +916,86 @@ export class Client {
     /**
      * @return OK
      */
-    membersDELETE2(id: string, userId: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/{id}/members/{userId}";
+    deleteSociety(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/delete-society/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteSociety(_response);
+        });
+    }
+
+    protected processDeleteSociety(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    addMember2(societyId: string, userId: string): Promise<void> {
+        let url_ = this.baseUrl + "/add-member/{societyId}/{userId}";
+        if (societyId === undefined || societyId === null)
+            throw new Error("The parameter 'societyId' must be defined.");
+        url_ = url_.replace("{societyId}", encodeURIComponent("" + societyId));
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddMember2(_response);
+        });
+    }
+
+    protected processAddMember2(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    removeMember2(societyId: string, userId: string): Promise<void> {
+        let url_ = this.baseUrl + "/remove-member/{societyId}/{userId}";
+        if (societyId === undefined || societyId === null)
+            throw new Error("The parameter 'societyId' must be defined.");
+        url_ = url_.replace("{societyId}", encodeURIComponent("" + societyId));
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
         url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -1022,11 +1008,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processMembersDELETE2(_response);
+            return this.processRemoveMember2(_response);
         });
     }
 
-    protected processMembersDELETE2(response: Response): Promise<void> {
+    protected processRemoveMember2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1045,8 +1031,8 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    tagsPOST2(id: string, body: Tag | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/{id}/tags";
+    addTag(id: string, body: Tag | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/add-tag/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -1063,11 +1049,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processTagsPOST2(_response);
+            return this.processAddTag(_response);
         });
     }
 
-    protected processTagsPOST2(response: Response): Promise<void> {
+    protected processAddTag(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1087,8 +1073,8 @@ export class Client {
      * @param value (optional) 
      * @return OK
      */
-    tagsDELETE2(idPath: string, idQuery: string | undefined, value: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/{id}/tags?";
+    removeTag(idPath: string, idQuery: string | undefined, value: string | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/remove-tag/{id}?";
         if (idPath === undefined || idPath === null)
             throw new Error("The parameter 'idPath' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + idPath));
@@ -1109,11 +1095,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processTagsDELETE2(_response);
+            return this.processRemoveTag(_response);
         });
     }
 
-    protected processTagsDELETE2(response: Response): Promise<void> {
+    protected processRemoveTag(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1131,8 +1117,8 @@ export class Client {
     /**
      * @return OK
      */
-    posts2(id: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/{id}/posts";
+    getPosts2(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/societies/get-posts/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -1145,11 +1131,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPosts2(_response);
+            return this.processGetPosts2(_response);
         });
     }
 
-    protected processPosts2(response: Response): Promise<void> {
+    protected processGetPosts2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
