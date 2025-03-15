@@ -22,7 +22,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    register(body: User | undefined): Promise<void> {
+    register(body: RegisterRequest | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/auth/register";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -60,7 +60,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    login(body: LoginModel | undefined): Promise<void> {
+    login(body: LoginRequest | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -80,115 +80,6 @@ export class Client {
     }
 
     protected processLogin(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    profileGET(): Promise<void> {
-        let url_ = this.baseUrl + "/api/auth/profile";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processProfileGET(_response);
-        });
-    }
-
-    protected processProfileGET(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    profilePUT(body: UpdateProfileModel | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/auth/profile";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processProfilePUT(_response);
-        });
-    }
-
-    protected processProfilePUT(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    changePassword(body: ChangePasswordModel | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/auth/change-password";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processChangePassword(_response);
-        });
-    }
-
-    protected processChangePassword(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -628,12 +519,15 @@ export class Client {
      * @param value (optional) 
      * @return OK
      */
-    byTag2(id: string | undefined, value: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies/by-tag?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+    tagsDELETE(idPath: string, idQuery: string | undefined, value: string | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/courses/{id}/tags?";
+        if (idPath === undefined || idPath === null)
+            throw new Error("The parameter 'idPath' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + idPath));
+        if (idQuery === null)
+            throw new Error("The parameter 'idQuery' cannot be null.");
+        else if (idQuery !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + idQuery) + "&";
         if (value === null)
             throw new Error("The parameter 'value' cannot be null.");
         else if (value !== undefined)
@@ -641,17 +535,17 @@ export class Client {
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "GET",
+            method: "DELETE",
             headers: {
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processByTag2(_response);
+            return this.processTagsDELETE(_response);
         });
     }
 
-    protected processByTag2(response: Response): Promise<void> {
+    protected processTagsDELETE(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -667,25 +561,194 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
      * @return OK
      */
-    societiesPOST(body: Society | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies";
+    posts(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/courses/{id}/posts";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
-            method: "POST",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate(_response);
+            return this.processPosts(_response);
+        });
+    }
+
+    protected processPosts(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getFyp(userId: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/for-you/GetFyp/{userId}";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetFyp(_response);
+        });
+    }
+
+    protected processGetFyp(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    societiesGET(): Promise<void> {
+        let url_ = this.baseUrl + "/api/for-you/societies";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSocietiesGET(_response);
+        });
+    }
+
+    protected processSocietiesGET(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    coursesGET3(): Promise<void> {
+        let url_ = this.baseUrl + "/api/for-you/courses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCoursesGET3(_response);
+        });
+    }
+
+    protected processCoursesGET3(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    societiesGET2(): Promise<void> {
+        let url_ = this.baseUrl + "/api/societies";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSocietiesGET2(_response);
+        });
+    }
+
+    protected processSocietiesGET2(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    societiesGET3(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/societies/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSocietiesGET3(_response);
         });
     }
 
@@ -848,6 +911,44 @@ export class Client {
     }
 
     protected processByTag2(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    create(body: Society | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/societies/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1030,7 +1131,7 @@ export class Client {
     /**
      * @return OK
      */
-    posts3(id: string): Promise<void> {
+    posts2(id: string): Promise<void> {
         let url_ = this.baseUrl + "/api/societies/{id}/posts";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1044,11 +1145,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPosts3(_response);
+            return this.processPosts2(_response);
         });
     }
 
-    protected processPosts3(response: Response): Promise<void> {
+    protected processPosts2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1135,46 +1236,6 @@ export class Client {
     }
 }
 
-export class ChangePasswordModel implements IChangePasswordModel {
-    currentPassword?: string | undefined;
-    newPassword?: string | undefined;
-
-    constructor(data?: IChangePasswordModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.currentPassword = _data["currentPassword"];
-            this.newPassword = _data["newPassword"];
-        }
-    }
-
-    static fromJS(data: any): ChangePasswordModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChangePasswordModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["currentPassword"] = this.currentPassword;
-        data["newPassword"] = this.newPassword;
-        return data;
-    }
-}
-
-export interface IChangePasswordModel {
-    currentPassword?: string | undefined;
-    newPassword?: string | undefined;
-}
-
 export class Course implements ICourse {
     id?: string;
     name?: string | undefined;
@@ -1251,11 +1312,11 @@ export interface ICourse {
     createdAt?: Date;
 }
 
-export class LoginModel implements ILoginModel {
+export class LoginRequest implements ILoginRequest {
     email?: string | undefined;
     password?: string | undefined;
 
-    constructor(data?: ILoginModel) {
+    constructor(data?: ILoginRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1271,9 +1332,9 @@ export class LoginModel implements ILoginModel {
         }
     }
 
-    static fromJS(data: any): LoginModel {
+    static fromJS(data: any): LoginRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new LoginModel();
+        let result = new LoginRequest();
         result.init(data);
         return result;
     }
@@ -1286,9 +1347,57 @@ export class LoginModel implements ILoginModel {
     }
 }
 
-export interface ILoginModel {
+export interface ILoginRequest {
     email?: string | undefined;
     password?: string | undefined;
+}
+
+export class RegisterRequest implements IRegisterRequest {
+    name?: string | undefined;
+    email?: string | undefined;
+    password?: string | undefined;
+    phoneNumber?: string | undefined;
+
+    constructor(data?: IRegisterRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.phoneNumber = _data["phoneNumber"];
+        }
+    }
+
+    static fromJS(data: any): RegisterRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["phoneNumber"] = this.phoneNumber;
+        return data;
+    }
+}
+
+export interface IRegisterRequest {
+    name?: string | undefined;
+    email?: string | undefined;
+    password?: string | undefined;
+    phoneNumber?: string | undefined;
 }
 
 export class Society implements ISociety {
@@ -1405,70 +1514,6 @@ export class Tag implements ITag {
 export interface ITag {
     id?: string;
     value?: string | undefined;
-}
-
-export class UpdateProfileModel implements IUpdateProfileModel {
-    name?: string | undefined;
-    bio?: string | undefined;
-    university?: string | undefined;
-    degree?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
-
-    constructor(data?: IUpdateProfileModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.bio = _data["bio"];
-            this.university = _data["university"];
-            this.degree = _data["degree"];
-            this.imagePath = _data["imagePath"];
-            if (Array.isArray(_data["tags"])) {
-                this.tags = [] as any;
-                for (let item of _data["tags"])
-                    this.tags!.push(Tag.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): UpdateProfileModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateProfileModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["bio"] = this.bio;
-        data["university"] = this.university;
-        data["degree"] = this.degree;
-        data["imagePath"] = this.imagePath;
-        if (Array.isArray(this.tags)) {
-            data["tags"] = [];
-            for (let item of this.tags)
-                data["tags"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IUpdateProfileModel {
-    name?: string | undefined;
-    bio?: string | undefined;
-    university?: string | undefined;
-    degree?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
 }
 
 export class User implements IUser {

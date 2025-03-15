@@ -35,6 +35,9 @@ namespace UniHack.Data
             //Fyp
             services.AddScoped<IForYouPageLogic, ForYouPageLogic>();
 
+            //Authentication
+            services.AddScoped<IAuthService, AuthService>();
+
             services.AddCors(options =>
 			{
 				options.AddPolicy("AllowVueApp", policy =>
