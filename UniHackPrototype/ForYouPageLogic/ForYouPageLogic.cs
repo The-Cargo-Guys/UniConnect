@@ -1,7 +1,7 @@
 ﻿using MyAspNetVueApp.Models;
 using UniHack.Services.Interfaces;
 using UniHack.Services.Services;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.ForYouPageNamespace
 {

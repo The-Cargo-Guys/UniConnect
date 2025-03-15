@@ -1,15 +1,13 @@
 ﻿using MyAspNetVueApp.Models;
 using System.ComponentModel.DataAnnotations;
-using UniHack.Enums;
 using UniHack.Models;
 
-namespace UniHackPrototype.Models
+namespace UniHack.Models
 {
     public class Community
     {
         [Key]
         public Guid Id { get; set; }
-        public CommunityType CommunityType { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string ImagePathBanner { get; set; } = string.Empty;

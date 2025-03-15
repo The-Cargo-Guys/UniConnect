@@ -1,5 +1,5 @@
 ﻿using MyAspNetVueApp.Models;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.ForYouPageNamespace
 {

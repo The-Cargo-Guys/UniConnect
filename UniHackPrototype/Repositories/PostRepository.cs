@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyAspNetVueApp.Data;
-using UniHackPrototype.Models;
+using UniHack.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UniHack.Models;
 
 namespace UniHack.Repositories
 {

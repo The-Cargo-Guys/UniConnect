@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UniHack.Models;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.Services.Interfaces
 {

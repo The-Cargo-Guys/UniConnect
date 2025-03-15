@@ -1,7 +1,7 @@
 ﻿using MyAspNetVueApp.Models;
 using UniHack.Repositories;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.Services.Services
 {

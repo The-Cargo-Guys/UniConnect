@@ -5,7 +5,7 @@ using UniHack.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.Controllers
 {
@@ -47,7 +47,7 @@ namespace UniHack.Controllers
             }
 
             Community? community;
-            if (request.CommunityType == Enums.CommunityType.Course)
+			if (request.CommunityType == Enums.CommunityType.Course)
             {
                 community = _courseService.GetCourseById(request.CommunityId);
             }

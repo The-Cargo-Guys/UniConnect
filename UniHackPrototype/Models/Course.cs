@@ -1,4 +1,4 @@
-﻿namespace UniHackPrototype.Models
+﻿namespace UniHack.Models
 {
     public class Course : Community
     {

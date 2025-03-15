@@ -1,7 +1,9 @@
-﻿namespace UniHackPrototype.Models
+﻿using UniHack.Models;
+
+namespace UniHack.Models
 {
     public class Society : Community
     {
-        public ICollection<Event> events { get; set; } = new List<Event>();
+        public ICollection<Event> Events { get; set; } = new List<Event>();
     }
 }

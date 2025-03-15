@@ -4,7 +4,7 @@ using MyAspNetVueApp.Models;
 using System.Security.Claims;
 using UniHack.ForYouPageNamespace;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.Controllers
 {

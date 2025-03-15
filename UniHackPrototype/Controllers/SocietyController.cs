@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UniHack.Models;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
 
 namespace UniHack.Controllers
 {
@@ -16,7 +15,7 @@ namespace UniHack.Controllers
         private readonly IPostService _postService;
 
         public SocietyController(
-            ISocietyService societyService, 
+            ISocietyService societyService,
             IUserService userService, 
             IPostService postService)
         {

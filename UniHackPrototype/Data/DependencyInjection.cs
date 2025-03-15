@@ -7,6 +7,7 @@ using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services;
 using UniHack.Services.Interfaces;
+using UniHack.Services.Notifications;
 using UniHack.Services.Services;
 
 namespace UniHack.Data
@@ -24,6 +25,7 @@ namespace UniHack.Data
 			services.AddScoped<IPostRepository, PostRepository>();
 			services.AddScoped<ISocietyRepository, SocietyRepository>();
 			services.AddScoped<IUserRepository, UserRepository>();
+			services.AddScoped<IEventRepository, EventRepository>();
 
 			//Services
 			services.AddScoped<ICommentService, CommentService>();
@@ -31,14 +33,17 @@ namespace UniHack.Data
 			services.AddScoped<IPostService, PostService>();
 			services.AddScoped<ISocietyService, SocietyService>();
 			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IEventService, EventService>();
 
-            //Fyp
-            services.AddScoped<IForYouPageLogic, ForYouPageLogic>();
+			//Fyp
+			services.AddScoped<IForYouPageLogic, ForYouPageLogic>();
 
-            //Authentication
-            services.AddScoped<IAuthService, AuthService>();
+			//Authentication
+			services.AddScoped<IAuthService, AuthService>();
 
-            services.AddCors(options =>
+			services.AddHostedService<EventNotificationScheduler>();
+			 
+			services.AddCors(options =>
 			{
 				options.AddPolicy("AllowVueApp", policy =>
 					policy.SetIsOriginAllowed(origin =>

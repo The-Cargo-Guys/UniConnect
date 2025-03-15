@@ -1,5 +1,5 @@
 ﻿using UniHack.Models;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.Repositories.Interfaces
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyAspNetVueApp.Data;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.Repositories
 {

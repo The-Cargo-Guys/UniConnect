@@ -1,10 +1,8 @@
 ﻿using MyAspNetVueApp.Models;
-using UniHack.Enums;
 using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
 
 namespace UniHack.Services.Services
 {
@@ -53,9 +51,8 @@ namespace UniHack.Services.Services
 				Description = description ?? string.Empty,
 				ImagePathBanner = imagePath ?? string.Empty,
 				Tags = tags?.ToList() ?? [],
-				Members = [],
-                CommunityType = CommunityType.Society
-            };
+				Members = []
+			};
 
 			return _societyRepository.AddAsync(society).Result;
 		}

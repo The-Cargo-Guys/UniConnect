@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using UniHack.Enums;
-using UniHack.Models;
 
-namespace UniHackPrototype.Models
+namespace UniHack.Models
 {
     public class Post
     {

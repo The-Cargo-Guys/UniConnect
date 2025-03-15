@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UniHack.Models;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.Controllers
 {

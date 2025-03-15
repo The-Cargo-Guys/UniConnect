@@ -1,6 +1,6 @@
 ﻿using MyAspNetVueApp.Data;
 using MyAspNetVueApp.Models;
-using UniHackPrototype.Models;
+using UniHack.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

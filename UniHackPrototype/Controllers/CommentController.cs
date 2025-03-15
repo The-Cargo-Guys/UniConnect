@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
+using UniHack.Models;
 
 namespace UniHack.Controllers
 {
@@ -36,7 +36,6 @@ namespace UniHack.Controllers
             return Ok(comments);
         }
 
-        [Authorize] //keep an eye on this - valin
         [HttpPost]
         public IActionResult CreateComment([FromBody] Comment comment)
         {
@@ -45,29 +44,13 @@ namespace UniHack.Controllers
                 return BadRequest("Comment content is required.");
             }
 
-            // Hoiw to get current user - Valin
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
-
-            if (userId == null)
-            {
-                return Unauthorized("User must be logged in to comment.");
-            }
-            var user = _userService.GetUserById(Guid.Parse(userId));
-
-            if (user == null)
-            {
-                return NotFound("User not found.");
-            }
-
             var post = _postService.GetPostById(comment.Id);
             if (post == null)
             {
                 return NotFound("Post not found.");
             }
 
-            var success = _commentService.CreateComment(comment.Content, user, comment.Id);
+            var success = _commentService.CreateComment(comment.Content, comment.Author, comment.Id);
             if (!success)
             {
                 return StatusCode(500, "Could not create comment.");

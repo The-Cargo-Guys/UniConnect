@@ -1,10 +1,10 @@
 ﻿using MyAspNetVueApp.Models;
-using UniHack.Enums;
 using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
+using UniHack.Models;
+using UniHack.Enums;
 
 namespace UniHack.Services.Services
 {
@@ -59,8 +59,8 @@ namespace UniHack.Services.Services
 				ImagePathBanner = imagePath ?? string.Empty,
 				Tags = tags?.ToList() ?? [],
 				Members = [],
-                CommunityType = CommunityType.Course
-            };
+                //CommunityType = CommunityType.Course TODO: FIX THIS ASAP IN MORNING IT WILL FUCK THE PROGRAM
+			};
 
 			return _courseRepository.AddAsync(course).Result;
 		}
