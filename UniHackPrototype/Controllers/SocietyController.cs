@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using UniHack.Models;
 using UniHack.Services.Interfaces;
 using UniHackPrototype.Models;
 
@@ -67,8 +68,7 @@ namespace UniHack.Controllers
             return Ok(societies);
         }
 
-        [HttpPost]
-        [Authorize]
+        [HttpPost("create")]
         public IActionResult CreateSociety([FromBody] Society model)
         {
             // Validate model

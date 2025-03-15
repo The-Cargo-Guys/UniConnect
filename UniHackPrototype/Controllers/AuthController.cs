@@ -6,8 +6,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Data;
-using UniHackPrototype.Models;
+using UniHack.Data;
+using UniHack.Models;
 
 namespace UniHack.Controllers
 {
@@ -69,12 +69,7 @@ namespace UniHack.Controllers
 				return Unauthorized("Invalid email or password");
 			}
 
-			var user = _userService.GetUserByEmail(model.Email);
-
-			if (user is null)
-			{
-				throw new NullReferenceException("user is null");
-			}
+			var user = _userService.GetUserByEmail(model.Email) ?? throw new NullReferenceException("user is null");
 			var token = GenerateJwtToken(user);
 
 			return Ok(new { token });

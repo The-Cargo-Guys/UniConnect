@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using UniHack.Data;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Enable OpenAPI Documentation
 builder.Services.AddOpenApiDocument(config =>
 {
     config.Title = "MyAspNetVueApp API";
@@ -27,6 +29,7 @@ builder.Services.AddOpenApiDocument(config =>
     config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
 });
 
+// Enable Dependency Injection for Database Seeding
 builder.Services.AddScoped<DbSeeder>();
 
 var app = builder.Build();
@@ -42,16 +45,35 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
 }
 
+// Enable CORS (Ensures Vue.js frontend can access images)
 app.UseCors("AllowVueApp");
 
+// Forcefully Create wwwroot if Missing
+var wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+if (!Directory.Exists(wwwRootPath))
+{
+    Directory.CreateDirectory(wwwRootPath);
+}
+
+// Enable Serving Static Files (Required for Images)
+app.UseStaticFiles();
+
+// Enforce HTTPS
 app.UseHttpsRedirection();
+
+// Enable Routing & Controllers
+app.UseRouting();
+app.UseAuthorization();
 app.MapControllers();
 
+// Database Initialization
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
     var dbContext = services.GetRequiredService<AppDbContext>();
+
+    // Ensure database is properly set up
     dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
 

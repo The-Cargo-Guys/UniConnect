@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MyAspNetVueApp.Models;
 using System.Security.Claims;
-using UniHack.ForYouPageLogic;
 using UniHack.Services.Interfaces;
 
 namespace UniHack.Controllers
