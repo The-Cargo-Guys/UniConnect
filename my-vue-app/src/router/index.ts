@@ -1,6 +1,6 @@
 // src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router';
-import { authState } from '@/stores/auth';
+import { authState } from '@/store/auth;
 import HomePage from '@/views/HomePage.vue';
 import AuthPage from '@/views/AuthPage.vue';
 
