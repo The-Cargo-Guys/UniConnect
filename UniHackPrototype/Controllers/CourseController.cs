@@ -203,7 +203,7 @@ namespace UniHack.Controllers
             return Ok("Member removed from course successfully");
         }
 
-        [HttpPost("/add-tag/{id}")]
+        [HttpPost("/add-course-tag/{id}")]
         public IActionResult AddCourseTag(Guid id, [FromBody] Tag model)
         {
             var course = _courseService.GetCourseById(id);
