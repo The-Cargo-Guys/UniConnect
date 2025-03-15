@@ -124,13 +124,8 @@ namespace UniHack.Services.Services
 				return false;
 			}
 
-			if (course.Tags.Contains(tag))
-			{
-				course.Tags.Remove(tag);
-				return _courseRepository.UpdateAsync(course).Result;
-			}
-
-			return true;
+			course.Tags.Remove(tag);
+			return _courseRepository.UpdateAsync(course).Result;
 		}
 	}
 }

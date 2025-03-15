@@ -138,13 +138,8 @@ namespace UniHack.Services
 				return false;
 			}
 
-			if (user.Tags.Contains(tag))
-			{
-				user.Tags.Remove(tag);
-				return _userRepository.UpdateAsync(user).Result;
-			}
-
-			return true;
+			user.Tags.Remove(tag);
+			return _userRepository.UpdateAsync(user).Result;
 		}
 
 		private string HashPassword(string password)
