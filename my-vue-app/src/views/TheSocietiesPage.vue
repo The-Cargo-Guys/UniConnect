@@ -1,20 +1,20 @@
 <template>
   <div id="societies-page" class="container">
     <h1>Societies</h1>
-    <RouterLink  :to="'/add-society'">
-      <button class="add-society">+ Add Society</button>
-    </RouterLink>
+    <button class="add-society" @click="goToAddSociety">+ Add Society</button>
     <div class="societies-list">
-      <div v-for="society in societies" :key="society.id" class="society-card">
-        <img
-          :src="society.banner"
-          alt="Society Banner"
-          class="society-banner"
-        />
+      <div
+        v-for="society in societies"
+        :key="society.id"
+        class="society-card"
+        @click="openSociety(society.id)"
+      >
+        <img :src="society.banner" alt="Society Banner" class="society-banner" />
         <div class="society-info">
           <h2>{{ society.name }}</h2>
           <p>{{ society.description }}</p>
-          <button @click="joinSociety(society.id)" class="join-btn">
+          <!-- The join button stops propagation so it doesn't trigger navigation -->
+          <button @click.stop="joinSociety(society.id)" class="join-btn">
             Join
           </button>
         </div>
@@ -35,8 +35,7 @@ export default defineComponent({
       {
         id: 1,
         name: "Tech Enthusiasts",
-        description:
-          "A society for tech lovers to discuss and share knowledge.",
+        description: "A society for tech lovers to discuss and share knowledge.",
         banner: "https://via.placeholder.com/600x200",
       },
       {
@@ -51,9 +50,20 @@ export default defineComponent({
       alert(`Joined society with ID: ${id}`);
     };
 
+    const goToAddSociety = () => {
+      router.push("/add-society");
+    };
+
+    // Navigate to Society Details page using the route name "SocietyDetails"
+    const openSociety = (id: number) => {
+      router.push({ name: "SocietiesDetails", params: { id } });
+    };
+
     return {
       societies,
       joinSociety,
+      goToAddSociety,
+      openSociety,
     };
   },
 });
@@ -94,6 +104,12 @@ h1 {
   border-radius: 10px;
   text-align: left;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.society-card:hover {
+  transform: scale(1.02);
 }
 
 .society-banner {
