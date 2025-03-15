@@ -60,16 +60,6 @@ namespace UniHack.Data
                 _context.Tags.Add(tag);
                 _context.SaveChanges();
 
-                //var post = new Post
-                //{
-                //    Title = "Welcome Post",
-                //    Content = "This is the first post in the system.",
-                //    AuthorId = user.Id,
-                //    Tags = new List<Tag> { tag },
-                //};
-                //_context.Posts.Add(post);
-                //_context.SaveChanges();
-
                 var comment = new Comment
                 {
                     Content = "Great first post!",
@@ -99,6 +89,19 @@ namespace UniHack.Data
                     Members = new List<User> { user }
                 };
                 _context.Societies.Add(society);
+                _context.SaveChanges();
+
+                var post = new Post
+                {
+                    Title = "Welcome Post",
+                    Content = "This is the first post in the system.",
+                    AuthorId = user.Id,
+                    Tags = new List<Tag> { tag },
+                    Comments = new List<Comment> { comment },
+                    Author = user,
+                    Community = course
+                };
+                _context.Posts.Add(post);
                 _context.SaveChanges();
             }
         }
