@@ -4,7 +4,7 @@ using UniHack.Repositories;
 using UniHack.Services.Interfaces;
 using UniHackPrototype.Models;
 
-namespace UniHack.Services.Services
+namespace UniHack.Services
 {
 	public class PostService : IPostService
 	{
