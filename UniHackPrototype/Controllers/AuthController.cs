@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UniHack.Services.Interfaces;
 using UniHackPrototype.Data;
+using UniHackPrototype.Models;
 
 namespace UniHack.Controllers
 {
@@ -198,7 +199,7 @@ namespace UniHack.Controllers
 		public string? University { get; set; }
 		public string? Degree { get; set; }
 		public string? ImagePath { get; set; }
-		public List<string>? Tags { get; set; }
+		public List<Tag>? Tags { get; set; }
 	}
 
 	public class ChangePasswordModel

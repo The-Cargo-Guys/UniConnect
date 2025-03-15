@@ -37,7 +37,7 @@ namespace UniHack.Repositories
 				.ToListAsync();
 		}
 
-		public async Task<List<Society>> GetByTagAsync(string tag)
+		public async Task<List<Society>> GetByTagAsync(Tag tag)
 		{
 			return await _context.Societies
 				.Include(s => s.Members)

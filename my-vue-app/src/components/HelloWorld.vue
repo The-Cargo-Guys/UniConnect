@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import { User } from "../interfaces/User";
+import { User } from "../apiClient";
 
 const users = ref<User[]>([]);
 const newUser = ref("");
