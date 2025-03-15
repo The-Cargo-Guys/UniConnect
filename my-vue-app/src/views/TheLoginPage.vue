@@ -59,7 +59,8 @@ export default {
                     <v-btn color="secondary" type="submit" @click="submitLogin" block>Login</v-btn>
                 </v-form>
 
-                <v-card-subtitle :style="{opacity: '100%'} " class="mt-5">If you don't have an account, you can <v-Btn color="secondary" href="/signup">sign-up</v-Btn> here.</v-card-subtitle>
+                <v-card-subtitle :style="{opacity: '100%'} " class="mt-5">Don't have an account? You can <a href="/signup">Sign-Up here.</a></v-card-subtitle>
+                <v-card-subtitle :style="{opacity: '100%'} " class="mt-5">Forgot your password? <a href="/signup">Reset here.</a></v-card-subtitle>
             </v-card>
     </v-container>
 </template> 

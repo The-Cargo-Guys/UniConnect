@@ -157,7 +157,8 @@ export default {
                                     <v-text-field label="Major" variant="underlined" v-model="major" required></v-text-field>
                                 </v-col>
                             </v-row>
-                            <v-btn label="next" text="next" color="secondary" @click="carousel = 1" class="ma-10"></v-btn>
+                            <v-btn label="next" text="next" color="secondary" @click="carousel = 1" class="mt-10 mb-5"></v-btn>
+                            <v-card-subtitle :style="{opacity: '100%'}">Already have an account?  <a href="/login">Login here.</a></v-card-subtitle>
                     </v-carousel-item>
                     <v-carousel-item>
                         <v-text-field label="Email" v-model="email" type="email" variant="underlined" required></v-text-field>
