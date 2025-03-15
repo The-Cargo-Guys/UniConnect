@@ -240,7 +240,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    coursesPOST(body: CreateCourseModel | undefined): Promise<void> {
+    coursesPOST(body: Course | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/courses";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -314,7 +314,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    coursesPUT(id: string, body: UpdateCourseModel | undefined): Promise<void> {
+    coursesPUT(id: string, body: Course | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/courses/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -586,7 +586,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    tagsPOST(id: string, body: TagModel | undefined): Promise<void> {
+    tagsPOST(id: string, body: Tag | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/courses/{id}/tags";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -838,44 +838,6 @@ export class Client {
     }
 
     /**
-     * @param body (optional) 
-     * @return OK
-     */
-    societiesPOST(body: CreateSocietyModel | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/societies";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSocietiesPOST(_response);
-        });
-    }
-
-    protected processSocietiesPOST(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
      * @return OK
      */
     societiesGET3(id: string): Promise<void> {
@@ -915,7 +877,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    societiesPUT(id: string, body: UpdateSocietyModel | undefined): Promise<void> {
+    societiesPUT(id: string, body: Society | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/societies/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1070,6 +1032,44 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    create(body: Society | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/societies/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
     membersPOST2(id: string, userId: string): Promise<void> {
@@ -1151,7 +1151,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    tagsPOST2(id: string, body: TagModel | undefined): Promise<void> {
+    tagsPOST2(id: string, body: Tag | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/societies/{id}/tags";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1382,13 +1382,16 @@ export interface IChangePasswordModel {
     newPassword?: string | undefined;
 }
 
-export class CreateCourseModel implements ICreateCourseModel {
+export class Course implements ICourse {
+    id?: string;
     name?: string | undefined;
     description?: string | undefined;
-    imagePath?: string | undefined;
+    imagePathBanner?: string | undefined;
     tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+    createdAt?: Date;
 
-    constructor(data?: ICreateCourseModel) {
+    constructor(data?: ICourse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1399,99 +1402,60 @@ export class CreateCourseModel implements ICreateCourseModel {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.name = _data["name"];
             this.description = _data["description"];
-            this.imagePath = _data["imagePath"];
+            this.imagePathBanner = _data["imagePathBanner"];
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
                     this.tags!.push(Tag.fromJS(item));
             }
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(User.fromJS(item));
+            }
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): CreateCourseModel {
+    static fromJS(data: any): Course {
         data = typeof data === 'object' ? data : {};
-        let result = new CreateCourseModel();
+        let result = new Course();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["name"] = this.name;
         data["description"] = this.description;
-        data["imagePath"] = this.imagePath;
+        data["imagePathBanner"] = this.imagePathBanner;
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
                 data["tags"].push(item.toJSON());
         }
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
         return data;
     }
 }
 
-export interface ICreateCourseModel {
+export interface ICourse {
+    id?: string;
     name?: string | undefined;
     description?: string | undefined;
-    imagePath?: string | undefined;
+    imagePathBanner?: string | undefined;
     tags?: Tag[] | undefined;
-}
-
-export class CreateSocietyModel implements ICreateSocietyModel {
-    name?: string | undefined;
-    description?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
-
-    constructor(data?: ICreateSocietyModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.imagePath = _data["imagePath"];
-            if (Array.isArray(_data["tags"])) {
-                this.tags = [] as any;
-                for (let item of _data["tags"])
-                    this.tags!.push(Tag.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): CreateSocietyModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateSocietyModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["imagePath"] = this.imagePath;
-        if (Array.isArray(this.tags)) {
-            data["tags"] = [];
-            for (let item of this.tags)
-                data["tags"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ICreateSocietyModel {
-    name?: string | undefined;
-    description?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+    createdAt?: Date;
 }
 
 export class LoginModel implements ILoginModel {
@@ -1534,6 +1498,82 @@ export interface ILoginModel {
     password?: string | undefined;
 }
 
+export class Society implements ISociety {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+    createdAt?: Date;
+
+    constructor(data?: ISociety) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.imagePathBanner = _data["imagePathBanner"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(Tag.fromJS(item));
+            }
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(User.fromJS(item));
+            }
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Society {
+        data = typeof data === 'object' ? data : {};
+        let result = new Society();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["imagePathBanner"] = this.imagePathBanner;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item.toJSON());
+        }
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISociety {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+    createdAt?: Date;
+}
+
 export class Tag implements ITag {
     id?: string;
     value?: string | undefined;
@@ -1572,101 +1612,6 @@ export class Tag implements ITag {
 export interface ITag {
     id?: string;
     value?: string | undefined;
-}
-
-export class TagModel implements ITagModel {
-    tag!: Tag;
-
-    constructor(data?: ITagModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.tag = new Tag();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.tag = _data["tag"] ? Tag.fromJS(_data["tag"]) : new Tag();
-        }
-    }
-
-    static fromJS(data: any): TagModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new TagModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tag"] = this.tag ? this.tag.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ITagModel {
-    tag: Tag;
-}
-
-export class UpdateCourseModel implements IUpdateCourseModel {
-    name?: string | undefined;
-    description?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
-
-    constructor(data?: IUpdateCourseModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.imagePath = _data["imagePath"];
-            if (Array.isArray(_data["tags"])) {
-                this.tags = [] as any;
-                for (let item of _data["tags"])
-                    this.tags!.push(Tag.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): UpdateCourseModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateCourseModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["imagePath"] = this.imagePath;
-        if (Array.isArray(this.tags)) {
-            data["tags"] = [];
-            for (let item of this.tags)
-                data["tags"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IUpdateCourseModel {
-    name?: string | undefined;
-    description?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
 }
 
 export class UpdateProfileModel implements IUpdateProfileModel {
@@ -1729,62 +1674,6 @@ export interface IUpdateProfileModel {
     bio?: string | undefined;
     university?: string | undefined;
     degree?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
-}
-
-export class UpdateSocietyModel implements IUpdateSocietyModel {
-    name?: string | undefined;
-    description?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
-
-    constructor(data?: IUpdateSocietyModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.imagePath = _data["imagePath"];
-            if (Array.isArray(_data["tags"])) {
-                this.tags = [] as any;
-                for (let item of _data["tags"])
-                    this.tags!.push(Tag.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): UpdateSocietyModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateSocietyModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["imagePath"] = this.imagePath;
-        if (Array.isArray(this.tags)) {
-            data["tags"] = [];
-            for (let item of this.tags)
-                data["tags"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IUpdateSocietyModel {
-    name?: string | undefined;
-    description?: string | undefined;
     imagePath?: string | undefined;
     tags?: Tag[] | undefined;
 }

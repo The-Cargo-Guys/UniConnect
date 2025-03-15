@@ -3,13 +3,13 @@
         <h1>Create a New Society</h1>
         <form @submit.prevent="submitSociety">
             <label for="name">Society Name:</label>
-            <input type="text" id="name" v-model="society.name" required />
+            <input type="text" id="name" v-model="name" required />
 
             <label for="description">Description:</label>
-            <textarea id="description" v-model="society.description" required></textarea>
+            <textarea id="description" v-model="description" required></textarea>
 
             <label for="banner">Banner Image URL:</label>
-            <input type="text" id="banner" v-model="society.banner" required />
+            <input type="text" id="banner" v-model="imagePathBanner" required />
 
             <button type="submit">Create Society</button>
         </form>
@@ -20,21 +20,27 @@
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import { CreateSocietyModel } from "../apiClient";
+import { Society } from "../apiClient";
 
 export default defineComponent({
     name: "TheAddSocietyPage",
     setup() {
         const router = useRouter();
-        const society = ref({
-            name: "",
-            description: "",
-            banner: ""
-        });
+        const name = ref("");
+        const description = ref("");
+        const imagePathBanner = ref("");
+
+
 
         const submitSociety = async () => {
             try {
-                const response = await axios.post("/api/societies", society.value);
+                const society = new Society({
+                name: name.value,
+                description: description.value,
+                imagePathBanner: imagePathBanner.value,
+                });
+
+                const response = await axios.post("api/societies/create", society);
                 alert(`Society Created: ${response.data.name}`);
                 router.push("/societies");
             } catch (error) {
@@ -44,8 +50,8 @@ export default defineComponent({
         };
 
         return {
-            society,
-            submitSociety
+            submitSociety,
+            name, description, imagePathBanner
         };
     }
 });
