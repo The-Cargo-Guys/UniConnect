@@ -1,5 +1,6 @@
 ﻿using MyAspNetVueApp.Models;
 using System.ComponentModel.DataAnnotations;
+using UniHack.Models;
 
 namespace UniHackPrototype.Models
 {

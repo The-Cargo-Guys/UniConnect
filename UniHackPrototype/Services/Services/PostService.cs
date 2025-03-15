@@ -1,4 +1,5 @@
 ﻿using MyAspNetVueApp.Models;
+using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Services.Interfaces;
 using UniHackPrototype.Models;
@@ -105,13 +106,8 @@ namespace UniHack.Services.Services
 				return false;
 			}
 
-			if (post.Tags.Contains(tag))
-			{
-				post.Tags.Remove(tag);
-				return _postRepository.UpdateAsync(post).Result;
-			}
-
-			return true;
+			post.Tags.Remove(tag);
+			return _postRepository.UpdateAsync(post).Result;
 		}
 	}
 }

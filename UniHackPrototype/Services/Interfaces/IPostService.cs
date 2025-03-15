@@ -1,6 +1,5 @@
 ﻿using MyAspNetVueApp.Models;
-using System;
-using System.Collections.Generic;
+using UniHack.Models;
 using UniHackPrototype.Models;
 
 namespace UniHack.Services.Interfaces
