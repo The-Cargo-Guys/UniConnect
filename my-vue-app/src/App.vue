@@ -1,8 +1,10 @@
 <script setup lang="ts">
+  import { TheNavBar } from './components';
 </script>
 
 <template>
   <v-app class="fade-in">
+    <the-nav-bar></the-nav-bar>
     <v-main>
       <RouterView></RouterView>
     </v-main>
