@@ -94,7 +94,6 @@ namespace UniHack.Controllers
         }
 
         [HttpPut("/update-society/{id}")]
-        [Authorize]
         public IActionResult UpdateSociety(Guid id, [FromBody] Society model)
         {
             // Check if society exists
@@ -144,7 +143,6 @@ namespace UniHack.Controllers
         }
 
         [HttpPost("/add-member/{societyId}/{userId}")]
-        [Authorize]
         public IActionResult AddMember(Guid societyId, Guid userId)
         {
             // Check if society exists
@@ -215,7 +213,6 @@ namespace UniHack.Controllers
         }
 
         [HttpPost("/add-tag/{id}")]
-        [Authorize]
         public IActionResult AddSocietyTag(Guid id, [FromBody] Tag model)
         {
             // Check if society exists
@@ -243,7 +240,6 @@ namespace UniHack.Controllers
         }
 
         [HttpDelete("/remove-tag/{id}")]
-        [Authorize]
         public IActionResult RemoveSocietyTag(Guid id, [FromQuery] Tag tag)
         {
             // Check if society exists
