@@ -4,6 +4,7 @@ import TheSocietiesPage from './TheSocietiesPage.vue';
 import AddSocietyPage from './AddSocietyPage.vue';
 import TheRegistryPage from './TheRegistryPage.vue';
 import TheCallbackPage from "./TheCallbackPage.vue";
+import SocietyDetailsPage from './SocietyDetailsPage.vue';
 import { createRouter as createVueRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -12,6 +13,7 @@ const routes = [
     { path: "/home", component: TheHomePage },
     { path: "/societies", component: TheSocietiesPage },
     { path: "/add-society", component: AddSocietyPage },
+    { path: "/societies/:id", name: "SocietyDetails", component: SocietyDetailsPage },
 ];
 
 const router = createVueRouter({
@@ -19,5 +21,5 @@ const router = createVueRouter({
     routes,
 });
 
-export { TheCommunitiesPage, TheHomePage, TheSocietiesPage, TheRegistryPage, AddSocietyPage, TheCallbackPage };
+export { TheCommunitiesPage, TheHomePage, TheSocietiesPage, TheRegistryPage, AddSocietyPage, TheCallbackPage, SocietyDetailsPage };
 export default router;
