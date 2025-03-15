@@ -12,7 +12,6 @@ builder.Services.AddApplicationServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register NSwag to expose OpenAPI specification for TypeScript DTO generation
 builder.Services.AddOpenApiDocument(config =>
 {
     config.Title = "MyAspNetVueApp API";
@@ -37,7 +36,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyAspNetVueApp API v1");
     });
 
-    // Enables OpenAPI (Swagger JSON) for frontend DTO generation
     app.UseOpenApi();
 }
 
