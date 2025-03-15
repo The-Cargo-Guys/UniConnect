@@ -1,10 +1,11 @@
 ﻿using MyAspNetVueApp.Models;
+using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services.Interfaces;
 using UniHackPrototype.Models;
 
-namespace UniHack.Services
+namespace UniHack.Services.Services
 {
 	public class SocietyService : ISocietyService
 	{
@@ -119,13 +120,8 @@ namespace UniHack.Services
 				return false;
 			}
 
-			if (society.Tags.Contains(tag))
-			{
-				society.Tags.Remove(tag);
-				return _societyRepository.UpdateAsync(society).Result;
-			}
-
-			return true;
+			society.Tags.Remove(tag);
+			return _societyRepository.UpdateAsync(society).Result;
 		}
 	}
 }

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
 
-namespace UniHack.Services
+namespace UniHack.Services.Services
 {
 	public class UserService : IUserService
 	{

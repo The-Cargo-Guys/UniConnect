@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Mail;
-using UniHack.Data;
 
-namespace UniHackPrototype.Data
-{
+namespace UniHack.Data;
+
     public class EmailVerification
     {
         public bool VerifyAndSendEmail(string emailAddress)
@@ -21,4 +20,3 @@ namespace UniHackPrototype.Data
             return email.EndsWith("@uts.edu.au", StringComparison.OrdinalIgnoreCase);
         }
     }
-}

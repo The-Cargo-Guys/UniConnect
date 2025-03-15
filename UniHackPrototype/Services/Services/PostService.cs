@@ -1,4 +1,5 @@
 ﻿using MyAspNetVueApp.Models;
+using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Services.Interfaces;
 using UniHackPrototype.Models;
@@ -105,13 +106,19 @@ namespace UniHack.Services.Services
 				return false;
 			}
 
-			if (post.Tags.Contains(tag))
-			{
-				post.Tags.Remove(tag);
-				return _postRepository.UpdateAsync(post).Result;
-			}
-
-			return true;
+			post.Tags.Remove(tag);
+			return _postRepository.UpdateAsync(post).Result;
 		}
-	}
+
+        public List<Post> GetPostsByTags(List<Tag> Tags)
+        {
+            return _postRepository
+            .GetAllAsync()
+            .Result
+            .Where(p => p.Tags.Any(t => p.Tags.Any(tag => tag.Value == t.Value)))
+            .OrderByDescending(p => p.CreatedAt)
+            .ThenBy(p => p.Upvotes)
+            .ToList();
+        }
+    }
 }
