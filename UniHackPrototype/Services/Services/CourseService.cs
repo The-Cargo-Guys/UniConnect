@@ -61,8 +61,7 @@ namespace UniHack.Services.Services
 			return _courseRepository.AddAsync(course).Result;
 		}
 
-		// ICommunityBase implementation
-		public Community? GetCommunityById(Guid id)
+		public bool UpdateCourse(Guid id, string? name, string? description, string? imagePath, IEnumerable<string>? tags)
 		{
 			return GetCourseById(id);
 		}
@@ -83,12 +82,12 @@ namespace UniHack.Services.Services
 			return _courseRepository.UpdateAsync(course).Result;
 		}
 
-		public bool DeleteCommunity(Guid id)
+		public bool DeleteCourse(Guid id)
 		{
 			return _courseRepository.DeleteAsync(id).Result;
 		}
 
-		public bool AddMemberToCommunity(Guid communityId, Guid userId)
+		public bool AddMemberToCourse(Guid communityId, Guid userId)
 		{
 			var user = _userRepository.GetByIdAsync(userId).Result;
 			if (user == null)
@@ -99,7 +98,7 @@ namespace UniHack.Services.Services
 			return _courseRepository.AddCourseAsync(communityId, userId).Result;
 		}
 
-		public bool RemoveMemberFromCommunity(Guid communityId, Guid userId)
+		public bool RemoveMemberFromCourse(Guid communityId, Guid userId)
 		{
 			return _courseRepository.RemoveCourseAsync(communityId, userId).Result;
 		}

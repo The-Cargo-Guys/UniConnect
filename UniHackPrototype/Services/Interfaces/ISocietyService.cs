@@ -9,6 +9,17 @@ namespace UniHack.Services.Interfaces
 		List<Society> GetAllSocieties();
 		Society? GetSocietyById(Guid id);
 		List<Society> GetSocietiesByName(string name);
+		List<Society> GetSocietiesByTag(string tag);
+
+		bool CreateSociety(string name, string description, string imagePath, IEnumerable<string> tags);
+		bool UpdateSociety(Guid id, string? name, string? description, string? imagePath, IEnumerable<string>? tags);
+		bool DeleteSociety(Guid id);
+
+		bool AddMemberToSociety(Guid societyId, Guid userId);
+		bool RemoveMemberFromSociety(Guid societyId, Guid userId);
+
+		bool AddTag(Guid id, string tag);
+		bool RemoveTag(Guid id, string tag);
 		List<Society> GetSocietiesByTag(Tag tag);
 		bool CreateSociety(string name, string description, string imagePath, IEnumerable<Tag> tags);
 	}

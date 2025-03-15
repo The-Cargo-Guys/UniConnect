@@ -89,7 +89,7 @@ namespace UniHack.Services
 			if (university != null) user.University = university;
 			if (degree != null) user.Degree = degree;
 			if (imagePath != null) user.ImagePath = imagePath;
-			if (tags != null) user.Tags = tags.ToList();
+			if (tags != null) user.Tags = [.. tags];
 
 			return _userRepository.UpdateAsync(user).Result;
 		}
