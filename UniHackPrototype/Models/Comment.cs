@@ -9,5 +9,6 @@ namespace UniHackPrototype.Models
         public Guid Id { get; set; }
         public string Content { get; set; } = string.Empty;
         public required User Author { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

@@ -12,5 +12,6 @@ namespace UniHackPrototype.Models
         public string ImagePathBanner { get; set; } = string.Empty;
         public ICollection<string> Tags { get; set; } = new List<string>();
         public ICollection<User> Members { get; set; } = new List<User>();
+        public DateTime CreatedAt { get; set; }
     }
 }

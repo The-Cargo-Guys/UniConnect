@@ -13,5 +13,6 @@ namespace UniHackPrototype.Models
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public required User Author { get; set; }
         public required Community Community { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

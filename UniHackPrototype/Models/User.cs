@@ -16,5 +16,6 @@ namespace MyAspNetVueApp.Models
         public string Degree { get; set; } = string.Empty;
         public ICollection<string> Tags { get; set; } = new List<string>();
         public bool IsAdmin { get; set; } = false;
+        public DateTime CreatedAt { get; set; }
     }
 }
