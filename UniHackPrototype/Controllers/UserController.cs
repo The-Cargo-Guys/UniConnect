@@ -2,7 +2,7 @@
 using MyAspNetVueApp.Data;
 using MyAspNetVueApp.Models;
 
-namespace MyAspNetVueApp.Controllers
+namespace UniHack.Controllers
 {
     [ApiController]
     [Route("api/users")]  
