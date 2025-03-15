@@ -801,6 +801,44 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    posts(body: Post | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/posts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPosts(_response);
+        });
+    }
+
+    protected processPosts(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
     societies2(): Promise<void> {
@@ -1371,6 +1409,134 @@ export interface IChangePasswordModel {
     newPassword?: string | undefined;
 }
 
+export class Comment implements IComment {
+    id?: string;
+    content?: string | undefined;
+    userId?: string;
+    author?: User;
+    createdAt?: Date;
+
+    constructor(data?: IComment) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.content = _data["content"];
+            this.userId = _data["userId"];
+            this.author = _data["author"] ? User.fromJS(_data["author"]) : <any>undefined;
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Comment {
+        data = typeof data === 'object' ? data : {};
+        let result = new Comment();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["content"] = this.content;
+        data["userId"] = this.userId;
+        data["author"] = this.author ? this.author.toJSON() : <any>undefined;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IComment {
+    id?: string;
+    content?: string | undefined;
+    userId?: string;
+    author?: User;
+    createdAt?: Date;
+}
+
+export class Community implements ICommunity {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+    createdAt?: Date;
+
+    constructor(data?: ICommunity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.imagePathBanner = _data["imagePathBanner"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(Tag.fromJS(item));
+            }
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(User.fromJS(item));
+            }
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Community {
+        data = typeof data === 'object' ? data : {};
+        let result = new Community();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["imagePathBanner"] = this.imagePathBanner;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item.toJSON());
+        }
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICommunity {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+    createdAt?: Date;
+}
+
 export class Course implements ICourse {
     id?: string;
     name?: string | undefined;
@@ -1485,6 +1651,98 @@ export class LoginModel implements ILoginModel {
 export interface ILoginModel {
     email?: string | undefined;
     password?: string | undefined;
+}
+
+export class Post implements IPost {
+    id?: string;
+    title?: string | undefined;
+    content?: string | undefined;
+    tags?: Tag[] | undefined;
+    comments?: Comment[] | undefined;
+    authorId?: string;
+    author?: User;
+    communityId?: string;
+    community?: Community;
+    createdAt?: Date;
+    upvotes?: number;
+
+    constructor(data?: IPost) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.content = _data["content"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(Tag.fromJS(item));
+            }
+            if (Array.isArray(_data["comments"])) {
+                this.comments = [] as any;
+                for (let item of _data["comments"])
+                    this.comments!.push(Comment.fromJS(item));
+            }
+            this.authorId = _data["authorId"];
+            this.author = _data["author"] ? User.fromJS(_data["author"]) : <any>undefined;
+            this.communityId = _data["communityId"];
+            this.community = _data["community"] ? Community.fromJS(_data["community"]) : <any>undefined;
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.upvotes = _data["upvotes"];
+        }
+    }
+
+    static fromJS(data: any): Post {
+        data = typeof data === 'object' ? data : {};
+        let result = new Post();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["content"] = this.content;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item.toJSON());
+        }
+        if (Array.isArray(this.comments)) {
+            data["comments"] = [];
+            for (let item of this.comments)
+                data["comments"].push(item.toJSON());
+        }
+        data["authorId"] = this.authorId;
+        data["author"] = this.author ? this.author.toJSON() : <any>undefined;
+        data["communityId"] = this.communityId;
+        data["community"] = this.community ? this.community.toJSON() : <any>undefined;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["upvotes"] = this.upvotes;
+        return data;
+    }
+}
+
+export interface IPost {
+    id?: string;
+    title?: string | undefined;
+    content?: string | undefined;
+    tags?: Tag[] | undefined;
+    comments?: Comment[] | undefined;
+    authorId?: string;
+    author?: User;
+    communityId?: string;
+    community?: Community;
+    createdAt?: Date;
+    upvotes?: number;
 }
 
 export class Society implements ISociety {
