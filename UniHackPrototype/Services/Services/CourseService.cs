@@ -32,7 +32,7 @@ namespace UniHack.Services.Services
 			return _courseRepository.GetByNameAsync(name).Result;
 		}
 
-		public List<Course> GetCoursesByTag(string tag)
+		public List<Course> GetCoursesByTag(Tag tag)
 		{
 			return _courseRepository.GetByTagAsync(tag).Result;
 		}
@@ -42,7 +42,7 @@ namespace UniHack.Services.Services
 			return _courseRepository.GetByCourseIdAsync(memberId).Result;
 		}
 
-		public bool CreateCourse(string name, string description, string imagePath, IEnumerable<string> tags)
+		public bool CreateCourse(string name, string description, string imagePath, IEnumerable<Tag> tags)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 			{
@@ -62,13 +62,7 @@ namespace UniHack.Services.Services
 			return _courseRepository.AddAsync(course).Result;
 		}
 
-		// ICommunityBase implementation
-		public Community? GetCommunityById(Guid id)
-		{
-			return GetCourseById(id);
-		}
-
-		public bool UpdateCommunity(Guid id, string? name, string? description, string? imagePath, IEnumerable<string>? tags)
+		public bool UpdateCourse(Guid id, string? name, string? description, string? imagePath, IEnumerable<Tag>? tags)
 		{
 			var course = _courseRepository.GetByIdAsync(id).Result;
 			if (course == null)
@@ -84,12 +78,12 @@ namespace UniHack.Services.Services
 			return _courseRepository.UpdateAsync(course).Result;
 		}
 
-		public bool DeleteCommunity(Guid id)
+		public bool DeleteCourse(Guid id)
 		{
 			return _courseRepository.DeleteAsync(id).Result;
 		}
 
-		public bool AddMemberToCommunity(Guid communityId, Guid userId)
+		public bool AddMemberToCourse(Guid communityId, Guid userId)
 		{
 			var user = _userRepository.GetByIdAsync(userId).Result;
 			if (user == null)
@@ -100,15 +94,15 @@ namespace UniHack.Services.Services
 			return _courseRepository.AddCourseAsync(communityId, userId).Result;
 		}
 
-		public bool RemoveMemberFromCommunity(Guid communityId, Guid userId)
+		public bool RemoveMemberFromCourse(Guid communityId, Guid userId)
 		{
 			return _courseRepository.RemoveCourseAsync(communityId, userId).Result;
 		}
 
-		public bool AddCommunityTag(Guid id, string tag)
+		public bool AddCourseTag(Guid id, Tag tag)
 		{
 			var course = _courseRepository.GetByIdAsync(id).Result;
-			if (course == null || string.IsNullOrWhiteSpace(tag))
+			if (course == null || string.IsNullOrWhiteSpace(tag.Value))
 			{
 				return false;
 			}
@@ -122,10 +116,10 @@ namespace UniHack.Services.Services
 			return true;
 		}
 
-		public bool RemoveCommunityTag(Guid id, string tag)
+		public bool RemoveCommunityTag(Guid id, Tag tag)
 		{
 			var course = _courseRepository.GetByIdAsync(id).Result;
-			if (course == null || string.IsNullOrWhiteSpace(tag))
+			if (course == null || string.IsNullOrWhiteSpace(tag.Value))
 			{
 				return false;
 			}

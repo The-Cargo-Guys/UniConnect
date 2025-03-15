@@ -12,7 +12,7 @@ namespace UniHack.Data
         {
             try
             {
-                MailMessage mail = new MailMessage();
+				MailMessage mail = new MailMessage();
                 mail.From = new MailAddress(SenderEmail);
                 mail.To.Add(recipientEmail);
                 mail.Subject = Subject;

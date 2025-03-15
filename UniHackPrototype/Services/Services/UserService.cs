@@ -7,6 +7,7 @@ using System.Text;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services.Interfaces;
+using UniHackPrototype.Models;
 
 namespace UniHack.Services
 {
@@ -76,7 +77,7 @@ namespace UniHack.Services
 		}
 
 		public bool UpdateUserProfile(Guid id, string? name, string? bio, string? university,
-			string? degree, string? imagePath, IEnumerable<string>? tags)
+			string? degree, string? imagePath, IEnumerable<Tag>? tags)
 		{
 			var user = _userRepository.GetByIdAsync(id).Result;
 			if (user == null)
@@ -89,7 +90,7 @@ namespace UniHack.Services
 			if (university != null) user.University = university;
 			if (degree != null) user.Degree = degree;
 			if (imagePath != null) user.ImagePath = imagePath;
-			if (tags != null) user.Tags = tags.ToList();
+			if (tags != null) user.Tags = [.. tags];
 
 			return _userRepository.UpdateAsync(user).Result;
 		}
@@ -112,10 +113,10 @@ namespace UniHack.Services
 			return _userRepository.UpdateAsync(user).Result;
 		}
 
-		public bool AddUserTag(Guid id, string tag)
+		public bool AddUserTag(Guid id, Tag tag)
 		{
 			var user = _userRepository.GetByIdAsync(id).Result;
-			if (user == null || string.IsNullOrWhiteSpace(tag))
+			if (user == null || string.IsNullOrWhiteSpace(tag.Value))
 			{
 				return false;
 			}
@@ -129,10 +130,10 @@ namespace UniHack.Services
 			return true;
 		}
 
-		public bool RemoveUserTag(Guid id, string tag)
+		public bool RemoveUserTag(Guid id, Tag tag)
 		{
 			var user = _userRepository.GetByIdAsync(id).Result;
-			if (user == null || string.IsNullOrWhiteSpace(tag))
+			if (user == null || string.IsNullOrWhiteSpace(tag.Value))
 			{
 				return false;
 			}

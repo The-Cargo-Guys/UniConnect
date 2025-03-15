@@ -34,12 +34,12 @@ namespace UniHack.Services
 			return _postRepository.GetByAuthorIdAsync(authorId).Result;
 		}
 
-		public List<Post> GetPostsByTag(string tag)
+		public List<Post> GetPostsByTag(Tag tag)
 		{
 			return _postRepository.GetByTagAsync(tag).Result;
 		}
 
-		public bool CreatePost(string title, string content, IEnumerable<string> tags, User author, Community community)
+		public bool CreatePost(string title, string content, IEnumerable<Tag> tags, User author, Community community)
 		{
 			if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(content) || author == null || community == null)
 			{
@@ -60,7 +60,7 @@ namespace UniHack.Services
 			return _postRepository.AddAsync(post).Result;
 		}
 
-		public bool UpdatePost(Guid id, string? title, string? content, IEnumerable<string>? tags)
+		public bool UpdatePost(Guid id, string? title, string? content, IEnumerable<Tag>? tags)
 		{
 			var post = _postRepository.GetByIdAsync(id).Result;
 			if (post == null)
@@ -80,10 +80,10 @@ namespace UniHack.Services
 			return _postRepository.DeleteAsync(id).Result;
 		}
 
-		public bool AddPostTag(Guid id, string tag)
+		public bool AddPostTag(Guid id, Tag tag)
 		{
 			var post = _postRepository.GetByIdAsync(id).Result;
-			if (post == null || string.IsNullOrWhiteSpace(tag))
+			if (post == null || string.IsNullOrWhiteSpace(tag.Value))
 			{
 				return false;
 			}
@@ -97,10 +97,10 @@ namespace UniHack.Services
 			return true;
 		}
 
-		public bool RemovePostTag(Guid id, string tag)
+		public bool RemovePostTag(Guid id, Tag tag)
 		{
 			var post = _postRepository.GetByIdAsync(id).Result;
-			if (post == null || string.IsNullOrWhiteSpace(tag))
+			if (post == null || string.IsNullOrWhiteSpace(tag.Value))
 			{
 				return false;
 			}
