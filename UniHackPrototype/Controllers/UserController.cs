@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyAspNetVueApp.Data;
-using MyAspNetVueApp.Models;
+using UniHackPrototype.Models;
 
 namespace MyAspNetVueApp.Controllers
 {

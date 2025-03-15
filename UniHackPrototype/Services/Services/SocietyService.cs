@@ -1,5 +1,4 @@
-﻿using MyAspNetVueApp.Models;
-using UniHack.Repositories;
+﻿using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services.Interfaces;
 using UniHackPrototype.Models;
@@ -32,12 +31,12 @@ namespace UniHack.Services
 			return _societyRepository.GetByNameAsync(name).Result;
 		}
 
-		public List<Society> GetSocietiesByTag(string tag)
+		public List<Society> GetSocietiesByTag(Tag tag)
 		{
 			return _societyRepository.GetByTagAsync(tag).Result;
 		}
 
-		public bool CreateSociety(string name, string description, string imagePath, IEnumerable<string> tags)
+		public bool CreateSociety(string name, string description, string imagePath, IEnumerable<Tag> tags)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 			{
@@ -50,14 +49,14 @@ namespace UniHack.Services
 				Name = name,
 				Description = description ?? string.Empty,
 				ImagePathBanner = imagePath ?? string.Empty,
-				Tags = tags?.ToList() ?? new List<string>(),
+				Tags = tags?.ToList() ?? new List<Tag>(),
 				Members = []
 			};
 
 			return _societyRepository.AddAsync(society).Result;
 		}
 
-		public bool UpdateSociety(Guid id, string? name, string? description, string? imagePath, IEnumerable<string>? tags)
+		public bool UpdateSociety(Guid id, string? name, string? description, string? imagePath, IEnumerable<Tag>? tags)
 		{
 			var society = _societyRepository.GetByIdAsync(id).Result;
 			if (society == null)
@@ -94,10 +93,10 @@ namespace UniHack.Services
 			return _societyRepository.RemoveMemberAsync(societyId, userId).Result;
 		}
 
-		public bool AddTag(Guid id, string tag)
+		public bool AddTag(Guid id, Tag tag)
 		{
 			var society = _societyRepository.GetByIdAsync(id).Result;
-			if (society == null || string.IsNullOrWhiteSpace(tag))
+			if (society == null || string.IsNullOrWhiteSpace(tag.Value))
 			{
 				return false;
 			}
@@ -111,10 +110,10 @@ namespace UniHack.Services
 			return true;
 		}
 
-		public bool RemoveTag(Guid id, string tag)
+		public bool RemoveTag(Guid id, Tag tag)
 		{
 			var society = _societyRepository.GetByIdAsync(id).Result;
-			if (society == null || string.IsNullOrWhiteSpace(tag))
+			if (society == null || string.IsNullOrWhiteSpace(tag.Value))
 			{
 				return false;
 			}

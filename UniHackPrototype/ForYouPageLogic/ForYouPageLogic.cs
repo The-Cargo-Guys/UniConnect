@@ -1,4 +1,4 @@
-﻿using MyAspNetVueApp.Models;
+﻿using UniHackPrototype.Models;
 
 namespace UniHack.ForYouPageLogic
 {

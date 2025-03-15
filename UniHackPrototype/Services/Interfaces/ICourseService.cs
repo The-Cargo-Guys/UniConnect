@@ -1,5 +1,4 @@
-﻿using MyAspNetVueApp.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UniHackPrototype.Models;
 
@@ -10,8 +9,8 @@ namespace UniHack.Services.Interfaces
 		List<Course> GetAllCourses();
 		Course? GetCourseById(Guid id);
 		List<Course> GetCoursesByName(string name);
-		List<Course> GetCoursesByTag(string tag);
+		List<Course> GetCoursesByTag(Tag tag);
 		List<Course> GetCoursesByMember(Guid memberId);
-		bool CreateCourse(string name, string description, string imagePath, IEnumerable<string> tags);
+		bool CreateCourse(string name, string description, string imagePath, IEnumerable<Tag> tags);
 	}
 }
