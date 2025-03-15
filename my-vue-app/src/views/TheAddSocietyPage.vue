@@ -19,6 +19,8 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import { CreateSocietyModel } from "../apiClient";
 
 export default defineComponent({
     name: "TheAddSocietyPage",
@@ -30,9 +32,15 @@ export default defineComponent({
             banner: ""
         });
 
-        const submitSociety = () => {
-            alert(`Society Created: ${society.value.name}`);
-            router.push("/societies");
+        const submitSociety = async () => {
+            try {
+                const response = await axios.post("/api/societies", society.value);
+                alert(`Society Created: ${response.data.name}`);
+                router.push("/societies");
+            } catch (error) {
+                console.error("Error creating society:", error);
+                alert("Failed to create society. Please check the server logs for details.");
+            }
         };
 
         return {
