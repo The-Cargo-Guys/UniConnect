@@ -32,7 +32,7 @@ namespace UniHack.Controllers
             return Ok(courses);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("/get-by-id/{id}")]
         public IActionResult GetCourseById(Guid id)
         {
             var course = _courseService.GetCourseById(id);
@@ -44,8 +44,8 @@ namespace UniHack.Controllers
             return Ok(course);
         }
 
-        [HttpGet("search")]
-        public IActionResult SearchCourses([FromQuery] string name)
+        [HttpGet("search/{name}")]
+        public IActionResult SearchCourses(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -57,7 +57,7 @@ namespace UniHack.Controllers
         }
 
         [HttpGet("by-tag")]
-        public IActionResult GetCoursesByTag([FromQuery] Tag tag)
+        public IActionResult GetCoursesByTag([FromBody] Tag tag)
         {
             if (string.IsNullOrWhiteSpace(tag.Value))
             {
@@ -76,7 +76,6 @@ namespace UniHack.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public IActionResult CreateCourse([FromBody] Course model)
         {
             if (string.IsNullOrWhiteSpace(model.Name))
@@ -99,8 +98,7 @@ namespace UniHack.Controllers
             return StatusCode(201, "Course created successfully");
         }
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [HttpPut("/update-course/{id}")]
         public IActionResult UpdateCourse(Guid id, [FromBody] Course model)
         {
             var course = _courseService.GetCourseById(id);
@@ -125,8 +123,7 @@ namespace UniHack.Controllers
             return Ok("Course updated successfully");
         }
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [HttpDelete("/delete-course/{id}")]
         public IActionResult DeleteCourse(Guid id)
         {
             var course = _courseService.GetCourseById(id);
@@ -144,8 +141,7 @@ namespace UniHack.Controllers
             return Ok("Course deleted successfully");
         }
 
-        [HttpPost("{id}/members/{userId}")]
-        [Authorize]
+        [HttpPost("/add-member/{id}/{userId}")]
         public IActionResult AddMember(Guid id, Guid userId)
         {
             var course = _courseService.GetCourseById(id);
@@ -176,8 +172,7 @@ namespace UniHack.Controllers
             return Ok("Member added to course successfully");
         }
 
-        [HttpDelete("{id}/members/{userId}")]
-        [Authorize]
+        [HttpDelete("/remove-member/{id}/{userId}")]
         public IActionResult RemoveMember(Guid id, Guid userId)
         {
             var course = _courseService.GetCourseById(id);
@@ -208,8 +203,7 @@ namespace UniHack.Controllers
             return Ok("Member removed from course successfully");
         }
 
-        [HttpPost("{id}/tags")]
-        [Authorize(Roles = "Admin")]
+        [HttpPost("/add-course-tag/{id}")]
         public IActionResult AddCourseTag(Guid id, [FromBody] Tag model)
         {
             var course = _courseService.GetCourseById(id);
@@ -232,8 +226,7 @@ namespace UniHack.Controllers
             return Ok("Tag added successfully");
         }
 
-        [HttpDelete("{id}/tags")]
-        [Authorize(Roles = "Admin")]
+        [HttpDelete("remove-tags/{id}")]
         public IActionResult RemoveCourseTag(Guid id, [FromQuery] Tag tag)
         {
             var course = _courseService.GetCourseById(id);
@@ -256,7 +249,7 @@ namespace UniHack.Controllers
             return Ok("Tag removed successfully");
         }
 
-        [HttpGet("{id}/posts")]
+        [HttpGet("get-posts/{id}")]
         public IActionResult GetCoursePosts(Guid id)
         {
             var course = _courseService.GetCourseById(id);

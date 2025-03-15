@@ -8,6 +8,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/', component: TheHomePage },
     { path: '/profile', component: TheProfilePage, meta: { requiresAuth: true } },
     { path: '/courses', component: TheCoursesPage },
+    { path: '/add-course', component: TheAddCoursePage },
     { path: '/societies', component: TheSocietiesPage },
     { path: '/register', component: Register },
     { path: '/callback', component: TheCallbackPage },
