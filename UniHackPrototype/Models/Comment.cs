@@ -11,6 +11,13 @@ namespace UniHackPrototype.Models
         public Guid Id { get; set; }
 
         public string Content { get; set; } = string.Empty;
-        public required User Author { get; set; }
+
+        [Required]
+        public Guid UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public User Author { get; set; } = null!;
+
+        public DateTime CreatedAt { get; set; }
     }
 }
