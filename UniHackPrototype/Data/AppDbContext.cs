@@ -12,6 +12,8 @@ namespace MyAspNetVueApp.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<Society> Societies { get; set; }
 
+        public DbSet<Tag> Tags { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
