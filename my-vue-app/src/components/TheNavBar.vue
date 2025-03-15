@@ -7,8 +7,6 @@ var menuItems = ref([
   { title: "Courses", path: "/courses", icon: "mdi-account-multiple" },
   { title: "Profile", path: "/profile", icon: "mdi-account" },
   { title: "Settings", path: "/settings", icon: "mdi-cog" },
-  { title: "Login", path: "/login", icon: "mdi-login" },
-  { title: "Logout", path: "/logout", icon: "mdi-logout" },
 ]);
 </script>
 
