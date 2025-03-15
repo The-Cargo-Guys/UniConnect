@@ -50,7 +50,7 @@
     errorMessage.value = "";
 
     try {
-        const response = await axios.post("https://localhost:7004/api/auth/login", {
+        const response = await axios.post("/api/auth/login", {
             email: email.value,
             password: password.value,
         });
@@ -80,7 +80,7 @@
     errorMessage.value = "";
   
     try {
-      await axios.post("https://localhost:7004/api/auth/register", {
+      await axios.post("/api/auth/register", {
         name: name.value,
         email: email.value,
         password: password.value,

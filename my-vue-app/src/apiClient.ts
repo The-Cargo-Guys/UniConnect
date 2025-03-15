@@ -1751,6 +1751,7 @@ export interface IComment {
 
 export class Community implements ICommunity {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1770,6 +1771,7 @@ export class Community implements ICommunity {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -1797,6 +1799,7 @@ export class Community implements ICommunity {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -1817,6 +1820,7 @@ export class Community implements ICommunity {
 
 export interface ICommunity {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1832,6 +1836,7 @@ export enum CommunityType {
 
 export class Course implements ICourse {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1851,6 +1856,7 @@ export class Course implements ICourse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -1878,6 +1884,7 @@ export class Course implements ICourse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -1898,6 +1905,7 @@ export class Course implements ICourse {
 
 export interface ICourse {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -2152,6 +2160,7 @@ export interface IRegisterRequest {
 
 export class Society implements ISociety {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -2172,6 +2181,7 @@ export class Society implements ISociety {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -2204,6 +2214,7 @@ export class Society implements ISociety {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -2229,6 +2240,7 @@ export class Society implements ISociety {
 
 export interface ISociety {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
