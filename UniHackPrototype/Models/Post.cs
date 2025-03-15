@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using UniHack.Enums;
 using UniHack.Models;
 
 namespace UniHackPrototype.Models
@@ -32,5 +33,7 @@ namespace UniHackPrototype.Models
         public DateTime CreatedAt { get; set; }
 
         public int Upvotes { get; set; } = 0;
+
+        public CommunityType CommunityType { get; set; }
     }
 }

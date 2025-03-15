@@ -16,12 +16,14 @@ namespace UniHack.Controllers
         private readonly IPostService _postService;
         private readonly IUserService _userService;
         private readonly ISocietyService _societyService;
+        private readonly ICourseService _courseService;
 
-        public PostController(IPostService postService, IUserService userService, ISocietyService societyService)
+        public PostController(IPostService postService, IUserService userService, ISocietyService societyService, ICourseService courseService)
         {
             _postService = postService;
             _userService = userService;
             _societyService = societyService;
+            _courseService = courseService;
         }
 
         [HttpPost]
@@ -44,7 +46,16 @@ namespace UniHack.Controllers
                 return NotFound("Author not found.");
             }
 
-            var community = _societyService.GetSocietyById(request.CommunityId);
+            Community? community;
+            if (request.CommunityType == Enums.CommunityType.Course)
+            {
+                community = _courseService.GetCourseById(request.CommunityId);
+            }
+            else
+            {
+                community = _societyService.GetSocietyById(request.CommunityId);
+            }
+
             if (community == null)
             {
                 return NotFound("Community not found.");
