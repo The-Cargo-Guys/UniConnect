@@ -218,7 +218,7 @@ namespace UniHack.Controllers
 
         [HttpPost("{id}/tags")]
         [Authorize]
-        public IActionResult AddSocietyTag(Guid id, [FromBody] TagModel model)
+        public IActionResult AddSocietyTag(Guid id, [FromBody] Tag model)
         {
             // Check if society exists
             var society = _societyService.GetSocietyById(id);
@@ -286,26 +286,5 @@ namespace UniHack.Controllers
             var posts = _postService.GetPostsByCommunity(id);
             return Ok(posts);
         }
-    }
-
-    public class CreateSocietyModel
-    {
-        public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public string? ImagePath { get; set; }
-        public List<Tag>? Tags { get; set; }
-    }
-
-    public class UpdateSocietyModel
-    {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public string? ImagePath { get; set; }
-        public List<Tag>? Tags { get; set; }
-    }
-
-    public class TagModel
-    {
-        public required Tag Tag { get; set; }
     }
 }

@@ -76,7 +76,7 @@ namespace UniHack.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult CreateCourse([FromBody] CreateCourseModel model)
+        public IActionResult CreateCourse([FromBody] Course model)
         {
             if (string.IsNullOrWhiteSpace(model.Name))
             {
@@ -86,7 +86,7 @@ namespace UniHack.Controllers
             bool result = _courseService.CreateCourse(
                 model.Name,
                 model.Description ?? string.Empty,
-                model.ImagePath ?? string.Empty,
+                model.ImagePathBanner ?? string.Empty,
 				model.Tags ?? []
             );
 
@@ -100,7 +100,7 @@ namespace UniHack.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult UpdateCourse(Guid id, [FromBody] UpdateCourseModel model)
+        public IActionResult UpdateCourse(Guid id, [FromBody] Course model)
         {
             var course = _courseService.GetCourseById(id);
             if (course == null)
@@ -112,7 +112,7 @@ namespace UniHack.Controllers
                 id,
                 model.Name,
                 model.Description,
-                model.ImagePath,
+                model.ImagePathBanner,
                 model.Tags
             );
 
@@ -209,7 +209,7 @@ namespace UniHack.Controllers
 
         [HttpPost("{id}/tags")]
         [Authorize(Roles = "Admin")]
-        public IActionResult AddCourseTag(Guid id, [FromBody] TagModel model)
+        public IActionResult AddCourseTag(Guid id, [FromBody] T model)
         {
             var course = _courseService.GetCourseById(id);
             if (course == null)
@@ -267,21 +267,5 @@ namespace UniHack.Controllers
             var posts = _postService.GetPostsByCommunity(id);
             return Ok(posts);
         }
-    }
-
-    public class CreateCourseModel
-    {
-        public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public string? ImagePath { get; set; }
-        public List<Tag>? Tags { get; set; }
-    }
-
-    public class UpdateCourseModel
-    {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public string? ImagePath { get; set; }
-        public List<Tag>? Tags { get; set; }
     }
 }
