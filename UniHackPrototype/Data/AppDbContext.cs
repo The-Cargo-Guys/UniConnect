@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyAspNetVueApp.Models;
 using UniHack.Models;
-using UniHack.Models;
 
 namespace MyAspNetVueApp.Data
 {

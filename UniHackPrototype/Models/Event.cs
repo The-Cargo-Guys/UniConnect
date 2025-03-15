@@ -15,7 +15,6 @@ namespace UniHack.Models
 		[ForeignKey("Society")]
 		public Guid SocietyId { get; set; }
 
-		[NotMapped]
 		public Society? Society { get; set; }
 	}
 }
