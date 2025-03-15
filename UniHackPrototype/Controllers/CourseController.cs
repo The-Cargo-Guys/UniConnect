@@ -209,7 +209,7 @@ namespace UniHack.Controllers
 
         [HttpPost("{id}/tags")]
         [Authorize(Roles = "Admin")]
-        public IActionResult AddCourseTag(Guid id, [FromBody] T model)
+        public IActionResult AddCourseTag(Guid id, [FromBody] Tag model)
         {
             var course = _courseService.GetCourseById(id);
             if (course == null)
@@ -217,12 +217,12 @@ namespace UniHack.Controllers
                 return NotFound("Course not found");
             }
 
-            if (string.IsNullOrWhiteSpace(model.Tag.Value))
+            if (string.IsNullOrWhiteSpace(model.Value))
             {
                 return BadRequest("Tag is required");
             }
 
-            bool result = _courseService.AddCourseTag(id, model.Tag);
+            bool result = _courseService.AddCourseTag(id, model);
             if (!result)
             {
                 return StatusCode(500, "Failed to add tag");
