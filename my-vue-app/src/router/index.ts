@@ -1,25 +1,32 @@
-// src/router/index.ts
-import { createRouter, createWebHistory } from 'vue-router';
-import { authState } from '@/store/auth;
-import HomePage from '@/views/HomePage.vue';
-import AuthPage from '@/views/AuthPage.vue';
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
+import { TheCoursesPage, TheAddCoursePage, TheHomePage, TheProfilePage, TheSocietiesPage, TheRegistryPage, TheCallbackPage, TheAddSocietyPage, TheSocietiesDetailsPage  } from '../views';
 
-const routes = [
-  { path: '/', component: HomePage, meta: { requiresAuth: true } },
-  { path: '/auth', component: AuthPage },
+const routes: Array<RouteRecordRaw> = [
+    { path: '/', component: TheHomePage },
+    { path: '/profile', component: TheProfilePage },
+    { path: '/courses', component: TheCoursesPage },
+    { path: '/add-course', component: TheAddCoursePage },
+    { path: '/societies', component: TheSocietiesPage },
+    { path: '/register', component: TheRegistryPage },
+    { path: '/callback', component: TheCallbackPage },
+    { path: "/add-society", component: TheAddSocietyPage },
+    { path: "/societies/:id", name: "SocietiesDetails", component: TheSocietiesDetailsPage },
+    { path: '/:pathMatch(.*)*', redirect: '/' },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
+    history: createWebHistory(),
+    routes
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !authState.isAuthenticated) {
-    next('/auth');
-  } else {
+router.beforeEach((to, _, next) => {
+    // const isLoggedIn = localStorage.getItem('LoggedIn') === 'true';
+    // if (to.matched.some((record) => record.meta.auth) && !isLoggedIn) {
+    //     next('/login');
+    // } else {
+    //     next();
+    // }
     next();
-  }
 });
 
 export default router;
