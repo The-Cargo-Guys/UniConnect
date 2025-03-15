@@ -22,11 +22,11 @@ namespace MyAspNetVueApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddUser([FromBody] User user)
+        public IActionResult AddUser([FromBody] string user)
         {
-            _context.Users.Add(user);
+            _context.Users.Add(new User { Name = user});
             _context.SaveChanges();
-            return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetUsers), new { id = new User { Name = user }.Id }, user);
         }
     }
 }

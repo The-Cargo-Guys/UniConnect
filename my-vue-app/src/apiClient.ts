@@ -90,17 +90,130 @@ export class Client {
     }
 }
 
+export class Community implements ICommunity {
+    id?: string;
+    name!: string;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+
+    constructor(data?: ICommunity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.imagePathBanner = _data["imagePathBanner"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(Tag.fromJS(item));
+            }
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(User.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Community {
+        data = typeof data === 'object' ? data : {};
+        let result = new Community();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["imagePathBanner"] = this.imagePathBanner;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item.toJSON());
+        }
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ICommunity {
+    id?: string;
+    name: string;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+}
+
+export class Tag implements ITag {
+    id?: string;
+    value!: string;
+
+    constructor(data?: ITag) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): Tag {
+        data = typeof data === 'object' ? data : {};
+        let result = new Tag();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface ITag {
+    id?: string;
+    value: string;
+}
+
 export class User implements IUser {
     id?: string;
-    name?: string | undefined;
-    email?: string | undefined;
-    password?: string | undefined;
+    name!: string;
+    email!: string;
+    password!: string;
     phoneNumber?: string | undefined;
     imagePath?: string | undefined;
     bio?: string | undefined;
     university?: string | undefined;
     degree?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
+    communities?: Community[] | undefined;
     isAdmin?: boolean;
 
     constructor(data?: IUser) {
@@ -126,7 +239,12 @@ export class User implements IUser {
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
-                    this.tags!.push(item);
+                    this.tags!.push(Tag.fromJS(item));
+            }
+            if (Array.isArray(_data["communities"])) {
+                this.communities = [] as any;
+                for (let item of _data["communities"])
+                    this.communities!.push(Community.fromJS(item));
             }
             this.isAdmin = _data["isAdmin"];
         }
@@ -153,7 +271,12 @@ export class User implements IUser {
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
-                data["tags"].push(item);
+                data["tags"].push(item.toJSON());
+        }
+        if (Array.isArray(this.communities)) {
+            data["communities"] = [];
+            for (let item of this.communities)
+                data["communities"].push(item.toJSON());
         }
         data["isAdmin"] = this.isAdmin;
         return data;
@@ -162,15 +285,16 @@ export class User implements IUser {
 
 export interface IUser {
     id?: string;
-    name?: string | undefined;
-    email?: string | undefined;
-    password?: string | undefined;
+    name: string;
+    email: string;
+    password: string;
     phoneNumber?: string | undefined;
     imagePath?: string | undefined;
     bio?: string | undefined;
     university?: string | undefined;
     degree?: string | undefined;
-    tags?: string[] | undefined;
+    tags?: Tag[] | undefined;
+    communities?: Community[] | undefined;
     isAdmin?: boolean;
 }
 
