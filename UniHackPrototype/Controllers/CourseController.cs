@@ -56,9 +56,9 @@ namespace UniHack.Controllers
         }
 
         [HttpGet("by-tag")]
-        public IActionResult GetCoursesByTag([FromQuery] string tag)
+        public IActionResult GetCoursesByTag([FromQuery] Tag tag)
         {
-            if (string.IsNullOrWhiteSpace(tag))
+            if (string.IsNullOrWhiteSpace(tag.Value))
             {
                 return BadRequest("Tag is required");
             }
@@ -217,7 +217,7 @@ namespace UniHack.Controllers
                 return NotFound("Course not found");
             }
 
-            if (string.IsNullOrWhiteSpace(model.Tag))
+            if (string.IsNullOrWhiteSpace(model.Tag.Value))
             {
                 return BadRequest("Tag is required");
             }
@@ -233,7 +233,7 @@ namespace UniHack.Controllers
 
         [HttpDelete("{id}/tags")]
         [Authorize(Roles = "Admin")]
-        public IActionResult RemoveCourseTag(Guid id, [FromQuery] string tag)
+        public IActionResult RemoveCourseTag(Guid id, [FromQuery] Tag tag)
         {
             var course = _courseService.GetCourseById(id);
             if (course == null)
@@ -241,7 +241,7 @@ namespace UniHack.Controllers
                 return NotFound("Course not found");
             }
 
-            if (string.IsNullOrWhiteSpace(tag))
+            if (string.IsNullOrWhiteSpace(tag.Value))
             {
                 return BadRequest("Tag is required");
             }
@@ -274,7 +274,7 @@ namespace UniHack.Controllers
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
-        public List<string>? Tags { get; set; }
+        public List<Tag>? Tags { get; set; }
     }
 
     public class UpdateCourseModel
@@ -282,6 +282,6 @@ namespace UniHack.Controllers
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
-        public List<string>? Tags { get; set; }
+        public List<Tag>? Tags { get; set; }
     }
 }

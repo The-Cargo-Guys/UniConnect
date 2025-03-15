@@ -7,7 +7,7 @@ namespace UniHack.Repositories.Interfaces
 		Task<List<Course>> GetAllAsync();
 		Task<Course?> GetByIdAsync(Guid id);
 		Task<List<Course>> GetByNameAsync(string name);
-		Task<List<Course>> GetByTagAsync(string tag);
+		Task<List<Course>> GetByTagAsync(Tag tag);
 		Task<List<Course>> GetByCourseIdAsync(Guid memberId);
 		Task<bool> AddAsync(Course course);
 		Task<bool> UpdateAsync(Course course);
