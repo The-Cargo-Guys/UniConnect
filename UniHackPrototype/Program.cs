@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using NSwag;
 using NSwag.Generation.Processors.Security;
+using UniHack.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,8 @@ builder.Services.AddOpenApiDocument(config =>
     config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
 });
 
+builder.Services.AddScoped<DbSeeder>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -46,9 +49,14 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var services = scope.ServiceProvider;
+
+    var dbContext = services.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
+
+    var seeder = services.GetRequiredService<DbSeeder>();
+    seeder.Seed();
 }
 
 app.Run();
