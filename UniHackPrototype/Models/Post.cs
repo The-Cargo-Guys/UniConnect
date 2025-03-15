@@ -28,5 +28,8 @@ namespace UniHackPrototype.Models
 
         [ForeignKey(nameof(CommunityId))]
         public Community Community { get; set; } = null!;
+        public DateTime CreatedAt { get; set; }
+
+        public int Upvotes { get; set; } = 0;
     }
 }
