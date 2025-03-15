@@ -1,15 +1,42 @@
 ﻿using MyAspNetVueApp.Data;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationServices();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddOpenApiDocument(config =>
+{
+    config.Title = "MyAspNetVueApp API";
+    config.Description = "OpenAPI Specification for TypeScript DTO Generation";
+    config.AddSecurity("Bearer", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+    {
+        Type = OpenApiSecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter 'Bearer {your JWT token}'"
+    });
+    config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyAspNetVueApp API v1");
+    });
+
+    app.UseOpenApi();
 }
 
 app.UseCors("AllowVueApp");

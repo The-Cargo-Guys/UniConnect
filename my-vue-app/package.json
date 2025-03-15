@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "generate-dtos": "nswag openapi2tsclient /input:http://localhost:5258/swagger/v1/swagger.json /output:src/apiClient.ts",
+    "dev": "npm run generate-dtos && vite",
+    "build": "npm run generate-dtos && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix"
   },
