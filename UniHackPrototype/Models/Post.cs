@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using UniHack.Models;
 
 namespace UniHackPrototype.Models
 {
@@ -28,5 +29,8 @@ namespace UniHackPrototype.Models
 
         [ForeignKey(nameof(CommunityId))]
         public Community Community { get; set; } = null!;
+        public DateTime CreatedAt { get; set; }
+
+        public int Upvotes { get; set; } = 0;
     }
 }

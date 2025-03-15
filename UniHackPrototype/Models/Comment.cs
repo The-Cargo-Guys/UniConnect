@@ -16,5 +16,7 @@ namespace UniHackPrototype.Models
 
         [ForeignKey(nameof(UserId))]
         public virtual User Author { get; set; } = null!;
+
+        public DateTime CreatedAt { get; set; }
     }
 }

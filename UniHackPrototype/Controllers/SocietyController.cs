@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using UniHack.Models;
 using UniHack.Services.Interfaces;
 using UniHackPrototype.Models;
 
