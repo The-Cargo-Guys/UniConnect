@@ -32,7 +32,7 @@ namespace UniHack.Controllers
             return Ok(societies);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public IActionResult GetSocietyById(Guid id)
         {
             var society = _societyService.GetSocietyById(id);
@@ -44,7 +44,7 @@ namespace UniHack.Controllers
             return Ok(society);
         }
 
-        [HttpGet]
+        [HttpGet("search")]
         public IActionResult SearchSocieties([FromQuery] string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -56,7 +56,7 @@ namespace UniHack.Controllers
             return Ok(societies);
         }
 
-        [HttpGet]
+        [HttpGet("by-tag")]
         public IActionResult GetSocietiesByTag([FromQuery] Tag tag)
         {
             if (string.IsNullOrWhiteSpace(tag.Value))
@@ -69,6 +69,7 @@ namespace UniHack.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult CreateSociety([FromBody] Society model)
         {
             // Validate model
@@ -93,7 +94,8 @@ namespace UniHack.Controllers
             return StatusCode(201, "Society created successfully");
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
+        [Authorize]
         public IActionResult UpdateSociety(Guid id, [FromBody] Society model)
         {
             // Check if society exists
@@ -122,7 +124,8 @@ namespace UniHack.Controllers
             return Ok("Society updated successfully");
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteSociety(Guid id)
         {
             // Check if society exists
@@ -142,7 +145,8 @@ namespace UniHack.Controllers
             return Ok("Society deleted successfully");
         }
 
-        [HttpPost]
+        [HttpPost("{id}/members/{userId}")]
+        [Authorize]
         public IActionResult AddMember(Guid id, Guid userId)
         {
             // Check if society exists
@@ -177,7 +181,8 @@ namespace UniHack.Controllers
             return Ok("Member added to society successfully");
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}/members/{userId}")]
+        [Authorize]
         public IActionResult RemoveMember(Guid id, Guid userId)
         {
             // Check if society exists
@@ -212,7 +217,8 @@ namespace UniHack.Controllers
             return Ok("Member removed from society successfully");
         }
 
-        [HttpPost]
+        [HttpPost("{id}/tags")]
+        [Authorize]
         public IActionResult AddSocietyTag(Guid id, [FromBody] Tag model)
         {
             // Check if society exists
@@ -239,7 +245,8 @@ namespace UniHack.Controllers
             return Ok("Tag added successfully");
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}/tags")]
+        [Authorize]
         public IActionResult RemoveSocietyTag(Guid id, [FromQuery] Tag tag)
         {
             // Check if society exists
@@ -266,7 +273,7 @@ namespace UniHack.Controllers
             return Ok("Tag removed successfully");
         }
 
-        [HttpGet]
+        [HttpGet("{id}/posts")]
         public IActionResult GetSocietyPosts(Guid id)
         {
             // Check if society exists
