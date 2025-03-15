@@ -113,5 +113,16 @@ namespace UniHack.Services
 
 			return true;
 		}
-	}
+
+        public List<Post> GetPostsByTags(List<Tag> Tags)
+        {
+            return _postRepository
+            .GetAllAsync()
+            .Result
+            .Where(p => p.Tags.Any(t => p.Tags.Any(tag => tag.Value == t.Value)))
+            .OrderByDescending(p => p.CreatedAt)
+            .ThenBy(p => p.Upvotes)
+            .ToList();
+        }
+    }
 }

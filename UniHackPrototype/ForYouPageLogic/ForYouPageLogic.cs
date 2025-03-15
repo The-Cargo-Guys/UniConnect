@@ -1,13 +1,17 @@
 ﻿using MyAspNetVueApp.Models;
+using UniHack.Services.Interfaces;
+using UniHack.Services.Services;
+using UniHackPrototype.Models;
 
-namespace UniHack.ForYouPageLogic
+namespace UniHack.ForYouPage
 {
     public class ForYouPageLogic
     {
-        public ForYouPageLogic() { }
-        public void GetForYouPage(User user)
+        private readonly IPostService _postService;
+        public ForYouPageLogic(IPostService postService)
         {
-
+            _postService = postService;
         }
+        public List<Post> GetForYouPage(User user) => _postService.GetPostsByTags(user.Tags.ToList());
     }
 }

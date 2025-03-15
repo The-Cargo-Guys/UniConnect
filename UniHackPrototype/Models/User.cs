@@ -30,5 +30,7 @@ namespace MyAspNetVueApp.Models
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
         public bool IsAdmin { get; set; } = false;
+
+        public DateTime CreatedAt { get; set; }
     }
 }
