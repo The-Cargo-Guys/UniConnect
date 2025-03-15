@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services.Interfaces;
-using UniHackPrototype.Models;
 
-namespace UniHack.Services
+namespace UniHack.Services.Services
 {
 	public class UserService : IUserService
 	{
@@ -138,13 +138,8 @@ namespace UniHack.Services
 				return false;
 			}
 
-			if (user.Tags.Contains(tag))
-			{
-				user.Tags.Remove(tag);
-				return _userRepository.UpdateAsync(user).Result;
-			}
-
-			return true;
+			user.Tags.Remove(tag);
+			return _userRepository.UpdateAsync(user).Result;
 		}
 
 		private string HashPassword(string password)

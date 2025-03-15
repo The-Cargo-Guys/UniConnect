@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UniHackPrototype.Models
+namespace UniHack.Models
 {
     public class Tag
     {
