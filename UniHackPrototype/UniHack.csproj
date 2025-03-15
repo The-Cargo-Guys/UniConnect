@@ -27,6 +27,10 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\Images\" />
+	</ItemGroup>
+
 	<Target Name="GenerateNSwag" AfterTargets="Build">
 		<Exec Command="nswag run /runtime:Net70" />
 	</Target>
