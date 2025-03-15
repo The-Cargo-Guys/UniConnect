@@ -3,6 +3,7 @@ using MyAspNetVueApp.Data;
 using MyAspNetVueApp.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UniHack.Repositories.Interfaces;
 
 namespace UniHack.Repositories
 {

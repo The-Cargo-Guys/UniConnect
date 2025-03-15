@@ -5,6 +5,7 @@ import AddSocietyPage from './AddSocietyPage.vue';
 import TheLoginPage from './TheLoginPage.vue';
 import TheRegistryPage from './TheRegistryPage.vue';
 import TheSignupPage from "./TheSignupPage.vue";
+import TheCallbackPage from "./TheCallbackPage.vue";
 import { createRouter as createVueRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -22,7 +23,5 @@ const router = createVueRouter({
     routes,
 });
 
-export { TheCommunitiesPage, TheHomePage, TheSocietiesPage, TheLoginPage, TheRegistryPage, TheSignupPage, AddSocietyPage };
+export { TheCommunitiesPage, TheHomePage, TheSocietiesPage, TheLoginPage, TheRegistryPage, TheSignupPage, AddSocietyPage, TheCallbackPage };
 export default router;
-
-
