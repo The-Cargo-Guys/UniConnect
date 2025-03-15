@@ -5,6 +5,10 @@ var menuItems = ref([
   { title: "Home", path: "/", icon: "mdi-home" },
   { title: "Societies", path: "/societies", icon: "mdi-basketball" },
   { title: "Communities", path: "/communities", icon: "mdi-account-multiple" },
+  { title: "Events", path: "/events", icon: "mdi-calendar" },
+  { title: "Profile", path: "/profile", icon: "mdi-account" },
+  { title: "Settings", path: "/settings", icon: "mdi-cog" },
+  { title: "Logout", path: "/logout", icon: "mdi-logout" },
 ]);
 </script>
 
