@@ -69,7 +69,7 @@ namespace UniHack.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult CreateSociety([FromBody] CreateSocietyModel model)
+        public IActionResult CreateSociety([FromBody] Society model)
         {
             // Validate model
             if (string.IsNullOrWhiteSpace(model.Name))
@@ -81,7 +81,7 @@ namespace UniHack.Controllers
             bool result = _societyService.CreateSociety(
                 model.Name,
                 model.Description ?? string.Empty,
-                model.ImagePath ?? string.Empty,
+                model.ImagePathBanner ?? string.Empty,
 				model.Tags ?? []
             );
 
@@ -95,7 +95,7 @@ namespace UniHack.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult UpdateSociety(Guid id, [FromBody] UpdateSocietyModel model)
+        public IActionResult UpdateSociety(Guid id, [FromBody] Society model)
         {
             // Check if society exists
             var society = _societyService.GetSocietyById(id);
@@ -111,7 +111,7 @@ namespace UniHack.Controllers
                 id,
                 model.Name,
                 model.Description,
-                model.ImagePath,
+                model.ImagePathBanner,
                 model.Tags
             );
 
@@ -218,7 +218,7 @@ namespace UniHack.Controllers
 
         [HttpPost("{id}/tags")]
         [Authorize]
-        public IActionResult AddSocietyTag(Guid id, [FromBody] TagModel model)
+        public IActionResult AddSocietyTag(Guid id, [FromBody] Tag model)
         {
             // Check if society exists
             var society = _societyService.GetSocietyById(id);
@@ -227,7 +227,7 @@ namespace UniHack.Controllers
                 return NotFound("Society not found");
             }
 
-            if (string.IsNullOrWhiteSpace(model.Tag.Value))
+            if (string.IsNullOrWhiteSpace(model.Value))
             {
                 return BadRequest("Tag is required");
             }
@@ -235,7 +235,7 @@ namespace UniHack.Controllers
             // TODO: Add permission check (only admins/moderators should be able to add tags)
 
             // Add tag
-            bool result = _societyService.AddTag(id, model.Tag);
+            bool result = _societyService.AddTag(id, model);
             if (!result)
             {
                 return StatusCode(500, "Failed to add tag");
@@ -286,26 +286,5 @@ namespace UniHack.Controllers
             var posts = _postService.GetPostsByCommunity(id);
             return Ok(posts);
         }
-    }
-
-    public class CreateSocietyModel
-    {
-        public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public string? ImagePath { get; set; }
-        public List<Tag>? Tags { get; set; }
-    }
-
-    public class UpdateSocietyModel
-    {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public string? ImagePath { get; set; }
-        public List<Tag>? Tags { get; set; }
-    }
-
-    public class TagModel
-    {
-        public required Tag Tag { get; set; }
     }
 }
