@@ -48,25 +48,31 @@
   const login = async () => {
     loading.value = true;
     errorMessage.value = "";
-  
+
     try {
-      const response = await axios.post("https://localhost:7004/api/auth/login", {
-        email: email.value,
-        password: password.value,
-      });
-  
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        router.push("/");
-      } else {
-        throw new Error("Invalid response from server");
-      }
+        const response = await axios.post("https://localhost:7004/api/auth/login", {
+            email: email.value,
+            password: password.value,
+        });
+
+        if (response.data.token) {
+            localStorage.setItem("token", response.data.token);
+            router.push("/");
+
+            // 🔄 Force a full page refresh to ensure proper authentication state
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        } else {
+            throw new Error("Invalid response from server");
+        }
     } catch (error) {
-      errorMessage.value = error.response?.data?.message || "Invalid email or password";
+        errorMessage.value = error.response?.data?.message || "Invalid email or password";
     } finally {
-      loading.value = false;
+        loading.value = false;
     }
-  };
+};
+
   
   // Register Function
   const register = async () => {

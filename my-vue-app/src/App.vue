@@ -54,14 +54,10 @@ watchEffect(() => {
 
 // ✅ **Handle Logout - Clears storage & cookies**
 const handleLogout = () => {
-    logout({
-        logoutParams: { returnTo: window.location.origin } // Redirect to home after logout
-    });
-
     // Clear all local storage, session storage, and cookies
     localStorage.clear();
     sessionStorage.clear();
-    
+
     document.cookie.split(";").forEach((c) => {
         document.cookie = c
             .replace(/^ +/, "")
@@ -69,8 +65,8 @@ const handleLogout = () => {
     });
 
     isLoggedIn.value = false; // Update UI state
-    router.push("/auth"); // Redirect user to login page
 };
+
 </script>
 
 
