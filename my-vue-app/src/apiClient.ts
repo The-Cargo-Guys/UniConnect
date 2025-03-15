@@ -22,7 +22,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    register(body: RegisterRequest | undefined): Promise<void> {
+    register(body: User | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/auth/register";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -60,7 +60,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    login(body: LoginRequest | undefined): Promise<void> {
+    login(body: LoginModel | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -80,6 +80,115 @@ export class Client {
     }
 
     protected processLogin(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    profileGET(): Promise<void> {
+        let url_ = this.baseUrl + "/api/auth/profile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processProfileGET(_response);
+        });
+    }
+
+    protected processProfileGET(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    profilePUT(body: UpdateProfileModel | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/auth/profile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processProfilePUT(_response);
+        });
+    }
+
+    protected processProfilePUT(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    changePassword(body: ChangePasswordModel | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/auth/change-password";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processChangePassword(_response);
+        });
+    }
+
+    protected processChangePassword(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -692,6 +801,44 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    posts(body: Post | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/posts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPosts(_response);
+        });
+    }
+
+    protected processPosts(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
     societies2(): Promise<void> {
@@ -1222,6 +1369,174 @@ export class Client {
     }
 }
 
+export class ChangePasswordModel implements IChangePasswordModel {
+    currentPassword?: string | undefined;
+    newPassword?: string | undefined;
+
+    constructor(data?: IChangePasswordModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.currentPassword = _data["currentPassword"];
+            this.newPassword = _data["newPassword"];
+        }
+    }
+
+    static fromJS(data: any): ChangePasswordModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangePasswordModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["currentPassword"] = this.currentPassword;
+        data["newPassword"] = this.newPassword;
+        return data;
+    }
+}
+
+export interface IChangePasswordModel {
+    currentPassword?: string | undefined;
+    newPassword?: string | undefined;
+}
+
+export class Comment implements IComment {
+    id?: string;
+    content?: string | undefined;
+    userId?: string;
+    author?: User;
+    createdAt?: Date;
+
+    constructor(data?: IComment) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.content = _data["content"];
+            this.userId = _data["userId"];
+            this.author = _data["author"] ? User.fromJS(_data["author"]) : <any>undefined;
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Comment {
+        data = typeof data === 'object' ? data : {};
+        let result = new Comment();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["content"] = this.content;
+        data["userId"] = this.userId;
+        data["author"] = this.author ? this.author.toJSON() : <any>undefined;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IComment {
+    id?: string;
+    content?: string | undefined;
+    userId?: string;
+    author?: User;
+    createdAt?: Date;
+}
+
+export class Community implements ICommunity {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+    createdAt?: Date;
+
+    constructor(data?: ICommunity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.imagePathBanner = _data["imagePathBanner"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(Tag.fromJS(item));
+            }
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(User.fromJS(item));
+            }
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Community {
+        data = typeof data === 'object' ? data : {};
+        let result = new Community();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["imagePathBanner"] = this.imagePathBanner;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item.toJSON());
+        }
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICommunity {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    tags?: Tag[] | undefined;
+    members?: User[] | undefined;
+    createdAt?: Date;
+}
+
 export class Course implements ICourse {
     id?: string;
     name?: string | undefined;
@@ -1298,11 +1613,11 @@ export interface ICourse {
     createdAt?: Date;
 }
 
-export class LoginRequest implements ILoginRequest {
+export class LoginModel implements ILoginModel {
     email?: string | undefined;
     password?: string | undefined;
 
-    constructor(data?: ILoginRequest) {
+    constructor(data?: ILoginModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1318,9 +1633,9 @@ export class LoginRequest implements ILoginRequest {
         }
     }
 
-    static fromJS(data: any): LoginRequest {
+    static fromJS(data: any): LoginModel {
         data = typeof data === 'object' ? data : {};
-        let result = new LoginRequest();
+        let result = new LoginModel();
         result.init(data);
         return result;
     }
@@ -1333,18 +1648,25 @@ export class LoginRequest implements ILoginRequest {
     }
 }
 
-export interface ILoginRequest {
+export interface ILoginModel {
     email?: string | undefined;
     password?: string | undefined;
 }
 
-export class RegisterRequest implements IRegisterRequest {
-    name?: string | undefined;
-    email?: string | undefined;
-    password?: string | undefined;
-    phoneNumber?: string | undefined;
+export class Post implements IPost {
+    id?: string;
+    title?: string | undefined;
+    content?: string | undefined;
+    tags?: Tag[] | undefined;
+    comments?: Comment[] | undefined;
+    authorId?: string;
+    author?: User;
+    communityId?: string;
+    community?: Community;
+    createdAt?: Date;
+    upvotes?: number;
 
-    constructor(data?: IRegisterRequest) {
+    constructor(data?: IPost) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1355,35 +1677,72 @@ export class RegisterRequest implements IRegisterRequest {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"];
-            this.email = _data["email"];
-            this.password = _data["password"];
-            this.phoneNumber = _data["phoneNumber"];
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.content = _data["content"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(Tag.fromJS(item));
+            }
+            if (Array.isArray(_data["comments"])) {
+                this.comments = [] as any;
+                for (let item of _data["comments"])
+                    this.comments!.push(Comment.fromJS(item));
+            }
+            this.authorId = _data["authorId"];
+            this.author = _data["author"] ? User.fromJS(_data["author"]) : <any>undefined;
+            this.communityId = _data["communityId"];
+            this.community = _data["community"] ? Community.fromJS(_data["community"]) : <any>undefined;
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.upvotes = _data["upvotes"];
         }
     }
 
-    static fromJS(data: any): RegisterRequest {
+    static fromJS(data: any): Post {
         data = typeof data === 'object' ? data : {};
-        let result = new RegisterRequest();
+        let result = new Post();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["email"] = this.email;
-        data["password"] = this.password;
-        data["phoneNumber"] = this.phoneNumber;
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["content"] = this.content;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item.toJSON());
+        }
+        if (Array.isArray(this.comments)) {
+            data["comments"] = [];
+            for (let item of this.comments)
+                data["comments"].push(item.toJSON());
+        }
+        data["authorId"] = this.authorId;
+        data["author"] = this.author ? this.author.toJSON() : <any>undefined;
+        data["communityId"] = this.communityId;
+        data["community"] = this.community ? this.community.toJSON() : <any>undefined;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["upvotes"] = this.upvotes;
         return data;
     }
 }
 
-export interface IRegisterRequest {
-    name?: string | undefined;
-    email?: string | undefined;
-    password?: string | undefined;
-    phoneNumber?: string | undefined;
+export interface IPost {
+    id?: string;
+    title?: string | undefined;
+    content?: string | undefined;
+    tags?: Tag[] | undefined;
+    comments?: Comment[] | undefined;
+    authorId?: string;
+    author?: User;
+    communityId?: string;
+    community?: Community;
+    createdAt?: Date;
+    upvotes?: number;
 }
 
 export class Society implements ISociety {
@@ -1500,6 +1859,70 @@ export class Tag implements ITag {
 export interface ITag {
     id?: string;
     value?: string | undefined;
+}
+
+export class UpdateProfileModel implements IUpdateProfileModel {
+    name?: string | undefined;
+    bio?: string | undefined;
+    university?: string | undefined;
+    degree?: string | undefined;
+    imagePath?: string | undefined;
+    tags?: Tag[] | undefined;
+
+    constructor(data?: IUpdateProfileModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.bio = _data["bio"];
+            this.university = _data["university"];
+            this.degree = _data["degree"];
+            this.imagePath = _data["imagePath"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(Tag.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateProfileModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateProfileModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["bio"] = this.bio;
+        data["university"] = this.university;
+        data["degree"] = this.degree;
+        data["imagePath"] = this.imagePath;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IUpdateProfileModel {
+    name?: string | undefined;
+    bio?: string | undefined;
+    university?: string | undefined;
+    degree?: string | undefined;
+    imagePath?: string | undefined;
+    tags?: Tag[] | undefined;
 }
 
 export class User implements IUser {

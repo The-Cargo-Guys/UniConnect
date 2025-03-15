@@ -4,12 +4,12 @@ using MyAspNetVueApp.Models;
 using System.Security.Claims;
 using UniHack.ForYouPageNamespace;
 using UniHack.Services.Interfaces;
+using UniHackPrototype.Models;
 
 namespace UniHack.Controllers
 {
 	[ApiController]
 	[Route("api/for-you")]
-	[Authorize]
 	public class FYPController : ControllerBase
 	{
 		private readonly IUserService _userService;
@@ -41,9 +41,9 @@ namespace UniHack.Controllers
 				return NotFound("User not found");
 			}
 
-			_forYouPageLogic.GetForYouPage(user);
+            List<Post> posts = _forYouPageLogic.GetForYouPage(user);
 
-			return Ok(_forYouPageLogic.GetForYouPage(user));
+			return Ok(posts);
 		}
 
 		[HttpGet("societies")]
