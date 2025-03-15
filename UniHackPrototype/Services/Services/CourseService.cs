@@ -3,7 +3,6 @@ using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
 using UniHack.Services.Interfaces;
-using UniHack.Models;
 using UniHack.Enums;
 
 namespace UniHack.Services.Services
