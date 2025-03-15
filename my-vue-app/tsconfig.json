@@ -7,7 +7,9 @@
     ], // specifies which default set of type definitions to use ("DOM", "ES6", etc)
     "outDir": "lib", // .js (as well as .d.ts, .js.map, etc.) files will be emitted into this directory.,
     "removeComments": true, // Strips all comments from TypeScript files when converting into JavaScript- you rarely read compiled code so this saves space
-    "target": "ESNext", // Target environment. Most modern browsers support ES6, but you may want to set it to newer or older. (defaults to ES3)
+    "forceConsistentCasingInFileNames": true, // Ensures consistent casing in file names
+    "strict": true, // Enable all strict type-checking options
+    "target": "ES6", // Target environment. Most modern browsers support ES6, but you may want to set it to newer or older. (defaults to ES3)
 
     // Module resolution
     "baseUrl": "./", // Lets you set a base directory to resolve non-absolute module names.
