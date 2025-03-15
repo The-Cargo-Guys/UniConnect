@@ -1,26 +1,75 @@
 <script setup lang="ts">
 import { useAuth0 } from '@auth0/auth0-vue';
+import { useRouter } from 'vue-router';
 import { RouterView } from 'vue-router';
-import { TheNavBar } from './components';
-import AuthPage from "../views/AuthPage.vue"; 
+import TheNavBar from './components/TheNavBar.vue';
+import AuthPage from './views/AuthPage.vue';
+import { computed, watchEffect, ref, onMounted, watch } from 'vue';
 
-const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0();
+const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0();
+const router = useRouter();
+const isLoggedIn = ref(false);
+
+// 🚀 **Check authentication on app load BEFORE rendering**
+onMounted(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        console.log("✅ Found stored token, setting isLoggedIn = true");
+        isLoggedIn.value = true;
+    } else {
+        console.log("❌ No token found, redirecting to /auth");
+        isLoggedIn.value = false;
+        router.push("/auth");
+    }
+});
+
+// 🔄 **Watch localStorage for instant updates**
+watch(() => localStorage.getItem("token"), (newToken) => {
+    if (newToken) {
+        console.log("🔄 Token updated, setting isLoggedIn = true");
+        isLoggedIn.value = true;
+        router.push("/");
+    } else {
+        console.log("❌ Token removed, redirecting to /auth");
+        isLoggedIn.value = false;
+        router.push("/auth");
+    }
+});
+
+// 🔄 **Watch Auth0 authentication changes dynamically**
+watchEffect(() => {
+    console.log("🔄 Auth state changed:", isAuthenticated.value);
+
+    if (isAuthenticated.value) {
+        localStorage.setItem("token", "auth0-user"); // Simulate storing token
+        isLoggedIn.value = true;
+        router.push("/");
+    } else if (!localStorage.getItem("token")) {
+        localStorage.removeItem("token");
+        isLoggedIn.value = false;
+        router.push("/auth");
+    }
+});
 </script>
 
 <template>
   <v-app class="fade-in">
-    <!-- Show login/register page if user is NOT authenticated -->
-    <template v-if="!isAuthenticated">
+    <!-- ⏳ Show loading state -->
+    <template v-if="isLoading">
+      <div class="loading-screen">Loading...</div>
+    </template>
+
+    <!-- 🔑 Show login/register page if user is NOT authenticated -->
+    <template v-else-if="!isLoggedIn">
       <AuthPage />
     </template>
 
-    <!-- Show main content when the user IS authenticated -->
+    <!-- 🏠 Show main content when the user IS authenticated -->
     <template v-else>
-      <the-nav-bar></the-nav-bar>
-      
-      <!-- Global Navbar -->
+      <TheNavBar />
+
       <v-app-bar app color="primary" dark>
-        <!-- Logo and Title -->
         <v-toolbar-title class="d-flex align-center">
           <v-img 
             src="/path/to/your/logo.png" 
@@ -33,12 +82,9 @@ const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0();
         </v-toolbar-title>
         <v-spacer></v-spacer>
 
-        <!-- Authentication Buttons -->
-        <v-btn text disabled>Welcome, {{ user?.email }}</v-btn>
         <v-btn text @click="logout">Log Out</v-btn>
       </v-app-bar>
-      
-      <!-- Main Content -->
+
       <v-main>
         <RouterView />
       </v-main>
@@ -47,16 +93,12 @@ const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0();
 </template>
 
 <style scoped>
-.fade-in {
-  animation: fadeIn 0.4s ease-in;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.ml-3 {
-  margin-left: 1rem;
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>

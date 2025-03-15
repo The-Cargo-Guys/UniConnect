@@ -9,6 +9,12 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import router from './router';
 import App from './App.vue';
+import { authState, setAuthentication } from './stores/auth';
+
+const token = localStorage.getItem('token');
+if (token) {
+  setAuthentication(true, token);
+}
 
 const vuetify = createVuetify({
     components,

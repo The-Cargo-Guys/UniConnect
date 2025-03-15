@@ -9,11 +9,11 @@
           <input v-model="email" type="email" placeholder="Email" required />
           <input v-model="password" type="password" placeholder="Password" required />
           <input v-if="!isLogin" v-model="phoneNumber" type="text" placeholder="Phone Number" required />
-          
+  
           <button type="submit" :disabled="loading">
             {{ loading ? (isLogin ? "Logging in..." : "Registering...") : (isLogin ? "Login" : "Register") }}
           </button>
-          
+  
           <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         </form>
   
@@ -25,107 +25,200 @@
     </div>
   </template>
   
-  <script>
+  <script setup>
+  import { ref } from "vue";
   import axios from "axios";
+  import { useRouter } from "vue-router";
   
-  export default {
-    data() {
-      return {
-        isLogin: true,
-        name: "",
-        email: "",
-        password: "",
-        phoneNumber: "",
-        loading: false,
-        errorMessage: "",
-      };
-    },
-    methods: {
-      toggleForm() {
-        this.isLogin = !this.isLogin;
-        this.errorMessage = "";
-      },
-      async login() {
-        this.loading = true;
-        this.errorMessage = "";
+  const router = useRouter();
+  const isLogin = ref(true);
+  const email = ref("");
+  const password = ref("");
+  const name = ref("");
+  const phoneNumber = ref("");
+  const loading = ref(false);
+  const errorMessage = ref("");
   
-        try {
-          const response = await axios.post("/api/auth/login", {
-            email: this.email,
-            password: this.password,
-          });
+  const toggleForm = () => {
+    isLogin.value = !isLogin.value;
+    errorMessage.value = "";
+  };
   
-          localStorage.setItem("token", response.data.token);
-          this.$router.push("/dashboard");
-        } catch (error) {
-          this.errorMessage = error.response?.data || "Invalid email or password";
-        } finally {
-          this.loading = false;
-        }
-      },
-      async register() {
-        this.loading = true;
-        this.errorMessage = "";
+  // Login Function
+  const login = async () => {
+    loading.value = true;
+    errorMessage.value = "";
   
-        try {
-          await axios.post("/api/auth/register", {
-            name: this.name,
-            email: this.email,
-            password: this.password,
-            phoneNumber: this.phoneNumber,
-          });
+    try {
+      const response = await axios.post("https://localhost:7004/api/auth/login", {
+        email: email.value,
+        password: password.value,
+      });
   
-          this.$router.push("/login");
-        } catch (error) {
-          this.errorMessage = error.response?.data || "Registration failed";
-        } finally {
-          this.loading = false;
-        }
-      },
-    },
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        router.push("/");
+      } else {
+        throw new Error("Invalid response from server");
+      }
+    } catch (error) {
+      errorMessage.value = error.response?.data?.message || "Invalid email or password";
+    } finally {
+      loading.value = false;
+    }
+  };
+  
+  // Register Function
+  const register = async () => {
+    loading.value = true;
+    errorMessage.value = "";
+  
+    try {
+      await axios.post("https://localhost:7004/api/auth/register", {
+        name: name.value,
+        email: email.value,
+        password: password.value,
+        phoneNumber: phoneNumber.value,
+      });
+  
+      alert("Registration successful! Please log in.");
+      isLogin.value = true;
+    } catch (error) {
+      errorMessage.value = error.response?.data?.message || "Registration failed";
+    } finally {
+      loading.value = false;
+    }
   };
   </script>
   
   <style scoped>
-  .auth-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #f4f4f4;
+/* Center the authentication page */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+}
+
+/* Auth container (login/register box) */
+.auth-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 25px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Headings */
+.auth-container h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #333;
+}
+
+/* Form styles */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input fields */
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+/* Input focus effect */
+input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Button styles */
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s;
+}
+
+/* Button hover and active effects */
+button:hover {
+  background: #0056b3;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Disabled button */
+button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+/* Error message */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Switch between login/register */
+p {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+  color: #0056b3;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 500px) {
   .auth-container {
-    max-width: 400px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: #fff;
-    text-align: center;
-  }
-  input {
     width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 20px;
   }
-  button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+
+  h2 {
+    font-size: 22px;
   }
-  button:disabled {
-    background: #aaa;
-  }
-  .error-message {
-    color: red;
-  }
-  a {
-    color: #007bff;
-    cursor: pointer;
-  }
-  </style>
-  
+}
+</style>
