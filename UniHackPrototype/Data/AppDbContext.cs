@@ -12,8 +12,8 @@ namespace MyAspNetVueApp.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Society> Societies { get; set; }
-
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
