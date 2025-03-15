@@ -7,6 +7,9 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using UniHack.Data;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,24 @@ builder.Services.AddOpenApiDocument(config =>
     });
     config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
 });
+
+// Enable JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your-secret-key")), // Replace with a secure key
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+// Enable Authorization
+builder.Services.AddAuthorization();
 
 // Enable Dependency Injection for Database Seeding
 builder.Services.AddScoped<DbSeeder>();
@@ -61,9 +82,12 @@ app.UseStaticFiles();
 // Enforce HTTPS
 app.UseHttpsRedirection();
 
+// Enable Authentication & Authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
 // Enable Routing & Controllers
 app.UseRouting();
-app.UseAuthorization();
 app.MapControllers();
 
 // Database Initialization
