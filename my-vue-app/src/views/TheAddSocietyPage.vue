@@ -21,7 +21,7 @@ import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
-    name: "AddSocietyPage",
+    name: "TheAddSocietyPage",
     setup() {
         const router = useRouter();
         const society = ref({
