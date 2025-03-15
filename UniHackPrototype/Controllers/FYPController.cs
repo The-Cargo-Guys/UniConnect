@@ -8,7 +8,7 @@ using UniHack.Services.Interfaces;
 namespace UniHack.Controllers
 {
 	[ApiController]
-	[Route("api/for-you")]
+	[Route("api/foryou")]
 	[Authorize]
 	public class FYPController : ControllerBase
 	{
@@ -29,7 +29,7 @@ namespace UniHack.Controllers
 			_courseService = courseService;
 		}
 
-		[HttpGet("posts")]
+		[HttpGet]
 		public IActionResult GetForYouPosts()
 		{
 			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -51,7 +51,7 @@ namespace UniHack.Controllers
 			return Ok(posts);
 		}
 
-		[HttpGet("societies")]
+		[HttpGet]
 		public IActionResult GetRecommendedSocieties()
 		{
 			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -70,7 +70,7 @@ namespace UniHack.Controllers
 			return Ok("societies");
 		}
 
-		[HttpGet("courses")]
+		[HttpGet]
 		public IActionResult GetRecommendedCourses()
 		{
 			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
