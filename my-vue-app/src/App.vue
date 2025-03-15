@@ -51,7 +51,28 @@ watchEffect(() => {
         router.push("/auth");
     }
 });
+
+// ✅ **Handle Logout - Clears storage & cookies**
+const handleLogout = () => {
+    logout({
+        logoutParams: { returnTo: window.location.origin } // Redirect to home after logout
+    });
+
+    // Clear all local storage, session storage, and cookies
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
+    });
+
+    isLoggedIn.value = false; // Update UI state
+    router.push("/auth"); // Redirect user to login page
+};
 </script>
+
 
 <template>
   <v-app class="fade-in">
@@ -82,7 +103,7 @@ watchEffect(() => {
         </v-toolbar-title>
         <v-spacer></v-spacer>
 
-        <v-btn text @click="logout">Log Out</v-btn>
+        <v-btn text @click="handleLogout">Log Out</v-btn>
       </v-app-bar>
 
       <v-main>

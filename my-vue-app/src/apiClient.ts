@@ -22,7 +22,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    register(body: User | undefined): Promise<void> {
+    register(body: RegisterRequest | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/auth/register";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -60,7 +60,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    login(body: LoginModel | undefined): Promise<void> {
+    login(body: LoginRequest | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -97,8 +97,11 @@ export class Client {
     /**
      * @return OK
      */
-    profileGET(): Promise<void> {
-        let url_ = this.baseUrl + "/api/auth/profile";
+    post(postId: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/comments/post/{postId}";
+        if (postId === undefined || postId === null)
+            throw new Error("The parameter 'postId' must be defined.");
+        url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -108,11 +111,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processProfileGET(_response);
+            return this.processPost(_response);
         });
     }
 
-    protected processProfileGET(response: Response): Promise<void> {
+    protected processPost(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -131,46 +134,8 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    profilePUT(body: UpdateProfileModel | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/auth/profile";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processProfilePUT(_response);
-        });
-    }
-
-    protected processProfilePUT(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    changePassword(body: ChangePasswordModel | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/auth/change-password";
+    comments(body: Comment | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/comments";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -184,11 +149,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processChangePassword(_response);
+            return this.processComments(_response);
         });
     }
 
-    protected processChangePassword(response: Response): Promise<void> {
+    protected processComments(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1369,46 +1334,6 @@ export class Client {
     }
 }
 
-export class ChangePasswordModel implements IChangePasswordModel {
-    currentPassword?: string | undefined;
-    newPassword?: string | undefined;
-
-    constructor(data?: IChangePasswordModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.currentPassword = _data["currentPassword"];
-            this.newPassword = _data["newPassword"];
-        }
-    }
-
-    static fromJS(data: any): ChangePasswordModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChangePasswordModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["currentPassword"] = this.currentPassword;
-        data["newPassword"] = this.newPassword;
-        return data;
-    }
-}
-
-export interface IChangePasswordModel {
-    currentPassword?: string | undefined;
-    newPassword?: string | undefined;
-}
-
 export class Comment implements IComment {
     id?: string;
     content?: string | undefined;
@@ -1463,6 +1388,7 @@ export interface IComment {
 
 export class Community implements ICommunity {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1482,6 +1408,7 @@ export class Community implements ICommunity {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -1509,6 +1436,7 @@ export class Community implements ICommunity {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -1529,6 +1457,7 @@ export class Community implements ICommunity {
 
 export interface ICommunity {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1537,8 +1466,14 @@ export interface ICommunity {
     createdAt?: Date;
 }
 
+export enum CommunityType {
+    _0 = 0,
+    _1 = 1,
+}
+
 export class Course implements ICourse {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1558,6 +1493,7 @@ export class Course implements ICourse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -1585,6 +1521,7 @@ export class Course implements ICourse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -1605,6 +1542,7 @@ export class Course implements ICourse {
 
 export interface ICourse {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
@@ -1613,11 +1551,63 @@ export interface ICourse {
     createdAt?: Date;
 }
 
-export class LoginModel implements ILoginModel {
+export class Event implements IEvent {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    date?: Date;
+
+    constructor(data?: IEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.imagePathBanner = _data["imagePathBanner"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Event {
+        data = typeof data === 'object' ? data : {};
+        let result = new Event();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["imagePathBanner"] = this.imagePathBanner;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IEvent {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    imagePathBanner?: string | undefined;
+    date?: Date;
+}
+
+export class LoginRequest implements ILoginRequest {
     email?: string | undefined;
     password?: string | undefined;
 
-    constructor(data?: ILoginModel) {
+    constructor(data?: ILoginRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1633,9 +1623,9 @@ export class LoginModel implements ILoginModel {
         }
     }
 
-    static fromJS(data: any): LoginModel {
+    static fromJS(data: any): LoginRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new LoginModel();
+        let result = new LoginRequest();
         result.init(data);
         return result;
     }
@@ -1648,7 +1638,7 @@ export class LoginModel implements ILoginModel {
     }
 }
 
-export interface ILoginModel {
+export interface ILoginRequest {
     email?: string | undefined;
     password?: string | undefined;
 }
@@ -1665,6 +1655,7 @@ export class Post implements IPost {
     community?: Community;
     createdAt?: Date;
     upvotes?: number;
+    communityType?: CommunityType;
 
     constructor(data?: IPost) {
         if (data) {
@@ -1696,6 +1687,7 @@ export class Post implements IPost {
             this.community = _data["community"] ? Community.fromJS(_data["community"]) : <any>undefined;
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
             this.upvotes = _data["upvotes"];
+            this.communityType = _data["communityType"];
         }
     }
 
@@ -1727,6 +1719,7 @@ export class Post implements IPost {
         data["community"] = this.community ? this.community.toJSON() : <any>undefined;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
         data["upvotes"] = this.upvotes;
+        data["communityType"] = this.communityType;
         return data;
     }
 }
@@ -1743,16 +1736,67 @@ export interface IPost {
     community?: Community;
     createdAt?: Date;
     upvotes?: number;
+    communityType?: CommunityType;
+}
+
+export class RegisterRequest implements IRegisterRequest {
+    name?: string | undefined;
+    email?: string | undefined;
+    password?: string | undefined;
+    phoneNumber?: string | undefined;
+
+    constructor(data?: IRegisterRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.phoneNumber = _data["phoneNumber"];
+        }
+    }
+
+    static fromJS(data: any): RegisterRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["phoneNumber"] = this.phoneNumber;
+        return data;
+    }
+}
+
+export interface IRegisterRequest {
+    name?: string | undefined;
+    email?: string | undefined;
+    password?: string | undefined;
+    phoneNumber?: string | undefined;
 }
 
 export class Society implements ISociety {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
     tags?: Tag[] | undefined;
     members?: User[] | undefined;
     createdAt?: Date;
+    events?: Event[] | undefined;
 
     constructor(data?: ISociety) {
         if (data) {
@@ -1766,6 +1810,7 @@ export class Society implements ISociety {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.communityType = _data["communityType"];
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePathBanner = _data["imagePathBanner"];
@@ -1780,6 +1825,11 @@ export class Society implements ISociety {
                     this.members!.push(User.fromJS(item));
             }
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            if (Array.isArray(_data["events"])) {
+                this.events = [] as any;
+                for (let item of _data["events"])
+                    this.events!.push(Event.fromJS(item));
+            }
         }
     }
 
@@ -1793,6 +1843,7 @@ export class Society implements ISociety {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["communityType"] = this.communityType;
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePathBanner"] = this.imagePathBanner;
@@ -1807,18 +1858,25 @@ export class Society implements ISociety {
                 data["members"].push(item.toJSON());
         }
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        if (Array.isArray(this.events)) {
+            data["events"] = [];
+            for (let item of this.events)
+                data["events"].push(item.toJSON());
+        }
         return data;
     }
 }
 
 export interface ISociety {
     id?: string;
+    communityType?: CommunityType;
     name?: string | undefined;
     description?: string | undefined;
     imagePathBanner?: string | undefined;
     tags?: Tag[] | undefined;
     members?: User[] | undefined;
     createdAt?: Date;
+    events?: Event[] | undefined;
 }
 
 export class Tag implements ITag {
@@ -1859,70 +1917,6 @@ export class Tag implements ITag {
 export interface ITag {
     id?: string;
     value?: string | undefined;
-}
-
-export class UpdateProfileModel implements IUpdateProfileModel {
-    name?: string | undefined;
-    bio?: string | undefined;
-    university?: string | undefined;
-    degree?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
-
-    constructor(data?: IUpdateProfileModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.bio = _data["bio"];
-            this.university = _data["university"];
-            this.degree = _data["degree"];
-            this.imagePath = _data["imagePath"];
-            if (Array.isArray(_data["tags"])) {
-                this.tags = [] as any;
-                for (let item of _data["tags"])
-                    this.tags!.push(Tag.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): UpdateProfileModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateProfileModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["bio"] = this.bio;
-        data["university"] = this.university;
-        data["degree"] = this.degree;
-        data["imagePath"] = this.imagePath;
-        if (Array.isArray(this.tags)) {
-            data["tags"] = [];
-            for (let item of this.tags)
-                data["tags"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IUpdateProfileModel {
-    name?: string | undefined;
-    bio?: string | undefined;
-    university?: string | undefined;
-    degree?: string | undefined;
-    imagePath?: string | undefined;
-    tags?: Tag[] | undefined;
 }
 
 export class User implements IUser {
