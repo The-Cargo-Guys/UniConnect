@@ -1,7 +1,19 @@
 import Auth from "../views/Auth.vue"; // ✅ Correct import
 import UserDetails from "../views/UserDetails.vue"; // ✅ Import User Details Page
+import ProfileDetails from "../views/ProfileDetails.vue"; // ✅ Import Profile Details Page
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
-import { TheCoursesPage, TheAddCoursePage, TheHomePage, TheProfilePage, TheEditUserPage, TheSocietiesPage, TheCallbackPage, TheAddSocietyPage, TheSocietiesDetailsPage, TheCoursesDetailsPage  } from '../views';
+import { 
+    TheCoursesPage, 
+    TheAddCoursePage, 
+    TheHomePage, 
+    TheProfilePage, 
+    TheEditUserPage, 
+    TheSocietiesPage, 
+    TheCallbackPage, 
+    TheAddSocietyPage, 
+    TheSocietiesDetailsPage, 
+    TheCoursesDetailsPage  
+} from '../views';
 
 const routes: Array<RouteRecordRaw> = [
     { path: "/", component: TheHomePage },
@@ -15,7 +27,8 @@ const routes: Array<RouteRecordRaw> = [
     { path: "/add-society", component: TheAddSocietyPage, meta: { requiresAuth: true } },
     { path: "/societies/:id", name: "SocietiesDetails", component: TheSocietiesDetailsPage, meta: { requiresAuth: true } },
     { path: "/courses/:id", name: "CoursesDetails", component: TheCoursesDetailsPage, meta: { requiresAuth: true } },
-    { path: "/user-details", component: UserDetails, meta: { requiresAuth: true } }, // ✅ Added User Details Page
+    { path: "/user-details", component: UserDetails, meta: { requiresAuth: true } }, // ✅ User Details Page
+    { path: "/Views/ProfileDetails/:userId", name: "ProfileDetails", component: ProfileDetails, meta: { requiresAuth: true } }, // ✅ Added Profile Details Page
     { path: '/:pathMatch(.*)*', redirect: '/' },
 ];
 
