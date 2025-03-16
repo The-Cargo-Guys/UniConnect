@@ -17,19 +17,16 @@ namespace UniHack.Data
 			_context = context;
 		}
 
-		public void Seed()
+		public async Task SeedAsync()
 		{
 			_context.Database.EnsureCreated();
-
-			// Ensure image directories exist
-			EnsureImageDirectories();
 
 			if (!_context.Users.Any())
 			{
 				// Create Tags
 				var tags = GenerateTags();
 				_context.Tags.AddRange(tags);
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				// Create Universities
 				var universities = new List<string>
@@ -58,22 +55,22 @@ namespace UniHack.Data
 				// Create Users
 				var users = GenerateUsers(50, universities, degrees, tags);
 				_context.Users.AddRange(users);
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				// Create Courses
 				var courses = GenerateCourses(20, tags, users);
 				_context.Courses.AddRange(courses);
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				// Create Societies
 				var societies = GenerateSocieties(15, tags, users);
 				_context.Societies.AddRange(societies);
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				// Create Comments
 				var comments = GenerateComments(500, users);
 				_context.Comments.AddRange(comments);
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				// Create Posts
 				List<Community> communities = new List<Community>();
@@ -82,37 +79,21 @@ namespace UniHack.Data
 
 				var posts = GeneratePosts(200, users, tags, communities, comments);
 				_context.Posts.AddRange(posts);
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				// Create Events for Societies
 				var events = GenerateEvents(30, societies);
 				_context.Events.AddRange(events);
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				Console.WriteLine("Database seeded successfully!");
 			}
 		}
 
-		private void EnsureImageDirectories()
+		private string GetImagePath(string folder, string fileName)
 		{
-			var baseDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-
-			var directories = new[]
-			{
-				Path.Combine(baseDir, "profiles"),
-				Path.Combine(baseDir, "courses"),
-				Path.Combine(baseDir, "societies"),
-				Path.Combine(baseDir, "events")
-			};
-
-			foreach (var dir in directories)
-			{
-				if (!Directory.Exists(dir))
-				{
-					Directory.CreateDirectory(dir);
-					Console.WriteLine($"Created directory: {dir}");
-				}
-			}
+			// The path pattern for the Vue.js frontend
+			return $"/{folder}/{fileName}";
 		}
 
 		private List<Tag> GenerateTags()
@@ -170,7 +151,6 @@ namespace UniHack.Data
 						$"Exchange student from {f.Address.Country()}. Studying {f.Random.Word()} at {f.PickRandom(universities)}."
 					});
 				})
-				.RuleFor(u => u.ImagePath, f => $"/images/profiles/user_{f.Random.Number(1, 50)}.jpg")
 				.RuleFor(u => u.IsAdmin, f => false);
 
 			var users = userFaker.Generate(count);
@@ -179,6 +159,12 @@ namespace UniHack.Data
 			users[0].IsAdmin = true;
 			users[0].Name = "Admin User";
 			users[0].Email = "admin@uniconnect.dev";
+
+			// Set profile image paths
+			for (int i = 0; i < users.Count; i++)
+			{
+				users[i].ImagePath = GetImagePath("profiles", $"user_{i + 1}.jpg");
+			}
 
 			// Assign 3-7 random tags to each user
 			foreach (var user in users)
@@ -269,10 +255,15 @@ namespace UniHack.Data
 						? courseDescriptions[courseCode]
 						: $"This course provides a comprehensive introduction to {c.Name.Split(':')[1].Trim()}. Students will learn key concepts, methodologies, and practical applications.";
 				})
-				.RuleFor(c => c.ImagePathBanner, f => $"/images/courses/course_{f.Random.Number(1, 20)}.jpg")
 				.RuleFor(c => c.CreatedAt, f => f.Date.Past(2));
 
 			var courses = courseFaker.Generate(Math.Min(count, actualCourses.Count));
+
+			// Set course banner image paths
+			for (int i = 0; i < courses.Count; i++)
+			{
+				courses[i].ImagePathBanner = GetImagePath("courses", $"course_{i + 1}.jpg");
+			}
 
 			// Ensure unique course names
 			courses = courses.GroupBy(c => c.Name).Select(g => g.First()).ToList();
@@ -326,10 +317,10 @@ namespace UniHack.Data
 
 				while (courseTagList.Count < 3)
 				{
-					var randomTag = _random.Next(0, academicTags.Count);
-					if (!courseTagList.Contains(academicTags[randomTag]))
+					var randomTag = academicTags[_random.Next(academicTags.Count)];
+					if (!courseTagList.Contains(randomTag))
 					{
-						courseTagList.Add(academicTags[randomTag]);
+						courseTagList.Add(randomTag);
 					}
 				}
 
@@ -348,37 +339,114 @@ namespace UniHack.Data
 		private List<Society> GenerateSocieties(int count, List<Tag> tags, List<User> users)
 		{
 			// Real university societies
-			var actualSocieties = new List<(string Name, string Description, List<string> TagNames)>
+			var actualSocieties = new List<SocietyContent>
 			{
-				("Computer Science Society", "A community for students passionate about computer science, programming, and technology. We organize coding competitions, tech talks, industry networking events, and social gatherings.", new List<string> { "Computer Science", "Programming", "Technology" }),
-				("Engineering Students Association", "Representing all engineering students, we provide academic support, professional development opportunities, and social events to bring engineers together across all disciplines.", new List<string> { "Engineering", "Academic", "Professional Development" }),
-				("Business Society", "Connecting business students with industry professionals through networking events, case competitions, workshops, and social activities to develop professional skills and expand career opportunities.", new List<string> { "Business", "Career", "Networking" }),
-				("Law Students' Society", "Supporting law students through their academic journey with moot competitions, networking events, career panels, social activities, and advocacy for student welfare.", new List<string> { "Law", "Career", "Academic" }),
-				("Medical Students' Society", "Representing medical students' interests, providing academic support, wellbeing initiatives, community outreach, and social events to balance the demands of medical education.", new List<string> { "Medicine", "Academic", "Mental Health" }),
-				("Arts Society", "Celebrating creative expression through visual arts, music, theatre, literature, and cultural events. We provide workshops, exhibitions, performances, and collaborative projects.", new List<string> { "Arts", "Music", "Literature" }),
-				("International Students Association", "Supporting international students with cultural integration, social events, academic assistance, and advocacy to enhance the overseas student experience.", new List<string> { "Campus Life", "Social", "Cultural" }),
-				("Debating Society", "Fostering critical thinking and public speaking skills through competitive debates, workshops, and social events for both beginners and experienced debaters.", new List<string> { "Career", "Academic", "Professional Development" }),
-				("Environmental Society", "Promoting sustainability and environmental awareness through campus initiatives, community projects, educational events, and advocacy for climate action.", new List<string> { "Campus Life", "Social", "Academic" }),
-				("Sports Association", "Coordinating recreational and competitive sports programs, fitness classes, and sporting events to promote physical wellbeing and team spirit across campus.", new List<string> { "Sports", "Fitness", "Campus Life" }),
-				("Gaming Society", "Bringing together gaming enthusiasts for LAN parties, eSports tournaments, board game nights, game development workshops, and social events.", new List<string> { "Gaming", "Technology", "Social" }),
-				("Photography Club", "Exploring the art of photography through workshops, photo walks, exhibitions, competitions, and collaborative projects for all skill levels.", new List<string> { "Arts", "Campus Life", "Technology" }),
-				("Women in STEM", "Supporting and promoting women in science, technology, engineering, and mathematics through mentoring, networking, workshops, and advocacy.", new List<string> { "Academic", "Career", "Professional Development" }),
-				("Mental Health Awareness Club", "Promoting mental wellbeing, reducing stigma, and providing peer support through workshops, awareness campaigns, and social activities.", new List<string> { "Mental Health", "Self-care", "Student Life" }),
-				("Entrepreneurship Society", "Fostering innovation and entrepreneurial thinking through startup competitions, workshops, mentoring, networking, and access to resources.", new List<string> { "Entrepreneurship", "Career", "Business" }),
-				("Cultural Society", "Celebrating cultural diversity through festivals, food events, performances, language exchanges, and educational activities to promote cross-cultural understanding.", new List<string> { "Cultural", "Campus Life", "Social" }),
-				("Volunteering Society", "Connecting students with volunteering opportunities, community service projects, and social impact initiatives to make a positive difference.", new List<string> { "Student Life", "Social", "Career" }),
-				("Film Society", "Appreciating cinema through screenings, discussions, filmmaking workshops, and student film festivals for both casual viewers and aspiring filmmakers.", new List<string> { "Arts", "Student Life", "Technology" }),
+				new SocietyContent
+				{
+					Name = "Computer Science Society",
+					Description = "A community for students passionate about computer science, programming, and technology. We organize coding competitions, tech talks, industry networking events, and social gatherings.",
+					TagNames = new List<string> { "Computer Science", "Programming", "Technology" }
+				},
+				new SocietyContent
+				{
+					Name = "Engineering Students Association",
+					Description = "Representing all engineering students, we provide academic support, professional development opportunities, and social events to bring engineers together across all disciplines.",
+					TagNames = new List<string> { "Engineering", "Academic", "Professional Development" }
+				},
+				new SocietyContent
+				{
+					Name = "Business Society",
+					Description = "Connecting business students with industry professionals through networking events, case competitions, workshops, and social activities to develop professional skills and expand career opportunities.",
+					TagNames = new List<string> { "Business", "Career", "Networking" }
+				},
+				new SocietyContent
+				{
+					Name = "Law Students' Society",
+					Description = "Supporting law students through their academic journey with moot competitions, networking events, career panels, social activities, and advocacy for student welfare.",
+					TagNames = new List<string> { "Law", "Career", "Academic" }
+				},
+				new SocietyContent
+				{
+					Name = "Medical Students' Society",
+					Description = "Representing medical students' interests, providing academic support, wellbeing initiatives, community outreach, and social events to balance the demands of medical education.",
+					TagNames = new List<string> { "Medicine", "Academic", "Mental Health" }
+				},
+				new SocietyContent
+				{
+					Name = "Arts Society",
+					Description = "Celebrating creative expression through visual arts, music, theatre, literature, and cultural events. We provide workshops, exhibitions, performances, and collaborative projects.",
+					TagNames = new List<string> { "Arts", "Music", "Literature" }
+				},
+				new SocietyContent
+				{
+					Name = "International Students Association",
+					Description = "Supporting international students with cultural integration, social events, academic assistance, and advocacy to enhance the overseas student experience.",
+					TagNames = new List<string> { "Campus Life", "Social", "Cultural" }
+				},
+				new SocietyContent
+				{
+					Name = "Debating Society",
+					Description = "Fostering critical thinking and public speaking skills through competitive debates, workshops, and social events for both beginners and experienced debaters.",
+					TagNames = new List<string> { "Career", "Academic", "Professional Development" }
+				},
+				new SocietyContent
+				{
+					Name = "Environmental Society",
+					Description = "Promoting sustainability and environmental awareness through campus initiatives, community projects, educational events, and advocacy for climate action.",
+					TagNames = new List<string> { "Campus Life", "Social", "Academic" }
+				},
+				new SocietyContent
+				{
+					Name = "Sports Association",
+					Description = "Coordinating recreational and competitive sports programs, fitness classes, and sporting events to promote physical wellbeing and team spirit across campus.",
+					TagNames = new List<string> { "Sports", "Fitness", "Campus Life" }
+				},
+				new SocietyContent
+				{
+					Name = "Gaming Society",
+					Description = "Bringing together gaming enthusiasts for LAN parties, eSports tournaments, board game nights, game development workshops, and social events.",
+					TagNames = new List<string> { "Gaming", "Technology", "Social" }
+				},
+				new SocietyContent
+				{
+					Name = "Photography Club",
+					Description = "Exploring the art of photography through workshops, photo walks, exhibitions, competitions, and collaborative projects for all skill levels.",
+					TagNames = new List<string> { "Arts", "Campus Life", "Technology" }
+				},
+				new SocietyContent
+				{
+					Name = "Women in STEM",
+					Description = "Supporting and promoting women in science, technology, engineering, and mathematics through mentoring, networking, workshops, and advocacy.",
+					TagNames = new List<string> { "Academic", "Career", "Professional Development" }
+				},
+				new SocietyContent
+				{
+					Name = "Mental Health Awareness Club",
+					Description = "Promoting mental wellbeing, reducing stigma, and providing peer support through workshops, awareness campaigns, and social activities.",
+					TagNames = new List<string> { "Mental Health", "Self-care", "Student Life" }
+				},
+				new SocietyContent
+				{
+					Name = "Entrepreneurship Society",
+					Description = "Fostering innovation and entrepreneurial thinking through startup competitions, workshops, mentoring, networking, and access to resources.",
+					TagNames = new List<string> { "Entrepreneurship", "Career", "Business" }
+				}
 			};
 
 			var societyFaker = new Faker<Society>()
 				.RuleFor(s => s.Id, f => Guid.NewGuid())
 				.RuleFor(s => s.Name, f => "")  // Will be set later
 				.RuleFor(s => s.Description, f => "")  // Will be set later
-				.RuleFor(s => s.ImagePathBanner, f => $"/images/societies/society_{f.Random.Number(1, 15)}.jpg")
 				.RuleFor(s => s.CreatedAt, f => f.Date.Past(3))
 				.RuleFor(s => s.Events, f => new List<Event>());
 
 			var societies = societyFaker.Generate(Math.Min(count, actualSocieties.Count));
+
+			// Set society banner image paths
+			for (int i = 0; i < societies.Count; i++)
+			{
+				societies[i].ImagePathBanner = GetImagePath("societies", $"society_{i + 1}.jpg");
+			}
 
 			// Use actual society data
 			for (int i = 0; i < societies.Count; i++)
@@ -613,42 +681,6 @@ namespace UniHack.Data
 				{
 					Title = "Group Project Partner Search",
 					Content = "I'm looking for 2-3 partners for the group project. My interests are in machine learning and natural language processing, and I'm hoping to work on something related to sentiment analysis. I'm organized, reliable, and good with deadlines. If you're interested in teaming up, let me know a bit about your interests and availability for meetings!"
-				},
-
-				new PostContent
-				{
-					Title = "Past Exam Paper Summary",
-					Content = "I went through all the past exam papers from the last 5 years and noticed some patterns. There's always at least one question on [specific topic], and the essay section usually gives options related to weeks 4, 7, and 10. The multiple choice seems to focus heavily on terminology and definitions. Hope this helps with your revision strategy!"
-				},
-
-				new PostContent
-				{
-					Title = "Extension Request Process",
-					Content = "For those who might need it: I found out that the process for requesting extensions has changed this semester. You need to fill out the new form on the faculty website (not the old one linked in the course outline) and provide supporting documentation. Requests need to be submitted at least 3 business days before the deadline unless it's an emergency."
-				},
-
-				new PostContent
-				{
-					Title = "Interesting Related Article",
-					Content = "I came across this fascinating article in [Journal Name] that relates directly to what we're studying in week 8. It presents a different perspective on [theory/concept] than what's covered in our textbook. I thought it might interest those who want to dive deeper into this topic. There's a particularly good section on practical applications that might be useful for our final projects."
-				},
-
-				new PostContent
-				{
-					Title = "Tutor Office Hours Change",
-					Content = "Just a heads up that our tutor has changed their office hours for the rest of the semester. The new times are Tuesdays 2-4pm and Thursdays 10-11am in room E6.22. They mentioned they're particularly willing to help with the upcoming assignment, so it might be worth dropping by if you're struggling with it."
-				},
-
-				new PostContent
-				{
-					Title = "Calculator Policy for Final Exam",
-					Content = "I checked with the course coordinator about the calculator policy for our final exam. Only non-programmable scientific calculators are allowed (the same policy as for the midterm). They'll be checking calculator models at the door, so make sure yours complies with the policy. The specific approved models are listed on the faculty website."
-				},
-
-				new PostContent
-				{
-					Title = "Recommended Textbook Alternatives",
-					Content = "For those finding the prescribed textbook difficult to understand, I've discovered some great alternatives that explain the same concepts in a more accessible way. [Book Title] by [Author] is particularly good for [specific topic], and there's a free PDF of [Another Book] available online that covers the foundations really well. These really helped me understand the material better!"
 				}
 			};
 
@@ -682,72 +714,6 @@ namespace UniHack.Data
 				{
 					Title = "Community Service Opportunity",
 					Content = "We're partnering with [Charity Name] for a community service day on [date]. We need volunteers to help with their [specific project/event], which supports [cause/community]. This is a great opportunity to give back to the community and earn volunteer hours for your co-curricular recognition program. No experience necessary - training will be provided on the day. Please register your interest by commenting below!"
-				},
-
-				new PostContent
-				{
-					Title = "Competition Winners Announcement",
-					Content = "Congratulations to the winners of our annual [competition name]! After careful deliberation by our panel of judges, the results are: 1st Place: [Name] for [project/entry description] 2nd Place: [Name] for [project/entry description] 3rd Place: [Name] for [project/entry description] Honorable Mentions: [Names] Thank you to all participants for your outstanding submissions and to our sponsors for providing the amazing prizes."
-				},
-
-				new PostContent
-				{
-					Title = "End of Semester Social",
-					Content = "Join us for our end of semester celebration at [venue] on [date] from [time]! We'll be reflecting on our achievements this semester, recognizing our outstanding members, and simply enjoying each other's company before the exam period begins. Tickets are $15 for members and include food, your first drink, and entertainment. Book through the link below by [deadline] - spots are filling fast!"
-				},
-
-				new PostContent
-				{
-					Title = "Call for Committee Applications",
-					Content = "We're looking for enthusiastic members to join our organizing committee for next semester! Available roles include Events Coordinator, Marketing Officer, Treasurer, and First Year Representative. This is a fantastic opportunity to develop leadership skills, expand your network, and make a real impact on the society. No previous experience required - just passion and commitment! Apply using the form linked below by [deadline]."
-				},
-
-				new PostContent
-				{
-					Title = "Member Spotlight: Sarah's Internship Success",
-					Content = "In this month's member spotlight, we're featuring Sarah Zhang, a third-year student who recently secured an internship at [Company Name]! In this post, Sarah shares her journey, application process tips, and how being part of our society helped her develop the skills that impressed her interviewers. Check out the full interview for some great insights and inspiration for your own career journey!"
-				},
-
-				new PostContent
-				{
-					Title = "Discount Partnership Announcement",
-					Content = "We're thrilled to announce our new partnership with [Company/Service Name]! All society members can now enjoy a 15% discount on their products/services by showing your membership card or using the code [CODE] online. This is perfect for [specific use case relevant to members]. Plus, a percentage of each purchase goes back to supporting our society events. Win-win!"
-				},
-
-				new PostContent
-				{
-					Title = "Survey: Planning Next Semester's Events",
-					Content = "Help us plan next semester's calendar by completing our quick 5-minute survey! We want to ensure our events and initiatives align with what you want to get out of your membership. Everyone who completes the survey by [deadline] will go into the draw to win [prize]. Your feedback is invaluable in helping us continue to improve and grow as a society."
-				},
-
-				new PostContent
-				{
-					Title = "Resources from Last Week's Workshop",
-					Content = "For those who attended our [workshop topic] workshop last week, the slides, handouts, and additional resources mentioned by our speaker are now available on our website in the members' area. For those who couldn't make it, we've also uploaded a recording of the session. The password to access these materials has been emailed to all members."
-				},
-
-				new PostContent
-				{
-					Title = "Merchandise Pre-orders Now Open",
-					Content = "Our new merchandise range is here and looking amazing! We've got hoodies ($45), t-shirts ($25), tote bags ($15), and the ever-popular sticker packs ($5). All items feature our new design voted for by members last month. Pre-orders are open until [deadline], with items available for collection at our next general meeting. Order through the link in our bio!"
-				},
-
-				new PostContent
-				{
-					Title = "Congratulations to Our Graduating Members",
-					Content = "As the academic year comes to a close, we want to take a moment to celebrate our members who are graduating! You've all contributed so much to our society and we can't wait to see what you achieve next. We're organizing a special graduation dinner on [date] at [venue] - details and RSVP in the link below. Once a member, always a member!"
-				},
-
-				new PostContent
-				{
-					Title = "Sponsorship Opportunity for Student Projects",
-					Content = "Great news! Our industry partner [Company Name] has offered to sponsor student projects related to [field/topic]. Selected projects will receive funding of up to $500, mentorship from industry professionals, and the opportunity to present at their offices to senior staff. Applications are open to all members until [deadline]. See the attached brief for eligibility criteria and application details."
-				},
-
-				new PostContent
-				{
-					Title = "Inter-University Collaboration Event",
-					Content = "We're excited to announce a joint event with the [Similar Society] from [Other University] on [date]! This will be a fantastic opportunity to network with peers from another institution, share ideas, and participate in [activity/competition/discussion]. The event will be held at [location] and is free for members of both societies. Transport options will be available - register your interest below."
 				}
 			};
 
@@ -781,66 +747,6 @@ namespace UniHack.Data
 				{
 					Title = "Part-time Job Opportunities for Students",
 					Content = "For those looking to earn while studying, I've researched student-friendly employment options: University positions: Check the internal jobs board for casual admin, library, and ambassador roles Retail/Hospitality: [Shopping Center] and [Area] restaurants often hire students with flexible hours Tutoring: The university tutoring service pays $30-35/hour for undergrad tutors Online gigs: Transcription, user testing, and virtual assistance work can fit around study commitments Remember that international students have work restrictions to consider!"
-				},
-
-				new PostContent
-				{
-					Title = "Technology Tools That Saved My Degree",
-					Content = "Throughout my degree, I've discovered several tech tools that have significantly improved my productivity and learning: Notion for organizing all my notes and assignments Zotero for painlessly managing references and citations Forest app for focusing during study sessions Anki for spaced repetition flashcards when memorizing is needed Google Calendar for keeping track of all commitments I'd love to hear what tools others find indispensable!"
-				},
-
-				new PostContent
-				{
-					Title = "Navigating Scholarship Applications",
-					Content = "After successfully applying for three scholarships, I've learned some valuable lessons I want to share: Start researching opportunities months in advance - many have similar requirements so you can adapt applications Use the university scholarships office - they provide feedback on drafts Address selection criteria directly with specific examples Focus on unique aspects of your background and achievements Tailor your application to each scholarship's values Happy to answer questions about the process!"
-				},
-
-				new PostContent
-				{
-					Title = "Fitness Options on a Student Budget",
-					Content = "Staying active is crucial for mental and physical health, but gym memberships can be expensive. Here are some budget-friendly fitness options I've found: The university gym offers student rates and free trial classes Various clubs run free or low-cost yoga, running groups, and dance classes [Local Park] has outdoor exercise equipment The university pool is free for students The [Sport] courts can be booked at no cost during off-peak times What other affordable fitness options have you discovered?"
-				},
-
-				new PostContent
-				{
-					Title = "Sustainable Living as a Student",
-					Content = "I've been working on reducing my environmental footprint while at uni, and wanted to share some accessible sustainability practices: Our campus has water refill stations everywhere - invest in a good bottle Bulk food stores near campus allow you to reduce packaging waste The student co-op sells affordable second-hand textbooks The sustainability office loans out reusable coffee cups The bike share program is free for the first 30 minutes What other eco-friendly campus resources have you found?"
-				},
-
-				new PostContent
-				{
-					Title = "International Exchange Experience: What I Wish I'd Known",
-					Content = "Having just returned from a semester abroad at [University] in [Country], I wanted to share insights for those considering an exchange: The application process takes much longer than you expect - start a year ahead Scholarships specifically for exchange students exist but aren't well advertised Credit transfer approval is crucial - get it in writing before you go Budget for local travel during mid-semester breaks - it's the best part! Joining student clubs immediately helps with making friends I'm happy to chat with anyone considering an exchange program!"
-				},
-
-				new PostContent
-				{
-					Title = "Recommended Electives Review",
-					Content = "For those looking for interesting electives, here's my honest review of the ones I've taken: [Course Code]: Light workload, fascinating content, engaging lecturer [Course Code]: Challenging but rewarding, practical skills gained, responsive teaching team [Course Code]: Avoid - disorganized, unclear expectations, heavy theory with no application [Course Code]: Perfect GPA booster, interesting topics, no exam Which electives have others enjoyed or regretted?"
-				},
-
-				new PostContent
-				{
-					Title = "Creating a Standout LinkedIn Profile",
-					Content = "After working with a career advisor to optimize my LinkedIn profile, I've seen a significant increase in recruiter connections. Here are the key improvements I made: Professional headshot (the university careers service offers free sessions) Comprehensive skills section with endorsements from professors and peers Detailed course projects with outcomes and metrics Consistent activity through sharing relevant articles and commenting Has anyone else found effective strategies for building their professional online presence?"
-				},
-
-				new PostContent
-				{
-					Title = "Apps That Make Uni Life Easier",
-					Content = "I've compiled a list of apps that have been game-changers for my university experience: [Transit App] for accurate public transport times [Meal Planning App] for budget-friendly grocery shopping and reducing food waste [Study Planner App] for breaking down assignments into manageable tasks [Expense Tracker] for staying on top of student finances [Campus App] for room bookings and quick access to timetables Which apps do you find essential for student life?"
-				},
-
-				new PostContent
-				{
-					Title = "Creative Date Ideas Near Campus",
-					Content = "For those balancing romance and study, here are some affordable and fun date ideas around campus: The rooftop garden in [Building] has amazing sunset views The [Museum/Gallery] on campus has free student entry on Thursdays The monthly night markets in [Area] have great food and atmosphere The film society screens classics for $5 including popcorn [Café Name] does student happy hour with 2-for-1 drinks from 3-5pm What are your go-to date spots around university?"
-				},
-
-				new PostContent
-				{
-					Title = "Textbook Alternatives That Saved Me $$",
-					Content = "After spending way too much on textbooks in my first year, I've found several alternatives that have saved me hundreds: The library's course reserve section has copies of all required texts The [Website] has older editions that are usually 90% identical to current ones Forming a textbook share group with classmates Digital access through the university library (often overlooked!) Open educational resources for common first-year subjects What textbook hacks have worked for others?"
 				}
 			};
 
@@ -894,23 +800,6 @@ namespace UniHack.Data
 					var academicTag = tags.FirstOrDefault(t => t.Value == "Academic");
 					if (academicTag != null) relevantTags.Add(academicTag);
 
-					// Add specific academic activity tags based on post title
-					if (postContent.Title.Contains("Assignment") || postContent.Title.Contains("Project"))
-					{
-						var assignmentTag = tags.FirstOrDefault(t => t.Value == "Assignment Help");
-						if (assignmentTag != null) relevantTags.Add(assignmentTag);
-					}
-					else if (postContent.Title.Contains("Exam") || postContent.Title.Contains("Quiz"))
-					{
-						var examTag = tags.FirstOrDefault(t => t.Value == "Exam Prep");
-						if (examTag != null) relevantTags.Add(examTag);
-					}
-					else if (postContent.Title.Contains("Study Group"))
-					{
-						var studyTag = tags.FirstOrDefault(t => t.Value == "Study Group");
-						if (studyTag != null) relevantTags.Add(studyTag);
-					}
-
 					post.Tags = relevantTags.Distinct().Take(Math.Min(relevantTags.Count, 4)).ToList();
 				}
 				else if (post.Community is Society)
@@ -932,22 +821,8 @@ namespace UniHack.Data
 						};
 					}
 
-					// Add tags from the society plus relevant activity tags
-					var relevantTags = new List<Tag>(post.Community.Tags);
-
-					// Add additional tags based on post title
-					if (postContent.Title.Contains("Event") || postContent.Title.Contains("Workshop") || postContent.Title.Contains("Social"))
-					{
-						var eventTag = tags.FirstOrDefault(t => t.Value == "Campus Events");
-						if (eventTag != null) relevantTags.Add(eventTag);
-					}
-					else if (postContent.Title.Contains("Career") || postContent.Title.Contains("Industry") || postContent.Title.Contains("Professional"))
-					{
-						var careerTag = tags.FirstOrDefault(t => t.Value == "Career");
-						if (careerTag != null) relevantTags.Add(careerTag);
-					}
-
-					post.Tags = relevantTags.Distinct().Take(Math.Min(relevantTags.Count, 4)).ToList();
+					// Add tags from the society
+					post.Tags = post.Community.Tags.Take(Math.Min(post.Community.Tags.Count, 4)).ToList();
 				}
 				else
 				{
@@ -968,27 +843,15 @@ namespace UniHack.Data
 						};
 					}
 
-					// Add general tags based on content
-					var relevantTags = new List<Tag>();
-					foreach (var tag in tags)
-					{
-						if (postContent.Title.Contains(tag.Value) || postContent.Content.Contains(tag.Value))
-						{
-							relevantTags.Add(tag);
-						}
-					}
+					// Add general tags
+					var campusTag = tags.FirstOrDefault(t => t.Value == "Campus Life");
+					var studentTag = tags.FirstOrDefault(t => t.Value == "Student Life");
 
-					// If no specific tags found, add some general ones
-					if (relevantTags.Count < 2)
-					{
-						var campusTag = tags.FirstOrDefault(t => t.Value == "Campus Life");
-						if (campusTag != null) relevantTags.Add(campusTag);
+					var generalTags = new List<Tag>();
+					if (campusTag != null) generalTags.Add(campusTag);
+					if (studentTag != null) generalTags.Add(studentTag);
 
-						var studentTag = tags.FirstOrDefault(t => t.Value == "Student Life");
-						if (studentTag != null) relevantTags.Add(studentTag);
-					}
-
-					post.Tags = relevantTags.Distinct().Take(Math.Min(relevantTags.Count, 4)).ToList();
+					post.Tags = generalTags;
 				}
 
 				// Set the title and content
@@ -1009,10 +872,12 @@ namespace UniHack.Data
 				post.CommunityId = post.Community.Id;
 
 				// Add 0-8 random comments to each post
-				var commentsForPost = allComments.Where(c => !c.Author.Id.Equals(post.Author.Id)) // Avoid author commenting on own post
-											   .OrderBy(x => Guid.NewGuid())
-											   .Take(_random.Next(0, 9))
-											   .ToList();
+				var commentsForPost = allComments
+					.Where(c => !c.Author.Id.Equals(post.Author.Id)) // Avoid author commenting on own post
+					.OrderBy(x => Guid.NewGuid())
+					.Take(_random.Next(0, 9))
+					.ToList();
+
 				post.Comments = commentsForPost;
 			}
 
@@ -1061,86 +926,9 @@ namespace UniHack.Data
 
 				new EventContent
 				{
-					Name = "Networking Mixer with Alumni",
-					Description = "We're bringing together current students and successful alumni for an evening of networking and knowledge sharing. Our alumni are now working at companies like Google, Microsoft, Goldman Sachs, and leading startups, and they're eager to share their experiences and advice. This event consistently leads to internship and job opportunities for our members. Business casual attire recommended.",
-					Date = DateTime.Now.AddDays(60)
-				},
-
-				new EventContent
-				{
-					Name = "Field Trip: Industry Site Visit",
-					Description = "We've arranged an exclusive tour of the local offices of a leading company in our field. See real-world applications of what you're learning in your courses, meet professionals in various roles, and get a feel for the working environment. Transport will be provided from campus, departing at 9am and returning by 3pm. Registration is essential as visitor passes need to be arranged in advance.",
-					Date = DateTime.Now.AddDays(75)
-				},
-
-				new EventContent
-				{
 					Name = "End of Semester Celebration",
 					Description = "Join us to celebrate the end of another successful semester! We'll be recognizing our outstanding members, thanking our outgoing committee, and simply enjoying each other's company before the break. The ticket price includes dinner, entertainment, and your first drink. This is always our most popular event of the year, so book early to avoid disappointment.",
-					Date = DateTime.Now.AddDays(90)
-				},
-
-				new EventContent
-				{
-					Name = "Skills Workshop: Public Speaking",
-					Description = "Develop one of the most valuable professional skills in this interactive workshop focused on public speaking and presentation techniques. Led by a professional communications coach, you'll learn strategies to overcome nervousness, structure effective presentations, and engage your audience. You'll have the opportunity to practice in a supportive environment and receive constructive feedback.",
-					Date = DateTime.Now.AddDays(7)
-				},
-
-				new EventContent
-				{
-					Name = "Hackathon: Solutions for Sustainability",
-					Description = "Put your skills to work for a good cause in our 48-hour hackathon focused on creating technological solutions for environmental sustainability. Work in teams to develop prototypes that address real-world problems. Mentors from industry will be available throughout the event to provide guidance. Prizes include cash awards, tech gadgets, and opportunities to further develop your project with industry support.",
-					Date = DateTime.Now.AddDays(28)
-				},
-
-				new EventContent
-				{
-					Name = "Career Fair Preparation Session",
-					Description = "With the university career fair approaching, we're hosting a preparation session to help you make the most of this opportunity. Learn how to research companies, prepare your elevator pitch, navigate the fair effectively, and follow up with contacts afterward. We'll also have a resume review station and LinkedIn profile check to ensure you're presenting yourself optimally to potential employers.",
-					Date = DateTime.Now.AddDays(14)
-				},
-
-				new EventContent
-				{
-					Name = "Academic Support: Exam Preparation",
-					Description = "As exams approach, we're organizing study sessions led by high-achieving senior students. These sessions will focus on reviewing key concepts, discussing past exam questions, and sharing effective study strategies specific to your courses. Small groups will ensure you get personalized assistance with challenging topics. Bring your questions and study materials!",
-					Date = DateTime.Now.AddDays(30)
-				},
-
-				new EventContent
-				{
-					Name = "Community Volunteering Day",
-					Description = "Give back to the community while building friendships within our society! We're partnering with a local organization for a day of meaningful volunteer work. Activities will include environmental cleanup, assistance at a community center, and support for a local fundraising event. No specific skills required - just your enthusiasm and willingness to help. Transport and lunch will be provided.",
-					Date = DateTime.Now.AddDays(21)
-				},
-
-				new EventContent
-				{
-					Name = "Industry Mentorship Program Launch",
-					Description = "We're excited to launch our industry mentorship program, connecting students with professionals in their field of interest. Join us for the kickoff event where you'll learn about the program structure, expectations, and benefits. You'll also have the opportunity to meet potential mentors and express your preferences. This program has helped countless students clarify their career goals and build valuable industry connections.",
-					Date = DateTime.Now.AddDays(10)
-				},
-
-				new EventContent
-				{
-					Name = "Research Showcase",
-					Description = "Celebrating the research achievements of our members! Selected students will present their research projects, ranging from course-related assignments to independent studies and honors theses. This is a fantastic opportunity to learn about diverse research topics, practice your presentation skills, and get inspired for your own academic pursuits. Presenters will receive valuable feedback from faculty members in attendance.",
-					Date = DateTime.Now.AddDays(40)
-				},
-
-				new EventContent
-				{
-					Name = "Cultural Exchange Night",
-					Description = "Celebrate the diversity within our society at this multicultural event featuring food, music, performances, and traditions from around the world. Members are encouraged to share aspects of their cultural heritage through displays, performances, or bringing a traditional dish to share. This is always one of our most popular and enriching events, fostering cross-cultural understanding and appreciation.",
-					Date = DateTime.Now.AddDays(25)
-				},
-
-				new EventContent
-				{
-					Name = "Professional Photoshoot Session",
-					Description = "Need a professional headshot for your LinkedIn profile or job applications? We've arranged for a professional photographer to take high-quality headshots for our members at a fraction of the usual cost. Multiple backdrop options will be available, and you'll receive both color and black-and-white edited images. Appointments are available in 15-minute slots throughout the day.",
-					Date = DateTime.Now.AddDays(35)
+					Date = DateTime.Now.AddDays(60)
 				}
 			};
 
@@ -1148,76 +936,64 @@ namespace UniHack.Data
 				.RuleFor(e => e.Id, f => Guid.NewGuid())
 				.RuleFor(e => e.Name, f => "")  // Will set later
 				.RuleFor(e => e.Description, f => "")  // Will set later
-				.RuleFor(e => e.ImagePathBanner, f => $"/images/events/event_{f.Random.Number(1, 30)}.jpg")
 				.RuleFor(e => e.Date, f => f.Date.Future(1))
 				.RuleFor(e => e.SocietyId, f => f.PickRandom(societies).Id);
 
-			var events = eventFaker.Generate(Math.Min(count, eventData.Count));
+			var events = eventFaker.Generate(count);
 
-			// Use predefined event data
+			// Set event banner image paths
 			for (int i = 0; i < events.Count; i++)
 			{
-				events[i].Name = eventData[i].Name;
-				events[i].Description = eventData[i].Description;
+				events[i].ImagePathBanner = GetImagePath("events", $"event_{i + 1}.jpg");
+			}
 
-				// Use the predefined date if available, otherwise keep the random future date
-				var predefinedDate = eventData[i].Date;
-				if (predefinedDate != null)
+			// Use predefined event data where available
+			for (int i = 0; i < events.Count; i++)
+			{
+				if (i < eventData.Count)
 				{
-					events[i].Date = predefinedDate.Value;
+					events[i].Name = eventData[i].Name;
+					events[i].Description = eventData[i].Description;
+
+					// Use the predefined date if available
+					var predefinedDate = eventData[i].Date;
+					if (predefinedDate != null)
+					{
+						events[i].Date = predefinedDate.Value;
+					}
+				}
+				else
+				{
+					// For remaining events, generate data
+					var eventNameFaker = new Faker();
+					events[i].Name = eventNameFaker.Commerce.ProductName() + " Event";
+					events[i].Description = eventNameFaker.Lorem.Paragraph(3);
 				}
 
-				// Ensure SocietyId references an existing society
-				// Distribute events among societies based on event type
-				// Match events to relevant societies where possible
-				if (events[i].Name.Contains("Tech") || events[i].Name.Contains("Hackathon") || events[i].Name.Contains("Programming"))
+				// Match events to relevant societies based on name
+				if (events[i].Name.Contains("Tech") || events[i].Name.Contains("Programming"))
 				{
-					var techSociety = societies.FirstOrDefault(s => s.Name.Contains("Computer") || s.Name.Contains("Tech") || s.Name.Contains("Engineering"));
+					var techSociety = societies.FirstOrDefault(s => s.Name.Contains("Computer") || s.Name.Contains("Tech"));
 					if (techSociety != null)
 					{
 						events[i].SocietyId = techSociety.Id;
 					}
 				}
-				else if (events[i].Name.Contains("Business") || events[i].Name.Contains("Career") || events[i].Name.Contains("Networking"))
+				else if (events[i].Name.Contains("Career") || events[i].Name.Contains("Resume"))
 				{
-					var businessSociety = societies.FirstOrDefault(s => s.Name.Contains("Business") || s.Name.Contains("Entrepreneurship"));
-					if (businessSociety != null)
+					var careerSociety = societies.FirstOrDefault(s => s.Name.Contains("Business") || s.Name.Contains("Career"));
+					if (careerSociety != null)
 					{
-						events[i].SocietyId = businessSociety.Id;
+						events[i].SocietyId = careerSociety.Id;
 					}
 				}
-				else if (events[i].Name.Contains("Law") || events[i].Name.Contains("Legal") || events[i].Name.Contains("Debate"))
-				{
-					var lawSociety = societies.FirstOrDefault(s => s.Name.Contains("Law") || s.Name.Contains("Debating"));
-					if (lawSociety != null)
-					{
-						events[i].SocietyId = lawSociety.Id;
-					}
-				}
-				else if (events[i].Name.Contains("Cultural") || events[i].Name.Contains("International"))
-				{
-					var culturalSociety = societies.FirstOrDefault(s => s.Name.Contains("Cultural") || s.Name.Contains("International"));
-					if (culturalSociety != null)
-					{
-						events[i].SocietyId = culturalSociety.Id;
-					}
-				}
-				else if (events[i].Name.Contains("Arts") || events[i].Name.Contains("Film") || events[i].Name.Contains("Photography"))
-				{
-					var artsSociety = societies.FirstOrDefault(s => s.Name.Contains("Arts") || s.Name.Contains("Film") || s.Name.Contains("Photography"));
-					if (artsSociety != null)
-					{
-						events[i].SocietyId = artsSociety.Id;
-					}
-				}
-				// General events can stay with random society assignment
 			}
 
 			return events;
 		}
 	}
 
-	// Helper classes to fix tuple access issues
+	// Helper classes
 	public class PostContent
 	{
 		public string Title { get; set; } = "";
@@ -1229,5 +1005,12 @@ namespace UniHack.Data
 		public string Name { get; set; } = "";
 		public string Description { get; set; } = "";
 		public DateTime? Date { get; set; }
+	}
+
+	public class SocietyContent
+	{
+		public string Name { get; set; } = "";
+		public string Description { get; set; } = "";
+		public List<string> TagNames { get; set; } = new List<string>();
 	}
 }

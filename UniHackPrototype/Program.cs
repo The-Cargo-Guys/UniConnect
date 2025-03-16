@@ -102,7 +102,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.EnsureCreated();
 
     var seeder = services.GetRequiredService<DbSeeder>();
-    seeder.Seed();
+    await seeder.SeedAsync();
 }
 
 app.Run();
