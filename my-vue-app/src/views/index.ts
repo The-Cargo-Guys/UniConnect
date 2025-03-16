@@ -1,4 +1,5 @@
 import TheProfilePage from './TheProfilePage.vue';
+import TheEditUserPage from './TheEditUserPage.vue';
 import TheCoursesPage from './TheCoursesPage.vue';
 import TheAddCoursePage from './TheAddCoursePage.vue';
 import TheHomePage from './TheHomePage.vue';
@@ -8,4 +9,4 @@ import TheSocietiesDetailsPage from './TheSocietiesDetailsPage.vue';
 import TheRegistryPage from './TheRegistryPage.vue';
 import TheCallbackPage from "./TheCallbackPage.vue";
 
-export { TheProfilePage, TheCoursesPage, TheAddCoursePage, TheHomePage, TheSocietiesPage, TheRegistryPage, TheAddSocietyPage, TheCallbackPage, TheSocietiesDetailsPage };
+export { TheProfilePage, TheEditUserPage, TheCoursesPage, TheAddCoursePage, TheHomePage, TheSocietiesPage, TheRegistryPage, TheAddSocietyPage, TheCallbackPage, TheSocietiesDetailsPage };

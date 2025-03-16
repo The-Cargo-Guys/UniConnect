@@ -1,49 +1,3 @@
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useRouter } from "vue-router";
-  
-export default defineComponent({
-  name: "CoursesPage",
-  setup() {
-    const router = useRouter();
-    const courses = ref([
-      {
-        id: 1,
-        name: "Tech Enthusiasts",
-        description: "A course for tech lovers to discuss and share knowledge.",
-        banner: "https://via.placeholder.com/600x200",
-      },
-      {
-        id: 2,
-        name: "Gaming Club",
-        description: "Join us for weekly gaming sessions and tournaments!",
-        banner: "./images/UniConnect.png",
-      },
-    ]);
-
-    const joinCourse = (id: number) => {
-      alert(`Joined course with ID: ${id}`);
-    };
-
-    const goToAddCourse = () => {
-      router.push("/add-course");
-    };
-
-    // Navigate to Course Details page using the route name "CourseDetails"
-    const openCourse = (id: number) => {
-      router.push({ name: "CoursesDetails", params: { id } });
-    };
-
-    return {
-      courses,
-      joinCourse,
-      goToAddCourse,
-      openCourse,
-    };
-  },
-});
-</script>
-
 <template>
   <div id="courses-page" class="container">
     <h1>Courses</h1>
@@ -59,15 +13,77 @@ export default defineComponent({
         <div class="course-info">
           <h2>{{ course.name }}</h2>
           <p>{{ course.description }}</p>
-          <!-- The join button stops propagation so it doesn't trigger navigation -->
           <button @click.stop="joinCourse(course.id)" class="join-btn">
             Join
           </button>
         </div>
       </div>
     </div>
+    <div v-if="loading" class="loading">Loading societies...</div>
+    <div v-if="error" class="error">{{ error }}</div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+
+export default defineComponent({
+  name: 'CoursesPage',
+  setup() {
+    const router = useRouter();
+    interface Course {
+      id: number;
+      name: string;
+      description: string;
+      banner: string;
+    }
+
+    const courses = ref<Course[]>([]);
+    const loading = ref(false);
+    const error = ref('');
+
+    const fetchCourses = async () => {
+      loading.value = true;
+      try {
+        const response = await axios.get('/api/courses');
+        courses.value = response.data;
+      } catch (err) {
+        console.error('API Error:', err);
+        error.value = 'Failed to load courses.';
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    const joinCourse = (id: number) => {
+      alert(`Joined course with ID: ${id}`);
+    };
+
+    const goToAddCourse = () => {
+      router.push('/add-course');
+    };
+
+    const openCourse = (id: number) => {
+      router.push({ name: 'CourseDetails', params: { id } });
+    };
+
+    onMounted(() => {
+      fetchCourses();
+    });
+
+    return {
+      courses,
+      loading,
+      error,
+      joinCourse,
+      goToAddCourse,
+      openCourse
+    };
+  },
+});
+</script>
 
 <style scoped>
 .container {
@@ -130,5 +146,15 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.loading {
+  margin-top: 1rem;
+  color: #4a90e2;
+}
+
+.error {
+  margin-top: 1rem;
+  color: red;
 }
 </style>
