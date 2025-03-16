@@ -9,6 +9,5 @@ import TheSocietiesDetailsPage from './TheSocietiesDetailsPage.vue';
 import TheRegistryPage from './TheRegistryPage.vue';
 import TheCallbackPage from "./TheCallbackPage.vue";
 import TheCoursesDetailsPage from './TheCoursesDetailsPage.vue';
-import TheConnectPage from './TheConnectPage.vue';
 
-export { TheProfilePage, TheEditUserPage, TheCoursesPage, TheAddCoursePage, TheHomePage, TheSocietiesPage, TheRegistryPage, TheAddSocietyPage, TheCallbackPage, TheSocietiesDetailsPage, TheCoursesDetailsPage, TheConnectPage };
+export { TheProfilePage, TheEditUserPage, TheCoursesPage, TheAddCoursePage, TheHomePage, TheSocietiesPage, TheRegistryPage, TheAddSocietyPage, TheCallbackPage, TheSocietiesDetailsPage, TheCoursesDetailsPage };
