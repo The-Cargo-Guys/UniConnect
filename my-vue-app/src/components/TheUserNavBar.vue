@@ -5,7 +5,7 @@ const emit = defineEmits(["logout"]);
 </script>
 <template>
 	<div class="wrapper">
-		<v-toolbar floating class="nav" :elevation="24" mode="shift" rounded="xl">
+		<v-toolbar floating class="nav" flat mode="shift" rounded="xl">
 			<v-spacer></v-spacer>
 			<v-btn to="/profile" flat>
 				<v-icon>mdi-account</v-icon>
@@ -25,9 +25,10 @@ const emit = defineEmits(["logout"]);
 }
 
 .nav {
+  background-color: white;
 	position: fixed;
 	margin-bottom: 10px;
-	max-width: 300px;
+	max-width: 250px;
 	right: 0.5% !important;
 	z-index: 1000;
 	top: 10px !important;
