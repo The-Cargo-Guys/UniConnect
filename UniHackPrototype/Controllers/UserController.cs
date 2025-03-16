@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using MyAspNetVueApp.Data;
 using MyAspNetVueApp.Models;
-using System;
-using System.Linq;
 using UniHack.Services.Interfaces;
+using System;
 
 namespace UniHack.Controllers
 {
@@ -20,36 +16,28 @@ namespace UniHack.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public IActionResult GetUsers()
+        [HttpGet("{id}")]
+        public IActionResult GetUserById(Guid id)
         {
-            return Ok(_userService.GetAllUsers());
-        }
-
-        [HttpPost]
-        public IActionResult AddUser([FromBody] User user)
-        {
-            _userService.CreateUser(user);
-            return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
-        }
-
-        [HttpGet("current")]
-        [Authorize]
-        public IActionResult GetCurrentUser()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
-            {
-                return Unauthorized();
-            }
-
-            var user = _userService.GetUserById(userGuid);
+            var user = _userService.GetUserById(id);
             if (user == null)
             {
-                return NotFound("User not found.");
+                return NotFound(new { message = "User not found." });
             }
 
-            return Ok(user);
+            return Ok(new
+            {
+                user.Id,
+                user.Name,
+                user.Email,
+                user.PhoneNumber,
+                user.ImagePath,
+                user.Bio,
+                user.University,
+                user.Degree,
+                Tags = user.Tags.Select(t => new { t.Id, t.Value }),
+                user.IsAdmin
+            });
         }
     }
 }
