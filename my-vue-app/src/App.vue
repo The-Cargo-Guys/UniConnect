@@ -1,86 +1,67 @@
 <script setup lang="ts">
-import { useAuth0 } from "@auth0/auth0-vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { RouterView } from "vue-router";
 import TheNavBar from "./components/TheNavBar.vue";
-import AuthPage from "./views/AuthPage.vue";
-import { computed, watchEffect, ref, onMounted, watch } from "vue";
+import Auth from "./views/Auth.vue"; // ✅ Correct import
+import { ref, onMounted, watch } from "vue";
 
-const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0();
 const router = useRouter();
+const route = useRoute();
 const isLoggedIn = ref(false);
 
 // 🚀 **Check authentication on app load BEFORE rendering**
 onMounted(() => {
-	const token = localStorage.getItem("token");
+	const userId = localStorage.getItem("userId");
 
-	if (token) {
-		console.log("✅ Found stored token, setting isLoggedIn = true");
+	if (userId) {
+		console.log("✅ Found stored userId, setting isLoggedIn = true");
 		isLoggedIn.value = true;
 	} else {
-		console.log("❌ No token found, redirecting to /auth");
+		console.log("❌ No userId found, checking if on /auth");
 		isLoggedIn.value = false;
-		router.push("/auth");
+
+		// **Only redirect to /auth if NOT already there**
+		if (route.path !== "/auth") {
+			router.push("/auth");
+		}
 	}
 });
 
-// 🔄 **Watch localStorage for instant updates**
+// 🔄 **Watch localStorage for login/logout changes**
 watch(
-	() => localStorage.getItem("token"),
-	(newToken) => {
-		if (newToken) {
-			console.log("🔄 Token updated, setting isLoggedIn = true");
+	() => localStorage.getItem("userId"),
+	(newUserId) => {
+		if (newUserId) {
+			console.log("🔄 userId updated, setting isLoggedIn = true");
 			isLoggedIn.value = true;
 			router.push("/");
 		} else {
-			console.log("❌ Token removed, redirecting to /auth");
+			console.log("❌ userId removed, redirecting to /auth");
 			isLoggedIn.value = false;
 			router.push("/auth");
 		}
 	}
 );
 
-// 🔄 **Watch Auth0 authentication changes dynamically**
-watchEffect(() => {
-	console.log("🔄 Auth state changed:", isAuthenticated.value);
-
-	if (isAuthenticated.value) {
-		localStorage.setItem("token", "auth0-user"); // Simulate storing token
-		isLoggedIn.value = true;
-		router.push("/");
-	} else if (!localStorage.getItem("token")) {
-		localStorage.removeItem("token");
-		isLoggedIn.value = false;
-		router.push("/auth");
-	}
-});
-
-// ✅ **Handle Logout - Clears storage & cookies**
+// ✅ **Handle Logout - Clears storage**
 const handleLogout = () => {
-	// Clear all local storage, session storage, and cookies
-	localStorage.clear();
+	localStorage.removeItem("userId");
 	sessionStorage.clear();
-
-	document.cookie.split(";").forEach((c) => {
-		document.cookie = c
-			.replace(/^ +/, "")
-			.replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
-	});
-
-	isLoggedIn.value = false; // Update UI state
+	isLoggedIn.value = false;
+	router.push("/auth");
 };
 </script>
 
 <template>
 	<v-app class="fade-in">
 		<!-- ⏳ Show loading state -->
-		<template v-if="isLoading">
+		<template v-if="false">
 			<div class="loading-screen">Loading...</div>
 		</template>
 
 		<!-- 🔑 Show login/register page if user is NOT authenticated -->
 		<template v-else-if="!isLoggedIn">
-			<AuthPage />
+			<Auth /> <!-- ✅ Correct component name -->
 		</template>
 
 		<!-- 🏠 Show main content when the user IS authenticated -->
@@ -130,5 +111,4 @@ const handleLogout = () => {
 	height: 110px;
 	width: 110px;
 }
-
 </style>
