@@ -13,7 +13,7 @@ import {
     TheAddSocietyPage, 
     TheSocietiesDetailsPage, 
     TheCoursesDetailsPage,
-    TheConnectPage
+    TheConnectPage,
 } from '../views';
 
 const routes: Array<RouteRecordRaw> = [
@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: "/societies/:id", name: "SocietiesDetails", component: TheSocietiesDetailsPage, meta: { requiresAuth: true } },
     { path: "/courses/:id", name: "CoursesDetails", component: TheCoursesDetailsPage, meta: { requiresAuth: true } },
     { path: "/user-details", component: UserDetails, meta: { requiresAuth: true } }, // ✅ User Details Page
-    { path: "/Views/ProfileDetails/:userId", name: "ProfileDetails", component: ProfileDetails, meta: { requiresAuth: true } }, // ✅ Added Profile Details Page
+    { path: "/Views/ProfileDetails/:id", name: "ProfileDetails", component: ProfileDetails, meta: { requiresAuth: true } }, // ✅ Added Profile Details Page
     { path: '/:pathMatch(.*)*', redirect: '/' },
 ];
 

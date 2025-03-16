@@ -2,6 +2,7 @@
     <div class="connect-page container">
       <h1>Connect</h1>
   
+      <!-- Search Bar -->
       <v-text-field
         v-model="searchQuery"
         label="Search Users"
@@ -12,17 +13,21 @@
         @keyup.enter="submitSearch"
       ></v-text-field>
       
+      <!-- Search Button -->
       <v-btn color="primary" class="mb-4" @click="submitSearch">Search</v-btn>
   
+      <!-- No results message -->
       <div v-if="submittedQuery && filteredUsers.length === 0" class="no-results">
         No results found.
       </div>
   
+      <!-- Filtered Users List: Only visible if a search has been submitted -->
       <v-list v-else-if="submittedQuery">
         <v-list-item
           v-for="user in paginatedFilteredUsers"
           :key="user.id"
           class="user-item"
+          @click="goToUser(user.id)"
         >
           <v-list-item-avatar>
             <v-img
@@ -38,6 +43,7 @@
         </v-list-item>
       </v-list>
   
+      <!-- Pagination Controls (if more than one page) -->
       <v-pagination
         v-if="totalPages > 1"
         v-model="currentPage"
@@ -50,6 +56,7 @@
   <script lang="ts">
   import { defineComponent, ref, computed, onMounted } from 'vue';
   import axios from 'axios';
+  import { useRouter } from 'vue-router';
   
   export default defineComponent({
     name: 'ConnectPage',
@@ -58,6 +65,7 @@
       const submittedQuery = ref('');
       const currentPage = ref(1);
       const resultsPerPage = 10;
+      const router = useRouter();
   
       interface User {
         id: number;
@@ -70,7 +78,7 @@
       // Fetch user data from an API on mount
       onMounted(async () => {
         try {
-          const response = await axios.get('/api/users/search/');
+          const response = await axios.get('/api/users/search/'); // Adjust endpoint as needed
           users.value = response.data;
         } catch (error) {
           console.error('Error fetching users:', error);
@@ -103,6 +111,11 @@
         currentPage.value = 1; // Reset to first page on new search
       };
   
+      // Navigate to user detail page using the user's id from backend
+      const goToUser = (id: number) => {
+        router.push({ name: 'ProfileDetails', params: { id } });
+      };
+  
       return {
         searchQuery,
         submittedQuery,
@@ -112,6 +125,7 @@
         currentPage,
         totalPages,
         submitSearch,
+        goToUser,
       };
     },
   });
@@ -126,6 +140,7 @@
   
   .user-item {
     margin-bottom: 0.5rem;
+    cursor: pointer;
   }
   
   .no-results {
