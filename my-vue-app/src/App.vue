@@ -87,25 +87,25 @@ const handleLogout = () => {
 		<template v-else>
 			<TheNavBar />
 
-			<v-app-bar app color="grey" density="compact">
-				<v-toolbar-title class="d-flex align-center">
+			<v-toolbar-title class="d-flex align-center pa-0 ma-0">
+				<div class="logo-wrapper">
 					<v-img
-						src="/path/to/your/logo.png"
+						src="/UniConnect.svg"
 						alt="Logo"
 						contain
-						max-height="40"
-						max-width="40"
-					>
-					</v-img>
-					<span class="ml-3 font-weight-bold">UniConnect</span>
-				</v-toolbar-title>
-				<v-spacer></v-spacer>
-				<v-btn to="/profile">
-					<v-icon>mdi-account</v-icon>
-					<span>Profile</span>
-				</v-btn>
-				<v-btn text @click="handleLogout">Log Out</v-btn>
-			</v-app-bar>
+						max-height="110"
+						max-width="110"
+					></v-img>
+				</div>
+			</v-toolbar-title>
+
+			<v-spacer></v-spacer>
+
+			<v-btn to="/profile">
+				<v-icon>mdi-account</v-icon>
+				<span>Profile</span>
+			</v-btn>
+			<v-btn text @click="handleLogout">Log Out</v-btn>
 
 			<v-main>
 				<RouterView />
@@ -123,4 +123,12 @@ const handleLogout = () => {
 	font-size: 20px;
 	font-weight: bold;
 }
+
+.logo-wrapper {
+	background-color: rgb(255, 255, 255);
+	margin-top: 10px;	
+	height: 110px;
+	width: 110px;
+}
+
 </style>

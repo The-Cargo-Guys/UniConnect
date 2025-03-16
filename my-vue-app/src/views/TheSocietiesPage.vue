@@ -1,6 +1,14 @@
 <template>
   <div id="societies-page" class="container">
+    <v-navigation-drawer v-model="showDrawer" color="secondary">
+      <v-list-item title="My Societies"></v-list-item>
+      <v-divider></v-divider>
+      <v-list-item v-for="society in societies" :key="society.id" @click="openSociety(society.id)">{{ society.name }}</v-list-item>
+    </v-navigation-drawer>
     <h1>Societies</h1>
+    <v-btn class="drawerButton ma-5 pa-4" color="secondary" @click="closeOpenDrawer">
+        <v-icon>mdi-menu</v-icon>
+    </v-btn>
     <button class="add-society" @click="goToAddSociety">+ Add Society</button>
     <div class="societies-list">
       <div
@@ -32,6 +40,8 @@ import axios from 'axios';
 export default defineComponent({
   name: 'SocietiesPage',
   setup() {
+    const showDrawer = ref(true);
+
     const router = useRouter();
     interface Society {
       id: number;
@@ -66,14 +76,20 @@ export default defineComponent({
     };
 
     const openSociety = (id: number) => {
-      router.push({ name: 'SocietyDetails', params: { id } });
+      router.push(`/societies/${id}`);
     };
+
+    const closeOpenDrawer = () => {
+      showDrawer.value = !showDrawer.value;
+    }
 
     onMounted(() => {
       fetchSocieties();
     });
 
     return {
+      showDrawer,
+      closeOpenDrawer,
       societies,
       loading,
       error,
@@ -81,7 +97,7 @@ export default defineComponent({
       goToAddSociety,
       openSociety,
     };
-  },
+  }
 });
 </script>
 

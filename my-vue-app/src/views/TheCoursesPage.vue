@@ -1,6 +1,14 @@
 <template>
   <div id="courses-page" class="container">
+    <v-navigation-drawer v-model="showDrawer" color="secondary">
+      <v-list-item title="My Societies"></v-list-item>
+      <v-divider></v-divider>
+      <v-list-item v-for="course in courses" :key="course.id" @click="openCourse(course.id)">{{ course.name }}</v-list-item>
+    </v-navigation-drawer>
     <h1>Courses</h1>
+    <v-btn class="drawerButton ma-5 pa-4" color="secondary" @click="closeOpenDrawer">
+        <v-icon>mdi-menu</v-icon>
+    </v-btn>
     <button class="add-course" @click="goToAddCourse">+ Add Course</button>
     <div class="courses-list">
       <div
@@ -32,6 +40,8 @@ import axios from 'axios';
 export default defineComponent({
   name: 'CoursesPage',
   setup() {
+    const showDrawer = ref(true);
+
     const router = useRouter();
     interface Course {
       id: number;
@@ -66,14 +76,20 @@ export default defineComponent({
     };
 
     const openCourse = (id: number) => {
-      router.push({ name: 'CourseDetails', params: { id } });
+      router.push(`/courses/${id}`);
     };
+
+    const closeOpenDrawer = () => {
+      showDrawer.value = !showDrawer.value;
+    }
 
     onMounted(() => {
       fetchCourses();
     });
 
     return {
+      showDrawer,
+      closeOpenDrawer,
       courses,
       loading,
       error,
