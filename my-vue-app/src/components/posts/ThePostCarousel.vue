@@ -70,7 +70,7 @@ function backToTop() {
 
 <style scoped>
 .post-container {
-	margin: 40px;
+	margin-top: 40px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
