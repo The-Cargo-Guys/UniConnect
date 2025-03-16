@@ -1,15 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MyAspNetVueApp.Models;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UniHack.Data;
+using UniHack.Models;
 using UniHack.Repositories;
 using UniHack.Repositories.Interfaces;
-using UniHack.Models;
 
 namespace UniHack.Services.Notifications
 {
@@ -67,7 +66,6 @@ namespace UniHack.Services.Notifications
 						await SendEventNotificationAsync(eventItem, NotificationType.OneDayBefore);
 						_logger.LogInformation($"Sent one-day notification for event: {eventItem.Name}");
 					}
-
 					else if (timeUntilEvent.TotalMinutes > 59 && timeUntilEvent.TotalMinutes < 60)
 					{
 						await SendEventNotificationAsync(eventItem, NotificationType.OneHourBefore);
@@ -81,10 +79,9 @@ namespace UniHack.Services.Notifications
 			}
 		}
 
-		private async Task SendEventNotificationAsync(Event eventItem, NotificationType type)
+		private async Task SendEventNotificationAsync(Event eventItem, NotificationType notificationType)
 		{
 			using var scope = _serviceProvider.CreateScope();
-
 			var societyRepository = scope.ServiceProvider.GetRequiredService<ISocietyRepository>();
 			var societies = await societyRepository.GetAllAsync();
 
@@ -95,28 +92,20 @@ namespace UniHack.Services.Notifications
 				return;
 			}
 
+			string eventDateFormatted = eventItem.Date.ToLocalTime().ToString("dddd, MMMM d, yyyy 'at' h:mm tt");
+
 			foreach (var member in society.Members)
 			{
-				string subject;
-				string body;
+				bool isDayBefore = notificationType == NotificationType.OneDayBefore;
 
-				switch (type)
-				{
-					case NotificationType.OneDayBefore:
-						subject = $"Reminder: {eventItem.Name} is tomorrow";
-						body = $"Hi {member.Name},\n\nThis is a reminder that {eventItem.Name} is happening tomorrow at {eventItem.Date.ToLocalTime():g}.\n\n{eventItem.Description}\n\nSee you there!";
-						break;
-
-					case NotificationType.OneHourBefore:
-						subject = $"Reminder: {eventItem.Name} starts in 1 hour";
-						body = $"Hi {member.Name},\n\n{eventItem.Name} is starting in about an hour at {eventItem.Date.ToLocalTime():t}. Hope to see you there!";
-						break;
-
-					default:
-						continue;
-				}
-
-				EmailSender.SendEmail(member.Email, body, subject);
+				EmailSender.SendEventNotification(
+					member.Email,
+					member.Name,
+					eventItem.Name,
+					eventDateFormatted,
+					eventItem.Description,
+					isDayBefore
+				);
 			}
 		}
 
