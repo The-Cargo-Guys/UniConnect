@@ -88,7 +88,6 @@ const handleLogout = () => {
 		<template v-else>
 			<TheNavBar />
 			<TheUserNavBar @logout="handleLogout"/>
-
 			<v-avatar class="logo-wrapper">
 				<v-img
 					src="/UniConnect.svg"
@@ -96,11 +95,7 @@ const handleLogout = () => {
 					contain
 				></v-img>
 			</v-avatar>
-
 			<v-spacer></v-spacer>
-
-
-
 			<v-main>
 				<RouterView />
 			</v-main>
