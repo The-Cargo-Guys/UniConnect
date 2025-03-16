@@ -14,7 +14,6 @@ var menuItems = ref([
 			grow
 			class="bottom-nav"
 			:elevation="24"
-			mode="shift"
 			rounded="xl"
 		>
 			<v-spacer></v-spacer>
