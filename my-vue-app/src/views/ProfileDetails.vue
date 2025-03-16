@@ -1,86 +1,168 @@
 <template>
-    <div class="profile-container">
-        <h1>User Profile</h1>
-        <div v-if="loading">Loading...</div>
-        <div v-else-if="error" class="error">{{ error }}</div>
-        <div v-else class="profile-card">
-            <img :src="user.ImagePath || '/default-avatar.png'" alt="Profile Picture" class="profile-image" />
-            <h2>{{ user.Name }}</h2>
-            <p>Email: {{ user.Email }}</p>
-            <p>Phone: {{ user.PhoneNumber }}</p>
-            <p>Bio: {{ user.Bio || 'No bio available' }}</p>
-            <p>University: {{ user.University }}</p>
-            <p>Degree: {{ user.Degree }}</p>
-            <div v-if="user.Tags && user.Tags.length">
-                <h3>Tags:</h3>
-                <ul>
-                    <li v-for="tag in user.Tags" :key="tag.Id">{{ tag.Value }}</li>
-                </ul>
-            </div>
-            <p v-if="user.IsAdmin" class="admin-badge">Administrator</p>
-        </div>
-    </div>
-</template>
+    <v-container class="fill-height d-flex justify-center align-center">
+      <v-card class="profile-card">
+        <!-- Profile Header -->
+        <v-avatar size="100" class="profile-avatar">
+          <v-img v-if="user?.imagePath" :src="user.imagePath" alt="User Profile" />
+          <v-img v-else :src="'/pp-fallback.png'" alt="Profile Picture"></v-img>
 
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import axios from 'axios';
-
-const route = useRoute();
-const userId = route.params.userId;
-const user = ref(null);
-const error = ref(null);
-const loading = ref(true);
-
-const fetchUserDetails = async () => {
-    try {
-        const response = await axios.get(`/api/users/${userId}`);
-        user.value = response.data;
-    } catch (err) {
-        error.value = err.response?.data?.message || "Failed to load user details.";
-    } finally {
-        loading.value = false;
+        </v-avatar>
+  
+        <v-card-title class="profile-name">{{ user?.name }}</v-card-title>
+        <v-card-subtitle class="profile-email">{{ user?.email }}</v-card-subtitle>
+  
+        <v-divider></v-divider>
+  
+        <!-- Profile Details -->
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="6">
+              <p><v-icon icon="mdi-phone" class="icon" /> {{ user?.phoneNumber || "N/A" }}</p>
+              <p><v-icon icon="mdi-school" class="icon" /> {{ user?.university || "Not specified" }}</p>
+              <p><v-icon icon="mdi-certificate" class="icon" /> {{ user?.degree || "Not specified" }}</p>
+            </v-col>
+            <v-col cols="12" md="6">
+              <p><v-icon icon="mdi-information-outline" class="icon" /> {{ user?.bio || "No bio provided" }}</p>
+              <p><v-icon icon="mdi-account-check-outline" class="icon" />
+                {{ user?.isAdmin ? "Administrator" : "Regular User" }}</p>
+            </v-col>
+          </v-row>
+  
+          <!-- Tags Section -->
+          <div v-if="user?.tags?.length" class="tags-container">
+            <v-chip v-for="(tag, index) in user.tags" :key="index" class="tag-chip" color="light-blue">
+              {{ tag.value }}
+            </v-chip>
+          </div>
+  
+          <v-btn color="light-blue darken-2" class="back-btn" @click="goBack">
+            <v-icon left>mdi-arrow-left</v-icon> Back
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </template>
+  
+  <script setup lang="ts">
+  import { ref, onMounted, computed } from "vue";
+  import { useRouter, useRoute } from "vue-router";
+  import axios from "axios";
+  
+  // Define interfaces for API response
+  interface Tag {
+    id: string;
+    value: string;
+  }
+  
+  interface UserProfile {
+    id: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    bio?: string;
+    university: string;
+    degree: string;
+    imagePath?: string;
+    tags?: Tag[];
+    isAdmin: boolean;
+  }
+  
+  const route = useRoute();
+  const router = useRouter();
+  const userId = computed(() => route.params.id as string | undefined);
+  
+  const user = ref<UserProfile | null>(null);
+  const error = ref<string | null>(null);
+  const loading = ref<boolean>(true);
+  
+  const fetchUserDetails = async () => {
+    if (!userId.value) {
+      error.value = "Invalid user ID.";
+      loading.value = false;
+      return;
     }
-};
-
-onMounted(fetchUserDetails);
-</script>
-
-
-<style scoped>
-.profile-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 10px;
-    background: #f4f4f4;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-.profile-card {
-    text-align: center;
-}
-
-.profile-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
-.admin-badge {
+  
+    try {
+      console.log(`🔍 Fetching user data for ID: ${userId.value}`);
+      const response = await axios.get<UserProfile>(`/api/users/${encodeURIComponent(userId.value)}`);
+      console.log("✅ User data received:", response.data);
+      user.value = response.data;
+    } catch (err: any) {
+      console.error("❌ Error fetching user data:", err);
+      error.value = err.response?.data?.message || "Failed to load user details.";
+    } finally {
+      loading.value = false;
+    }
+  };
+  
+  const goBack = () => {
+    router.push("/");
+  };
+  
+  onMounted(fetchUserDetails);
+  </script>
+  
+  <style scoped>
+  /* Overall Container */
+  .fill-height {
+    background-color: white;
     color: white;
-    background: red;
-    padding: 5px 10px;
-    border-radius: 5px;
-    display: inline-block;
-    margin-top: 10px;
-}
-
-.error {
-    color: red;
+    padding: 40px;
+  }
+  
+  /* Profile Card */
+  .profile-card {
+    max-width: 600px;
+    width: 100%;
+    background: #434361;
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(100, 30, 100, 0.5);
+    text-align: center;
+  }
+  
+  /* Avatar Styling */
+  .profile-avatar {
+    margin: 0 auto;
+    border: 3px solid lightblue;
+  }
+  
+  /* Profile Name & Email */
+  .profile-name {
+    font-size: 24px;
     font-weight: bold;
-}
-</style>
+    margin-top: 10px;
+  }
+  
+  .profile-email {
+    color: lightgray;
+    font-size: 16px;
+  }
+  
+  /* Icons */
+  .icon {
+    color: lightblue;
+    margin-right: 8px;
+  }
+  
+  /* Tags */
+  .tags-container {
+    margin-top: 15px;
+  }
+  
+  .tag-chip {
+    margin: 5px;
+    font-size: 14px;
+    background-color: lightblue;
+    color: lightblue;
+  }
+  
+  /* Back Button */
+  .back-btn {
+    margin-top: 20px;
+    width: 100%;
+    font-weight: bold;
+  }
+  </style>
+  
