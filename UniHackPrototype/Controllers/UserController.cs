@@ -52,5 +52,22 @@ namespace UniHack.Controllers
 
             return Ok(users);
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(Guid id, [FromBody] User updatedUser)
+        {
+            if (updatedUser == null)
+            {
+                return BadRequest(new { message = "Invalid user data." });
+            }
+
+            var success = _userService.UpdateUser(updatedUser);
+            if (!success)
+            {
+                return StatusCode(500, new { message = "Error updating user." });
+            }
+
+            return Ok(new { message = "User updated successfully." });
+        }
     }
 }
