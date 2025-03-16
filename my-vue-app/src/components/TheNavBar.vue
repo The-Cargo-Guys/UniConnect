@@ -2,9 +2,8 @@
 import { ref } from "vue";
 
 var menuItems = ref([
-	{ title: "Home", path: "/", icon: "mdi-home" },
-  { title: "Connect", path: "/connect", icon: "mdi-account" },
   { title: "Societies", path: "/societies", icon: "mdi-basketball" },
+	{ title: "Home", path: "/", icon: "mdi-home" },
 	{ title: "Courses", path: "/courses", icon: "mdi-account-multiple" },
 ]);
 </script>
