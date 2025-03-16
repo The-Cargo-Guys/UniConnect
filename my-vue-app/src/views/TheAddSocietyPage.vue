@@ -21,6 +21,7 @@ import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { Society } from "../apiClient";
+import { emit } from "process";
 
 export default defineComponent({
     name: "TheAddSocietyPage",
@@ -29,8 +30,6 @@ export default defineComponent({
         const name = ref("");
         const description = ref("");
         const imagePathBanner = ref("");
-
-
 
         const submitSociety = async () => {
             try {

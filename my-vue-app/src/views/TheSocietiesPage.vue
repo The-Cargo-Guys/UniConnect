@@ -20,47 +20,64 @@
         </div>
       </div>
     </div>
+    <div v-if="loading" class="loading">Loading societies...</div>
+    <div v-if="error" class="error">{{ error }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useRouter } from "vue-router";
+import { defineComponent, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default defineComponent({
-  name: "SocietiesPage",
+  name: 'SocietiesPage',
   setup() {
     const router = useRouter();
-    const societies = ref([
-      {
-        id: 1,
-        name: "Tech Enthusiasts",
-        description: "A society for tech lovers to discuss and share knowledge.",
-        banner: "https://via.placeholder.com/600x200",
-      },
-      {
-        id: 2,
-        name: "Gaming Club",
-        description: "Join us for weekly gaming sessions and tournaments!",
-        banner: "./images/UniConnect.png",
-      },
-    ]);
+    interface Society {
+      id: number;
+      name: string;
+      description: string;
+      banner: string;
+    }
+
+    const societies = ref<Society[]>([]);
+    const loading = ref(false);
+    const error = ref('');
+
+    const fetchSocieties = async () => {
+      loading.value = true;
+      try {
+        const response = await axios.get('/api/societies');
+        societies.value = response.data;
+      } catch (err) {
+        console.error('API Error:', err);
+        error.value = 'Failed to load societies.';
+      } finally {
+        loading.value = false;
+      }
+    };
 
     const joinSociety = (id: number) => {
       alert(`Joined society with ID: ${id}`);
     };
 
     const goToAddSociety = () => {
-      router.push("/add-society");
+      router.push('/add-society');
     };
 
-    // Navigate to Society Details page using the route name "SocietyDetails"
     const openSociety = (id: number) => {
-      router.push({ name: "SocietiesDetails", params: { id } });
+      router.push({ name: 'SocietyDetails', params: { id } });
     };
+
+    onMounted(() => {
+      fetchSocieties();
+    });
 
     return {
       societies,
+      loading,
+      error,
       joinSociety,
       goToAddSociety,
       openSociety,
@@ -130,5 +147,15 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.loading {
+  margin-top: 1rem;
+  color: #4a90e2;
+}
+
+.error {
+  margin-top: 1rem;
+  color: red;
 }
 </style>
