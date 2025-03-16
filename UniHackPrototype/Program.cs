@@ -13,6 +13,14 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load connection string from appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Configure Entity Framework with SQL Server
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString)
+);
+
 builder.Services.AddApplicationServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -69,7 +77,7 @@ if (app.Environment.IsDevelopment())
 // Enable CORS (Ensures Vue.js frontend can access images)
 app.UseCors("AllowVueApp");
 
-// Forcefully Create wwwroot if Missing
+// Ensure wwwroot directory exists
 var wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 if (!Directory.Exists(wwwRootPath))
 {
@@ -90,17 +98,16 @@ app.UseAuthorization();
 app.UseRouting();
 app.MapControllers();
 
-// Database Initialization
+// Apply pending migrations
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-
     var dbContext = services.GetRequiredService<AppDbContext>();
 
-    // Ensure database is properly set up
-    dbContext.Database.EnsureDeleted();
-    dbContext.Database.EnsureCreated();
+    // Apply any pending migrations
+    dbContext.Database.Migrate();
 
+    // Seed the database
     var seeder = services.GetRequiredService<DbSeeder>();
     seeder.Seed();
 }

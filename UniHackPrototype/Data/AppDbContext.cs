@@ -15,14 +15,5 @@ namespace MyAspNetVueApp.Data
         public DbSet<Event> Events { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            if (!options.IsConfigured)
-            {
-                var connectionString = "Data Source=app.db";
-                options.UseSqlite(connectionString);
-            }
-        }
     }
 }
