@@ -1,54 +1,56 @@
 <template>
   <div id="courses-page" class="container">
-    <h1>Courses</h1>
-    <button class="add-course" @click="goToAddCourse">+ Add Course</button>
-    <v-tabs v-model="activeTab" background-color="primary" dark>
-      <v-tab>My Courses</v-tab>
-      <v-tab>Find Courses</v-tab>
-    </v-tabs>
-    <v-tabs-window v-model="activeTab">
-      <v-tabs-window-item>
-        <div class="courses-list">
-          <div
+    <v-card class="pa-5">
+      <h1>Courses</h1>
+      <button class="add-course" @click="goToAddCourse">+ Add Course</button>
+      <v-tabs v-model="activeTab" background-color="primary" dark>
+        <v-tab>My Courses</v-tab>
+        <v-tab>Find Courses</v-tab>
+      </v-tabs>
+      <v-tabs-window v-model="activeTab">
+        <v-tabs-window-item>
+          <div class="courses-list">
+            <v-card
             v-for="course in courses"
-            :key="course.id"
-            class="course-card"
-            @click="openCourse(course.id)"
-          >
-            <img :src="course.banner" alt="Course Banner" class="course-banner" />
-            <div class="course-info">
-              <h2>{{ course.name }}</h2>
-              <p>{{ course.description }}</p>
-              <button @click.stop="joinCourse(course.id)" class="join-btn">
-                Join
-              </button>
-            </div>
+              :key="course.id"
+              class="course-card"
+              @click="openCourse(course.id)"
+              color="blue-grey-lighten-2">
+                <img :src="course.banner" alt="Course Banner" class="course-banner" />
+                <div class="course-info">
+                  <h2>{{ course.name }}</h2>
+                  <p>{{ course.description }}</p>
+                  <button @click.stop="joinCourse(course.id)" class="join-btn">
+                    Join
+                  </button>
+                </div>
+            </v-card>
           </div>
-        </div>
-      </v-tabs-window-item>
-      <v-tabs-window-item>
-        <div class="courses-list">
-          <div
+        </v-tabs-window-item>
+        <v-tabs-window-item>
+          <div class="courses-list">
+            <v-card
             v-for="course in courses"
-            :key="course.id"
-            class="course-card"
-            @click="openCourse(course.id)"
-          >
-            <img :src="course.banner" alt="Course Banner" class="course-banner" />
-            <div class="course-info">
-              <h2>{{ course.name }}</h2>
-              <p>{{ course.description }}</p>
-              <button @click.stop="joinCourse(course.id)" class="join-btn">
-                Join
-              </button>
-            </div>
+              :key="course.id"
+              class="course-card"
+              @click="openCourse(course.id)"
+              color="blue-grey-lighten-2">
+                <img :src="course.banner" alt="Course Banner" class="course-banner" />
+                <div class="course-info">
+                  <h2>{{ course.name }}</h2>
+                  <p>{{ course.description }}</p>
+                  <button @click.stop="joinCourse(course.id)" class="join-btn">
+                    Join
+                  </button>
+                </div>
+            </v-card>
           </div>
-        </div>
-      </v-tabs-window-item>
-    </v-tabs-window>
+        </v-tabs-window-item>
+      </v-tabs-window>
 
-    <div v-if="loading" class="loading">Loading societies...</div>
-    <div v-if="error" class="error">{{ error }}</div>
+      <div v-if="loading" class="loading">Loading societies...</div>
+      <div v-if="error" class="error">{{ error }}</div>
+    </v-card>
   </div>
 </template>
 
@@ -171,7 +173,7 @@ h1 {
 }
 
 .join-btn {
-  background-color: #ff4081;
+  background-color: lightskyblue;
   color: white;
   padding: 8px 16px;
   border: none;
