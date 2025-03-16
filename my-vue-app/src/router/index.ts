@@ -12,7 +12,8 @@ import {
     TheCallbackPage, 
     TheAddSocietyPage, 
     TheSocietiesDetailsPage, 
-    TheCoursesDetailsPage  
+    TheCoursesDetailsPage,
+    TheConnectPage
 } from '../views';
 
 const routes: Array<RouteRecordRaw> = [
@@ -21,6 +22,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: "/profile", component: TheProfilePage, meta: { requiresAuth: true } },
     { path: "/edit-user", component: TheEditUserPage, meta: { requiresAuth: true } },
     { path: "/courses", component: TheCoursesPage, meta: { requiresAuth: true } },
+    { path: "/connect", component: TheConnectPage, meta: { requiresAuth: true } },
     { path: "/add-course", component: TheAddCoursePage, meta: { requiresAuth: true } },
     { path: "/societies", component: TheSocietiesPage, meta: { requiresAuth: true } },
     { path: "/callback", component: TheCallbackPage },
