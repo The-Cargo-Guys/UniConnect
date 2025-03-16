@@ -1,23 +1,59 @@
 <template>
-  <div class="auth-container">
-    <h2>{{ isLogin ? "Login" : "Register" }}</h2>
+  <v-container class="d-flex justify-center align-center" style="height: 100vh">
+    <v-card class="auth-card px-6 py-8" elevation="10">
+      <v-card-title class="text-center text-h5 font-weight-bold">
+        {{ isLogin ? "Login" : "Register" }}
+      </v-card-title>
+      
+      <v-card-text>
+        <v-form @submit.prevent="isLogin ? login() : register()">
+          <v-text-field
+            v-if="!isLogin"
+            v-model="name"
+            label="Full Name"
+            variant="outlined"
+            color="blue-lighten-2"
+          ></v-text-field>
 
-    <input v-if="!isLogin" v-model="name" placeholder="Full Name" type="text" />
-    <input v-model="email" placeholder="Email" type="email" />
-    <input v-model="password" placeholder="Password" type="password" />
-    <input v-if="!isLogin" v-model="phoneNumber" placeholder="Phone Number" type="text" />
+          <v-text-field
+            v-model="email"
+            label="Email"
+            variant="outlined"
+            color="blue-lighten-2"
+            type="email"
+          ></v-text-field>
 
-    <button @click="isLogin ? login() : register()">
-      {{ isLogin ? "Login" : "Register" }}
-    </button>
+          <v-text-field
+            v-model="password"
+            label="Password"
+            variant="outlined"
+            color="blue-lighten-2"
+            type="password"
+          ></v-text-field>
 
-    <p>
-      {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
-      <a href="#" @click="isLogin = !isLogin">
-        {{ isLogin ? "Register" : "Login" }}
-      </a>
-    </p>
-  </div>
+          <v-text-field
+            v-if="!isLogin"
+            v-model="phoneNumber"
+            label="Phone Number"
+            variant="outlined"
+            color="blue-lighten-2"
+            type="text"
+          ></v-text-field>
+
+          <v-btn block color="blue-lighten-2" class="mt-3" type="submit">
+            {{ isLogin ? "Login" : "Register" }}
+          </v-btn>
+        </v-form>
+
+        <p class="mt-4 text-center text-body-2">
+          {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+          <a href="#" @click="isLogin = !isLogin" class="text-blue-lighten-2">
+            {{ isLogin ? "Register" : "Login" }}
+          </a>
+        </p>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -39,15 +75,12 @@ export default {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.value, password: password.value }),
       });
-
+      
       const data = await response.json();
       if (response.ok) {
         if (data.userId) {
-          localStorage.setItem("userId", data.userId); // ✅ Store only the userId string
-          console.log("✅ Login successful, userId set to:", data.userId);
+          localStorage.setItem("userId", data.userId);
           router.push("/").then(() => window.location.reload());
-        } else {
-          console.error("❌ Login response missing userId:", data);
         }
       } else {
         alert("Invalid credentials.");
@@ -65,15 +98,12 @@ export default {
           phoneNumber: phoneNumber.value,
         }),
       });
-
+      
       const data = await response.json();
       if (response.ok) {
         if (data.userId) {
-          localStorage.setItem("userId", data.userId); // ✅ Store only the userId string
-          console.log("✅ Registration successful, userId set to:", data.userId);
+          localStorage.setItem("userId", data.userId);
           router.push("/").then(() => window.location.reload());
-        } else {
-          console.error("❌ Registration response missing userId:", data);
         }
       } else {
         alert("Email already in use.");
@@ -85,17 +115,17 @@ export default {
 };
 </script>
 
-
 <style scoped>
-.auth-container {
-  max-width: 300px;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  text-align: center;
+.auth-card {
+  max-width: 400px;
+  background: #121212;
+  color: white;
+  border-radius: 12px;
+  border: 1px solid rgba(173, 216, 230, 0.5);
 }
-button {
+
+.text-blue-lighten-2 {
+  color: #81d4fa;
   cursor: pointer;
 }
 </style>
