@@ -1,32 +1,52 @@
 <template>
   <div id="societies-page" class="container">
-    <v-navigation-drawer v-model="showDrawer" color="secondary">
-      <v-list-item title="My Societies"></v-list-item>
-      <v-divider></v-divider>
-      <v-list-item v-for="society in societies" :key="society.id" @click="openSociety(society.id)">{{ society.name }}</v-list-item>
-    </v-navigation-drawer>
     <h1>Societies</h1>
-    <v-btn class="drawerButton ma-5 pa-4" color="secondary" @click="closeOpenDrawer">
-        <v-icon>mdi-menu</v-icon>
-    </v-btn>
     <button class="add-society" @click="goToAddSociety">+ Add Society</button>
-    <div class="societies-list">
-      <div
-        v-for="society in societies"
-        :key="society.id"
-        class="society-card"
-        @click="openSociety(society.id)"
-      >
-        <img :src="society.banner" alt="Society Banner" class="society-banner" />
-        <div class="society-info">
-          <h2>{{ society.name }}</h2>
-          <p>{{ society.description }}</p>
-          <button @click.stop="joinSociety(society.id)" class="join-btn">
-            Join
-          </button>
+    <v-tabs v-model="activeTab" background-color="primary" dark>
+      <v-tab>My Societies</v-tab>
+      <v-tab>Find Societies</v-tab>
+    </v-tabs>
+    <v-tabs-window v-model="activeTab">
+      <v-tabs-window-item>
+        <div class="societies-list">
+          <div
+            v-for="society in societies"
+            :key="society.id"
+            class="society-card"
+            @click="openSociety(society.id)"
+          >
+            <img :src="society.banner" alt="Society Banner" class="society-banner" />
+            <div class="society-info">
+              <h2>{{ society.name }}</h2>
+              <p>{{ society.description }}</p>
+              <button @click.stop="joinSociety(society.id)" class="join-btn">
+                Join
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </v-tabs-window-item>
+      <v-tabs-window-item>
+        <div class="societies-list">
+          <div
+            v-for="society in societies"
+            :key="society.id"
+            class="society-card"
+            @click="openSociety(society.id)"
+          >
+            <img :src="society.banner" alt="Society Banner" class="society-banner" />
+            <div class="society-info">
+              <h2>{{ society.name }}</h2>
+              <p>{{ society.description }}</p>
+              <button @click.stop="joinSociety(society.id)" class="join-btn">
+                Join
+              </button>
+            </div>
+          </div>
+        </div>
+      </v-tabs-window-item>
+    </v-tabs-window>
+
     <div v-if="loading" class="loading">Loading societies...</div>
     <div v-if="error" class="error">{{ error }}</div>
   </div>
@@ -40,7 +60,7 @@ import axios from 'axios';
 export default defineComponent({
   name: 'SocietiesPage',
   setup() {
-    const showDrawer = ref(true);
+    const activeTab = ref(0);
 
     const router = useRouter();
     interface Society {
@@ -79,17 +99,12 @@ export default defineComponent({
       router.push(`/societies/${id}`);
     };
 
-    const closeOpenDrawer = () => {
-      showDrawer.value = !showDrawer.value;
-    }
-
     onMounted(() => {
       fetchSocieties();
     });
 
     return {
-      showDrawer,
-      closeOpenDrawer,
+      activeTab,
       societies,
       loading,
       error,

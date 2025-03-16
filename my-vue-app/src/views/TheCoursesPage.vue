@@ -1,32 +1,52 @@
 <template>
   <div id="courses-page" class="container">
-    <v-navigation-drawer v-model="showDrawer" color="secondary">
-      <v-list-item title="My Societies"></v-list-item>
-      <v-divider></v-divider>
-      <v-list-item v-for="course in courses" :key="course.id" @click="openCourse(course.id)">{{ course.name }}</v-list-item>
-    </v-navigation-drawer>
     <h1>Courses</h1>
-    <v-btn class="drawerButton ma-5 pa-4" color="secondary" @click="closeOpenDrawer">
-        <v-icon>mdi-menu</v-icon>
-    </v-btn>
     <button class="add-course" @click="goToAddCourse">+ Add Course</button>
-    <div class="courses-list">
-      <div
-        v-for="course in courses"
-        :key="course.id"
-        class="course-card"
-        @click="openCourse(course.id)"
-      >
-        <img :src="course.banner" alt="Course Banner" class="course-banner" />
-        <div class="course-info">
-          <h2>{{ course.name }}</h2>
-          <p>{{ course.description }}</p>
-          <button @click.stop="joinCourse(course.id)" class="join-btn">
-            Join
-          </button>
+    <v-tabs v-model="activeTab" background-color="primary" dark>
+      <v-tab>My Courses</v-tab>
+      <v-tab>Find Courses</v-tab>
+    </v-tabs>
+    <v-tabs-window v-model="activeTab">
+      <v-tabs-window-item>
+        <div class="courses-list">
+          <div
+            v-for="course in courses"
+            :key="course.id"
+            class="course-card"
+            @click="openCourse(course.id)"
+          >
+            <img :src="course.banner" alt="Course Banner" class="course-banner" />
+            <div class="course-info">
+              <h2>{{ course.name }}</h2>
+              <p>{{ course.description }}</p>
+              <button @click.stop="joinCourse(course.id)" class="join-btn">
+                Join
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </v-tabs-window-item>
+      <v-tabs-window-item>
+        <div class="courses-list">
+          <div
+            v-for="course in courses"
+            :key="course.id"
+            class="course-card"
+            @click="openCourse(course.id)"
+          >
+            <img :src="course.banner" alt="Course Banner" class="course-banner" />
+            <div class="course-info">
+              <h2>{{ course.name }}</h2>
+              <p>{{ course.description }}</p>
+              <button @click.stop="joinCourse(course.id)" class="join-btn">
+                Join
+              </button>
+            </div>
+          </div>
+        </div>
+      </v-tabs-window-item>
+    </v-tabs-window>
+
     <div v-if="loading" class="loading">Loading societies...</div>
     <div v-if="error" class="error">{{ error }}</div>
   </div>
@@ -40,7 +60,7 @@ import axios from 'axios';
 export default defineComponent({
   name: 'CoursesPage',
   setup() {
-    const showDrawer = ref(true);
+    const activeTab = ref(0);
 
     const router = useRouter();
     interface Course {
@@ -79,17 +99,12 @@ export default defineComponent({
       router.push(`/courses/${id}`);
     };
 
-    const closeOpenDrawer = () => {
-      showDrawer.value = !showDrawer.value;
-    }
-
     onMounted(() => {
       fetchCourses();
     });
 
     return {
-      showDrawer,
-      closeOpenDrawer,
+      activeTab,
       courses,
       loading,
       error,
