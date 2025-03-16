@@ -13,7 +13,6 @@
         <div class="society-info">
           <h2>{{ society.name }}</h2>
           <p>{{ society.description }}</p>
-          <!-- The join button stops propagation so it doesn't trigger navigation -->
           <button @click.stop="joinSociety(society.id)" class="join-btn">
             Join
           </button>
