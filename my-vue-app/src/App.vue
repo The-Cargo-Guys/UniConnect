@@ -2,6 +2,7 @@
 import { useRouter, useRoute } from "vue-router";
 import { RouterView } from "vue-router";
 import TheNavBar from "./components/TheNavBar.vue";
+import TheUserNavBar from "./components/TheUserNavBar.vue";
 import Auth from "./views/Auth.vue"; // ✅ Correct import
 import { ref, onMounted, watch } from "vue";
 
@@ -94,6 +95,7 @@ const handleLogout = () => {
 }
 
 .logo-wrapper {
+	position: fixed;
 	background-color: rgb(255, 255, 255);
 	margin-top: 10px;	
 	height: 110px;

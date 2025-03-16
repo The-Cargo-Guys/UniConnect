@@ -35,20 +35,18 @@ async function fetchData() {
 }
 
 function backToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+	window.scrollTo({ top: 0, behavior: "smooth" });
 }
 </script>
 
 <template>
 	<div v-if="posts.length > 0" class="post-container">
-		<TransitionGroup name="post-list" tag="div" class="post-list">
-			<post-card
-				v-for="post in displayedPosts"
-				:key="post.id"
-				:post="post"
-				class="post-item"
-			></post-card>
-		</TransitionGroup>
+		<post-card
+			v-for="post in displayedPosts"
+			:key="post.id"
+			:post="post"
+			class="post-item"
+		></post-card>
 		<v-btn
 			v-if="numberOfPostsDisplayed !== posts.length"
 			@click="displayMorePosts"
@@ -61,10 +59,10 @@ function backToTop() {
 		<v-progress-circular indeterminate :size="52"></v-progress-circular>
 	</div>
 	<Transition name="fade">
-		<v-btn 
-			v-if="y > 500" 
-			@click="backToTop" 
-			class="backToTopBtn" 
+		<v-btn
+			v-if="y > 500"
+			@click="backToTop"
+			class="backToTopBtn"
 			icon="mdi-arrow-up-drop-circle-outline"
 		></v-btn>
 	</Transition>
@@ -72,7 +70,7 @@ function backToTop() {
 
 <style scoped>
 .post-container {
-	margin-top: 250px;
+	margin: 40px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
