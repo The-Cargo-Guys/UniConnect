@@ -5,6 +5,7 @@ import { RouterView } from "vue-router";
 import TheNavBar from "./components/TheNavBar.vue";
 import AuthPage from "./views/AuthPage.vue";
 import { computed, watchEffect, ref, onMounted, watch } from "vue";
+import TheUserNavBar from "./components/TheUserNavBar.vue";
 
 const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0();
 const router = useRouter();
@@ -86,26 +87,19 @@ const handleLogout = () => {
 		<!-- 🏠 Show main content when the user IS authenticated -->
 		<template v-else>
 			<TheNavBar />
+			<TheUserNavBar @logout="handleLogout"/>
 
-			<v-toolbar-title class="d-flex align-center pa-0 ma-0">
-				<div class="logo-wrapper">
-					<v-img
-						src="/UniConnect.svg"
-						alt="Logo"
-						contain
-						max-height="110"
-						max-width="110"
-					></v-img>
-				</div>
-			</v-toolbar-title>
+			<v-avatar class="logo-wrapper">
+				<v-img
+					src="/UniConnect.svg"
+					alt="Logo"
+					contain
+				></v-img>
+			</v-avatar>
 
 			<v-spacer></v-spacer>
 
-			<v-btn to="/profile">
-				<v-icon>mdi-account</v-icon>
-				<span>Profile</span>
-			</v-btn>
-			<v-btn text @click="handleLogout">Log Out</v-btn>
+
 
 			<v-main>
 				<RouterView />
@@ -125,10 +119,10 @@ const handleLogout = () => {
 }
 
 .logo-wrapper {
-	background-color: rgb(255, 255, 255);
-	margin-top: 10px;	
-	height: 110px;
-	width: 110px;
+	position:fixed;
+	height: 100px;
+	width: 100px;
+	left: 0;
+	top: 0;
 }
-
 </style>
