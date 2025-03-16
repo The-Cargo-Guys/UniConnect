@@ -4,10 +4,15 @@ import { Post } from "../../apiClient";
 import { onMounted, ref, computed } from "vue";
 import axios from "axios";
 import { useWindowScroll } from "@vueuse/core";
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const { y } = useWindowScroll();
 const posts = ref<Post[]>([]);
 const numberOfPostsDisplayed = ref(10);
+
+const societyId = route.params.id as string;
 
 const displayedPosts = computed(() => {
 	return posts.value.slice(0, numberOfPostsDisplayed.value);
@@ -27,8 +32,8 @@ onMounted(async () => {
 
 async function fetchData() {
 	try {
-		const userId = localStorage.getItem("userId");
-		const response = await axios.get("api/for-you/GetFyp/" + userId);
+		const response = await axios.get(`/api/societies/get-posts/${societyId}`);
+        console.log(response.config.url);
 		posts.value = response.data;
 	} catch (error) {
 		console.error("Error:", error);
@@ -36,18 +41,20 @@ async function fetchData() {
 }
 
 function backToTop() {
-	window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 
 <template>
 	<div v-if="posts.length > 0" class="post-container">
-		<post-card
-			v-for="post in displayedPosts"
-			:key="post.id"
-			:post="post"
-			class="post-item"
-		></post-card>
+		<TransitionGroup name="post-list" tag="div" class="post-list">
+			<post-card
+				v-for="post in displayedPosts"
+				:key="post.id"
+				:post="post"
+				class="post-item"
+			></post-card>
+		</TransitionGroup>
 		<v-btn
 			v-if="numberOfPostsDisplayed !== posts.length"
 			@click="displayMorePosts"
@@ -60,10 +67,10 @@ function backToTop() {
 		<v-progress-circular indeterminate :size="52"></v-progress-circular>
 	</div>
 	<Transition name="fade">
-		<v-btn
-			v-if="y > 500"
-			@click="backToTop"
-			class="backToTopBtn"
+		<v-btn 
+			v-if="y > 500" 
+			@click="backToTop" 
+			class="backToTopBtn" 
 			icon="mdi-arrow-up-drop-circle-outline"
 		></v-btn>
 	</Transition>
@@ -71,7 +78,6 @@ function backToTop() {
 
 <style scoped>
 .post-container {
-	margin-top: 40px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;

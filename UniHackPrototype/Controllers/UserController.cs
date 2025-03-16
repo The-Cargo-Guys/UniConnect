@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using MyAspNetVueApp.Data;
 using MyAspNetVueApp.Models;
-using System;
-using System.Linq;
 using UniHack.Services.Interfaces;
+using System;
 
 namespace UniHack.Controllers
 {
@@ -20,36 +16,58 @@ namespace UniHack.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public IActionResult GetUsers()
+        [HttpGet("{id}")]
+        public IActionResult GetUserById(Guid id)
         {
-            return Ok(_userService.GetAllUsers());
-        }
-
-        [HttpPost]
-        public IActionResult AddUser([FromBody] User user)
-        {
-            _userService.CreateUser(user);
-            return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
-        }
-
-        [HttpGet("current")]
-        [Authorize]
-        public IActionResult GetCurrentUser()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
-            {
-                return Unauthorized();
-            }
-
-            var user = _userService.GetUserById(userGuid);
+            var user = _userService.GetUserById(id);
             if (user == null)
             {
-                return NotFound("User not found.");
+                return NotFound(new { message = "User not found." });
             }
 
-            return Ok(user);
+            return Ok(new
+            {
+                user.Id,
+                user.Name,
+                user.Email,
+                user.PhoneNumber,
+                user.ImagePath,
+                user.Bio,
+                user.University,
+                user.Degree,
+                Tags = user.Tags.Select(t => new { t.Id, t.Value }),
+                user.IsAdmin
+            });
+        }
+
+        [HttpGet("search")]
+        public IActionResult SearchUsersByName()
+        {
+            var users = _userService.GetAllUsers();
+
+            if (users == null || !users.Any())
+            {
+                return NotFound(new { message = "No users found." });
+            }
+
+            return Ok(users);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(Guid id, [FromBody] User updatedUser)
+        {
+            if (updatedUser == null)
+            {
+                return BadRequest(new { message = "Invalid user data." });
+            }
+
+            var success = _userService.UpdateUser(updatedUser);
+            if (!success)
+            {
+                return StatusCode(500, new { message = "Error updating user." });
+            }
+
+            return Ok(new { message = "User updated successfully." });
         }
     }
 }

@@ -2,8 +2,9 @@
 import { ref } from "vue";
 
 var menuItems = ref([
-  { title: "Societies", path: "/societies", icon: "mdi-basketball" },
 	{ title: "Home", path: "/", icon: "mdi-home" },
+  { title: "Connect", path: "/connect", icon: "mdi-account-search" },
+  { title: "Societies", path: "/societies", icon: "mdi-basketball" },
 	{ title: "Courses", path: "/courses", icon: "mdi-account-multiple" },
 ]);
 </script>
@@ -13,7 +14,6 @@ var menuItems = ref([
       grow
       class="bottom-nav"
       :elevation="24"
-      mode="shift"
       rounded="xl"
     >
       <v-spacer></v-spacer>

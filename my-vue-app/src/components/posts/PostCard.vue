@@ -146,10 +146,10 @@ watch(liked, async () => {
 <style scoped>
 .v-card {
 	width: 500px;
-	max-height: 900px;
+	max-height: 1200px;
 }
 
 .description-wrapper {
-	max-height: 100px;
+	max-height: 200px;
 }
 </style>
