@@ -1,7 +1,7 @@
 import Auth from "../views/Auth.vue"; // ✅ Correct import
 import UserDetails from "../views/UserDetails.vue"; // ✅ Import User Details Page
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
-import { TheCoursesPage, TheAddCoursePage, TheHomePage, TheProfilePage, TheEditUserPage, TheSocietiesPage, TheCallbackPage, TheAddSocietyPage, TheSocietiesDetailsPage, TheCoursesDetailsPage  } from '../views';
+import { TheConnectPage, TheCoursesPage, TheAddCoursePage, TheHomePage, TheProfilePage, TheEditUserPage, TheSocietiesPage, TheCallbackPage, TheAddSocietyPage, TheSocietiesDetailsPage, TheCoursesDetailsPage  } from '../views';
 
 const routes: Array<RouteRecordRaw> = [
     { path: "/", component: TheHomePage },
@@ -9,6 +9,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: "/profile", component: TheProfilePage, meta: { requiresAuth: true } },
     { path: "/edit-user", component: TheEditUserPage, meta: { requiresAuth: true } },
     { path: "/courses", component: TheCoursesPage, meta: { requiresAuth: true } },
+    { path: "/connect", component: TheConnectPage, meta: { requiresAuth: true } },
     { path: "/add-course", component: TheAddCoursePage, meta: { requiresAuth: true } },
     { path: "/societies", component: TheSocietiesPage, meta: { requiresAuth: true } },
     { path: "/callback", component: TheCallbackPage },
