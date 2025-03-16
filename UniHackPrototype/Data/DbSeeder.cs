@@ -4,6 +4,7 @@ using UniHack.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BCrypt.Net;
 
 namespace UniHack.Data
 {
@@ -35,8 +36,8 @@ namespace UniHack.Data
                     users.Add(new User
                     {
                         Name = $"User-{i}",
-                        Email = $"user{i}@example.com",
-                        Password = "password123",
+                        Email = $"user{i}@{i}.com",
+                        Password = BCrypt.Net.BCrypt.HashPassword("password123"),
                         IsAdmin = i == 1, // First user is admin
                         PhoneNumber = $"04571749{i:D2}",
                         University = i % 2 == 0 ? "University of Melbourne" : "University of Sydney",
