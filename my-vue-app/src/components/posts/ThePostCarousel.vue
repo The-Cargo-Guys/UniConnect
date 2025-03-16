@@ -27,7 +27,8 @@ onMounted(async () => {
 
 async function fetchData() {
 	try {
-		const response = await axios.get("api/for-you/posts");
+		const userId = localStorage.getItem("userId");
+		const response = await axios.get("api/for-you/GetFyp/" + userId);
 		posts.value = response.data;
 	} catch (error) {
 		console.error("Error:", error);
