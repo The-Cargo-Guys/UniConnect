@@ -8,6 +8,19 @@ import { Post } from "../../apiClient";
 const props = defineProps(["post"]);
 const post: Post = props.post;
 
+const imageUrls = [
+  "https://cdn.pixabay.com/photo/2022/10/11/16/43/french-bulldog-7514725_640.jpg",
+  "https://cdn.pixabay.com/photo/2022/11/14/20/14/close-up-7592442_640.jpg",
+  "https://cdn.pixabay.com/photo/2022/11/17/17/46/cat-7598590_640.jpg",
+  "https://cdn.pixabay.com/photo/2025/03/07/10/19/woman-9452734_640.jpg",
+  "https://cdn.pixabay.com/photo/2022/05/14/15/49/mountain-7195958_640.jpg",
+  "https://cdn.pixabay.com/photo/2023/12/08/04/15/bridge-8436747_640.jpg",
+  "https://cdn.pixabay.com/photo/2022/10/07/08/59/sky-7504583_640.jpg",
+  "https://cdn.pixabay.com/photo/2025/02/02/01/12/woman-9375864_640.jpg",
+  "https://cdn.pixabay.com/photo/2025/02/22/17/45/food-9424463_640.jpg",
+  "https://cdn.pixabay.com/photo/2025/02/21/11/06/woman-9421843_640.jpg"
+];
+
 var topCommentLiked = ref(false);
 var liked = ref(false);
 var commentIconEnabled = ref(false);
@@ -35,6 +48,12 @@ watch(liked, async () => {
 		}
 	}
 });
+
+function getRandomImageUrl(): string {
+	const randomIndex = Math.floor(Math.random() * imageUrls.length);
+	return imageUrls[randomIndex] ?? '';
+}
+
 </script>
 
 <template>
@@ -59,10 +78,8 @@ watch(liked, async () => {
 			<p class="ma-2">{{ post.community?.name }}</p>
 		</div>
 		<div>
-			<v-img alt="Post Image" :src="''" />
+			<v-img alt="Post Image" :src="getRandomImageUrl()" />
 		</div>
-		<!-- <v-divider v-if="post.author?.imagePath?.length == 0"></v-divider> -->
-		<v-divider></v-divider>
 		<div class="d-flex">
 			<!-- Likes Bar -->
 			<div class="my-2 ml-6">
