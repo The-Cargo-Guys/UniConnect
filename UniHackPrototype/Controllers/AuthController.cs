@@ -4,7 +4,6 @@ using MyAspNetVueApp.Data;
 using MyAspNetVueApp.Models;
 using UniHack.Services.Interfaces;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Identity.Data;
 
 [Route("api/auth")]
 [ApiController]
@@ -22,16 +21,16 @@ public class AuthController : ControllerBase
     {
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
         {
-            return BadRequest("Missing email or password.");
+            return BadRequest(new { message = "Missing email or password." });
         }
 
         var user = await _authService.RegisterUser(request.Name, request.Email, request.Password, request.PhoneNumber);
         if (user == null)
         {
-            return BadRequest("Email already in use.");
+            return BadRequest(new { message = "Email already in use." });
         }
 
-        return Ok(new { message = "User registered successfully." });
+        return Ok(new { userId = user.Id.ToString() }); // ✅ Returns only userId as a string
     }
 
     [HttpPost("login")]
@@ -39,18 +38,29 @@ public class AuthController : ControllerBase
     {
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
         {
-            return BadRequest("Missing email or password.");
+            return BadRequest(new { message = "Missing email or password." });
         }
 
-        var token = _authService.AuthenticateUser(request.Email, request.Password);
-        if (token == null)
+        var user = _authService.AuthenticateUser(request.Email, request.Password);
+        if (user == null)
         {
             return Unauthorized(new { message = "Invalid credentials." });
         }
 
-        return Ok(new { token });
+        return Ok(new { userId = user.ToString() }); // ✅ Returns only userId as a string
     }
 }
 
-public class RegisterRequest { public string Name { get; set; } = String.Empty; public string Email { get; set; } = String.Empty; public string Password { get; set; } = String.Empty; public string PhoneNumber { get; set; } = String.Empty; }
-public class LoginRequest { public string Email { get; set; } = String.Empty; public string Password { get; set; } = String.Empty; }
+public class RegisterRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
+}
+
+public class LoginRequest
+{
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+}
