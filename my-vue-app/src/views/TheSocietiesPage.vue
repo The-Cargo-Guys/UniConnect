@@ -1,51 +1,53 @@
 <template>
   <div id="societies-page" class="container">
-    <h1>Societies</h1>
-    <button class="add-society" @click="goToAddSociety">+ Add Society</button>
-    <v-tabs v-model="activeTab" background-color="primary" dark>
-      <v-tab>My Societies</v-tab>
-      <v-tab>Find Societies</v-tab>
-    </v-tabs>
-    <v-tabs-window v-model="activeTab">
-      <v-tabs-window-item>
-        <div class="societies-list">
-          <div
+    <v-card class="pa-5">
+      <h1>Societies</h1>
+      <button class="add-society" @click="goToAddSociety">+ Add Society</button>
+      <v-tabs v-model="activeTab" background-color="primary" dark>
+        <v-tab>My Societies</v-tab>
+        <v-tab>Find Societies</v-tab>
+      </v-tabs>
+      <v-tabs-window v-model="activeTab">
+        <v-tabs-window-item>
+          <div class="societies-list">
+            <v-card
             v-for="society in societies"
-            :key="society.id"
-            class="society-card"
-            @click="openSociety(society.id)"
-          >
-            <img :src="society.banner" alt="Society Banner" class="society-banner" />
-            <div class="society-info">
-              <h2>{{ society.name }}</h2>
-              <p>{{ society.description }}</p>
-              <button @click.stop="joinSociety(society.id)" class="join-btn">
-                Join
-              </button>
-            </div>
+              :key="society.id"
+              class="society-card"
+              @click="openSociety(society.id)"
+              color="blue-grey-lighten-2">
+              <img :src="society.banner" alt="Society Banner" class="society-banner" />
+                <div class="society-info">
+                  <h2>{{ society.name }}</h2>
+                  <p>{{ society.description }}</p>
+                  <button @click.stop="joinSociety(society.id)" class="join-btn">
+                    Join
+                  </button>
+                </div>
+            </v-card>
           </div>
-        </div>
-      </v-tabs-window-item>
-      <v-tabs-window-item>
-        <div class="societies-list">
-          <div
+        </v-tabs-window-item>
+        <v-tabs-window-item>
+          <div class="societies-list">
+            <v-card
             v-for="society in societies"
-            :key="society.id"
-            class="society-card"
-            @click="openSociety(society.id)"
-          >
-            <img :src="society.banner" alt="Society Banner" class="society-banner" />
-            <div class="society-info">
-              <h2>{{ society.name }}</h2>
-              <p>{{ society.description }}</p>
-              <button @click.stop="joinSociety(society.id)" class="join-btn">
-                Join
-              </button>
-            </div>
+              :key="society.id"
+              class="society-card"
+              @click="openSociety(society.id)"
+              color="blue-grey-lighten-2">
+              <img :src="society.banner" alt="Society Banner" class="society-banner" />
+                <div class="society-info">
+                  <h2>{{ society.name }}</h2>
+                  <p>{{ society.description }}</p>
+                  <button @click.stop="joinSociety(society.id)" class="join-btn">
+                    Join
+                  </button>
+                </div>
+            </v-card>
           </div>
-        </div>
-      </v-tabs-window-item>
-    </v-tabs-window>
+        </v-tabs-window-item>
+      </v-tabs-window>
+    </v-card>
 
     <div v-if="loading" class="loading">Loading societies...</div>
     <div v-if="error" class="error">{{ error }}</div>
