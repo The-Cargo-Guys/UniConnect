@@ -67,27 +67,15 @@ const handleLogout = () => {
 		<!-- 🏠 Show main content when the user IS authenticated -->
 		<template v-else>
 			<TheNavBar />
-
-			<v-toolbar-title class="d-flex align-center pa-0 ma-0">
-				<div class="logo-wrapper">
-					<v-img
-						src="/UniConnect.svg"
-						alt="Logo"
-						contain
-						max-height="110"
-						max-width="110"
-					></v-img>
-				</div>
-			</v-toolbar-title>
-
+			<TheUserNavBar @logout="handleLogout"/>
+			<v-avatar class="logo-wrapper">
+				<v-img
+					src="/UniConnect.svg"
+					alt="Logo"
+					contain
+				></v-img>
+			</v-avatar>
 			<v-spacer></v-spacer>
-
-			<v-btn to="/profile">
-				<v-icon>mdi-account</v-icon>
-				<span>Profile</span>
-			</v-btn>
-			<v-btn text @click="handleLogout">Log Out</v-btn>
-
 			<v-main>
 				<RouterView />
 			</v-main>

@@ -39,5 +39,18 @@ namespace UniHack.Controllers
                 user.IsAdmin
             });
         }
+
+        [HttpGet("search")]
+        public IActionResult SearchUsersByName()
+        {
+            var users = _userService.GetAllUsers();
+
+            if (users == null || !users.Any())
+            {
+                return NotFound(new { message = "No users found." });
+            }
+
+            return Ok(users);
+        }
     }
 }
