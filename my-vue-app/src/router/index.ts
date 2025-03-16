@@ -11,6 +11,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/callback', component: TheCallbackPage },
     { path: "/add-society", component: TheAddSocietyPage },
     { path: "/societies/:id", name: "SocietiesDetails", component: TheSocietiesDetailsPage },
+    { path: "/courses/:id", name: "CoursesDetails", component: TheSocietiesDetailsPage },
     { path: '/:pathMatch(.*)*', redirect: '/' },
 ];
 

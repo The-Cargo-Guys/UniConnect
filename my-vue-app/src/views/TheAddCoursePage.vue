@@ -1,48 +1,61 @@
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useRouter } from "vue-router";
-
-export default defineComponent({
-    name: "TheAddCoursePage",
-    setup() {
-        const router = useRouter();
-        const course = ref({
-            name: "",
-            description: "",
-            banner: ""
-        });
-
-        const submitCourse = () => {
-            alert(`Course Created: ${course.value.name}`);
-            router.push("/courses");
-        };
-
-        return {
-            course,
-            submitCourse
-        };
-    }
-});
-</script>
-
 <template>
     <div class="add-course-container">
         <h1>Create a New Course</h1>
         <form @submit.prevent="submitCourse">
             <label for="name">Course Name:</label>
-            <input type="text" id="name" v-model="course.name" required />
+            <input type="text" id="name" v-model="name" required />
 
             <label for="description">Description:</label>
-            <textarea id="description" v-model="course.description" required></textarea>
+            <textarea id="description" v-model="description" required></textarea>
 
             <label for="banner">Banner Image URL:</label>
-            <input type="text" id="banner" v-model="course.banner" required />
+            <input type="text" id="banner" v-model="imagePathBanner" required />
 
             <button type="submit">Create Course</button>
         </form>
     </div>
 </template>
 
+<script lang="ts">
+import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import { Course } from "../apiClient";
+
+export default defineComponent({
+    name: "TheAddCoursePage",
+    setup() {
+        const router = useRouter();
+        const name = ref("");
+        const description = ref("");
+        const imagePathBanner = ref("");
+
+        const submitCourse = async() => {
+            try {
+                const course = new Course({
+                    name: name.value,
+                    description: description.value,
+                    imagePathBanner: imagePathBanner.value,
+                    });
+    
+                const response = await axios.post("api/courses", course);
+                alert(`Course Created: ${response.data.name}`);
+                router.push("/courses");
+
+            }
+            catch (error) {
+                console.error("Error creating course:", error);
+                alert("Failed to create course. Please check the server logs for details.");
+            }
+        };
+
+        return {
+            submitCourse,
+            name, description, imagePathBanner
+        };
+    }
+});
+</script>
 <style scoped>
 .add-course-container {
     max-width: 600px;
