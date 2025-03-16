@@ -16,7 +16,6 @@ namespace UniHack.Controllers
             _userService = userService;
         }
 
-        // ✅ Get User by ID (No Authentication Needed)
         [HttpGet("{id}")]
         public IActionResult GetUserById(Guid id)
         {
@@ -36,7 +35,7 @@ namespace UniHack.Controllers
                 user.Bio,
                 user.University,
                 user.Degree,
-                Tags = user.Tags.Select(t => new { t.Id, t.Value }), // ✅ Ensure tags are returned as an array
+                Tags = user.Tags.Select(t => new { t.Id, t.Value }),
                 user.IsAdmin
             });
         }
