@@ -1,218 +1,217 @@
-<script setup lang="ts">
-import { useAuth0 } from '@auth0/auth0-vue';
-import { HelloWorld } from '../components';
-import { ref, onMounted } from 'vue'
-
-const username = ref("")
-const oldUsername = ref("");
-const password = ref("")
-const firstName = ref("")
-const lastName = ref("")
-const email = ref("")
-const deletePassword = ref("")
-const confirmDelete = ref(false)
-
-const showPassword = ref(false)
-const errorMessages = ref<string[]>([]);
-const successMessage = ref("");
-
-</script>
-
 <template>
-    <div>
-      <div class="LoginContainer">
-        <div class="LoginBox">
-          <h1>Edit Information</h1>
-          <div class="ItemGroups">
-            <label>Username</label>
-            <input v-model="username" type="text" />
-          </div>
-          <div class="ItemGroups">
-            <label>Password</label>
-            <div class="PasswordInput">
-              <input v-model="password" :type="showPassword ? 'text' : 'password'" />
-            </div>
-            <label>Show Password</label>
-            <div class="ShowPassword">
-                <input v-model="showPassword" type="checkbox" style="padding:0%" />
-            </div>
-          </div>
-          <div class="ItemGroups">
-            <label>First Name</label>
-            <input v-model="firstName" type="text" />
-          </div>
-          <div class="ItemGroups">
-            <label>Last Name</label>
-            <input v-model="lastName" type="text" />
-          </div>
-          <div class="ItemGroups">
-            <label>Email</label>
-            <input v-model="email" type="text" />
-          </div>
-  
-          <!-- Buttons for Save Changes and Delete Account -->
-          <div class="ButtonGroup">
-            <button>Save Changes</button>
-          </div>
-  
-          <div class="Spacing"></div>
-          
-          <div class="DeleteAccount">
-            <h2>Delete Account</h2>
-            <div class="ItemGroups">
-              <label>Account Password</label>
-              <input v-model="deletePassword" type="password" placeholder="Enter your password" />
-            </div>
-            <div class="ItemGroups">
-              <input v-model="confirmDelete" type="checkbox" />
-              <label for="confirmDelete">Confirm</label>
-            </div>
-            <button class="delete-button">Delete Account</button>
-          </div>
-  
-          <div class="ErrorMessage">
+  <v-app>
+    <v-main class="edit-container">
+      <v-container class="d-flex justify-center align-center fill-height">
+        <v-card class="edit-card" elevation="8">
+          <v-card-title class="text-h5 font-weight-bold">Edit Information</v-card-title>
+
+          <v-divider></v-divider>
+
+          <!-- Edit Form -->
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field v-model="username" label="Username" variant="outlined" prepend-inner-icon="mdi-account"></v-text-field>
+              </v-col>
+
+              <v-col cols="12">
+                <v-text-field
+                  v-model="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  label="Password"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-lock"
+                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                  @click:append-inner="showPassword = !showPassword"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field v-model="firstName" label="First Name" variant="outlined" prepend-inner-icon="mdi-account-outline"></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field v-model="lastName" label="Last Name" variant="outlined" prepend-inner-icon="mdi-account-outline"></v-text-field>
+              </v-col>
+
+              <v-col cols="12">
+                <v-text-field v-model="email" label="Email" variant="outlined" prepend-inner-icon="mdi-email"></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+
+          <!-- Buttons -->
+          <v-card-actions class="button-container">
+            <v-btn class="modern-btn save-btn" block>
+              <v-icon left>mdi-content-save</v-icon> Save Changes
+            </v-btn>
+          </v-card-actions>
+
+          <v-divider></v-divider>
+
+          <!-- Delete Account Section -->
+          <v-card-text class="delete-section">
+            <h3>Delete Account</h3>
+
+            <v-text-field
+              v-model="deletePassword"
+              label="Account Password"
+              type="password"
+              variant="outlined"
+              prepend-inner-icon="mdi-lock"
+            ></v-text-field>
+
+            <v-checkbox v-model="confirmDelete" label="Confirm Deletion"></v-checkbox>
+
+            <v-btn class="modern-btn delete-btn" block>
+              <v-icon left>mdi-delete</v-icon> Delete Account
+            </v-btn>
+          </v-card-text>
+
+          <!-- Error & Success Messages -->
+          <v-alert v-if="errorMessages.length" type="error" class="error-message" dense>
             <ul>
               <li v-for="(error, index) in errorMessages" :key="index">{{ error }}</li>
             </ul>
-          </div>
-          <div class="SuccessMessage">
+          </v-alert>
+
+          <v-alert v-if="successMessage" type="success" class="success-message" dense>
             {{ successMessage }}
-          </div>
-        </div>
-      </div>
-    </div>
-  </template>
-  
-  <style scoped>
-  .LoginContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh; /* Ensure the container fills the whole height */
-  background-color: #f0f0f0;
-  padding: 10px;
-  box-sizing: border-box;
-  overflow-y: auto; /* Allow vertical scrolling */
-}
+          </v-alert>
+        </v-card>
+      </v-container>
+    </v-main>
+  </v-app>
+</template>
 
-.LoginBox {
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const username = ref("");
+const password = ref("");
+const firstName = ref("");
+const lastName = ref("");
+const email = ref("");
+const deletePassword = ref("");
+const confirmDelete = ref(false);
+
+const showPassword = ref(false);
+const errorMessages = ref<string[]>([]);
+const successMessage = ref("");
+</script>
+
+<style scoped>
+/* Main Container */
+.edit-container {
+  background: white;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  width: 100%;
-  max-width: 500px;
-  gap: 15px; /* Increase gap for spacing */
+  justify-content: center;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  box-sizing: border-box;
 }
 
-.LoginBox h1 {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.ItemGroups {
-  text-align: center;
-  margin-bottom: 12px;
-  width: 100%;
-}
-
-.ItemGroups label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.ItemGroups input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 100%; /* Make the input fill the container */
-  max-width: 400px; /* Max width for inputs */
-}
-
-.PasswordInput {
-  width: 100%;
-}
-
-.ShowPassword {
-  margin-left: 10px;
-}
-
-.ButtonGroup {
-  margin-bottom: 20px;
-  width: 100%;
+/* Fullscreen Centering */
+.fill-height {
+  min-height: 100vh;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  width: 100%; /* Ensure button fits within the container */
-  max-width: 400px; /* Limit button width */
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.delete-button {
-  background-color: #dc3545;
-}
-
-.delete-button:hover {
-  background-color: #c82333;
-}
-
-.ErrorMessage {
-  margin-top: 5px;
-  color: red;
-  font-size: 12px;
-}
-
-.SuccessMessage {
-  margin-top: 5px;
-  color: green;
-  font-size: 12px;
-}
-
-.DeleteAccount {
-  text-align: center;
-  margin-top: 10px;
+/* Edit Card */
+.edit-card {
+  max-width: 600px;
   width: 100%;
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.DeleteAccount h2 {
+/* Password Visibility Toggle */
+.v-input__control {
+  transition: box-shadow 0.3s;
+}
+
+.v-input__control:hover {
+  box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Buttons */
+.button-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+/* Modern Buttons */
+.modern-btn {
+  background: linear-gradient(135deg, #007BFF, #00C6FF);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 30px;
+  transition: all 0.3s ease-in-out;
+}
+
+.modern-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Save Button */
+.save-btn {
+  background: linear-gradient(135deg, #28A745, #00C851);
+}
+
+.save-btn:hover {
+  background: linear-gradient(135deg, #218838, #007F3D);
+}
+
+/* Delete Account Section */
+.delete-section {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.delete-section h3 {
   font-size: 18px;
   font-weight: bold;
-  color: #dc3545;
+  color: #d32f2f;
 }
 
-.Spacing {
-  height: 20px;
+/* Delete Button */
+.delete-btn {
+  background: linear-gradient(135deg, #FF4444, #CC0000);
 }
 
-@media (max-width: 600px) {
-  .LoginBox {
-    padding: 15px;
-    max-width: 90%; /* Allow more space on smaller screens */
-  }
-
-  .ItemGroups input,
-  .ButtonGroup button {
-    max-width: 100%;
-  }
-
-  .DeleteAccount h2 {
-    font-size: 16px;
-  }
+.delete-btn:hover {
+  background: linear-gradient(135deg, #D32F2F, #B71C1C);
 }
 
-  </style>
+/* Error Message */
+.error-message {
+  text-align: center;
+  font-size: 16px;
+  color: red;
+  margin-top: 10px;
+}
+
+/* Success Message */
+.success-message {
+  text-align: center;
+  font-size: 16px;
+  color: green;
+  margin-top: 10px;
+}
+
+/* Vuetify Components */
+.v-text-field {
+  margin-bottom: 15px;
+}
+</style>
+

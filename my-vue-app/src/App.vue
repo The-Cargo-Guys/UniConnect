@@ -54,35 +54,20 @@ const handleLogout = () => {
 </script>
 
 <template>
-	<v-app class="fade-in">
-		<!-- ⏳ Show loading state -->
-		<template v-if="false">
-			<div class="loading-screen">Loading...</div>
-		</template>
-
-		<!-- 🔑 Show login/register page if user is NOT authenticated -->
-		<template v-else-if="!isLoggedIn">
-			<Auth /> <!-- ✅ Correct component name -->
-		</template>
-
-		<!-- 🏠 Show main content when the user IS authenticated -->
-		<template v-else>
-			<TheNavBar />
-			<TheUserNavBar @logout="handleLogout"/>
-			<v-avatar class="logo-wrapper">
-				<v-img
-					src="/UniConnect.svg"
-					alt="Logo"
-					contain
-				></v-img>
-			</v-avatar>
-			<v-spacer></v-spacer>
-			<v-main>
-				<RouterView />
-			</v-main>
-		</template>
-	</v-app>
+  <v-app class="fade-in">
+    <template v-if="!isLoggedIn">
+      <Auth />
+    </template>
+    <template v-else>
+      <TheNavBar @logout="handleLogout" />
+      <TheUserNavBar @logout="handleLogout" />
+      <v-main>
+        <RouterView />
+      </v-main>
+    </template>
+  </v-app>
 </template>
+
 
 <style scoped>
 .loading-screen {

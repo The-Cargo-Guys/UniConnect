@@ -1,95 +1,141 @@
 <template>
-    <div class="add-society-container">
-        <h1>Create a New Society</h1>
-        <form @submit.prevent="submitSociety">
-            <label for="name">Society Name:</label>
-            <input type="text" id="name" v-model="name" required />
-
-            <label for="description">Description:</label>
-            <textarea id="description" v-model="description" required></textarea>
-
-            <label for="banner">Banner Image URL:</label>
-            <input type="text" id="banner" v-model="imagePathBanner" required />
-
-            <button type="submit">Create Society</button>
-        </form>
-    </div>
-</template>
-
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+    <v-app>
+      <v-main class="add-society-container">
+        <v-container class="d-flex justify-center align-center fill-height">
+          <v-card class="society-card" elevation="8">
+            <!-- Title -->
+            <v-card-title class="text-h5 font-weight-bold">
+              Create a New Society
+            </v-card-title>
+  
+            <v-divider></v-divider>
+  
+            <!-- Society Creation Form -->
+            <v-card-text>
+              <v-form @submit.prevent="submitSociety">
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field v-model="name" label="Society Name" variant="outlined" prepend-inner-icon="mdi-account-group" required></v-text-field>
+                  </v-col>
+  
+                  <v-col cols="12">
+                    <v-textarea v-model="description" label="Description" variant="outlined" prepend-inner-icon="mdi-text-box-outline" required></v-textarea>
+                  </v-col>
+  
+                  <v-col cols="12">
+                    <v-text-field v-model="imagePathBanner" label="Banner Image URL" variant="outlined" prepend-inner-icon="mdi-image" required></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-form>
+            </v-card-text>
+  
+            <!-- Submit Button -->
+            <v-card-actions class="button-container">
+              <v-btn class="modern-btn create-btn" block @click="submitSociety">
+                <v-icon left>mdi-plus-box</v-icon> Create Society
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-container>
+      </v-main>
+    </v-app>
+  </template>
+  
+  <script setup lang="ts">
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { Society } from "../apiClient";
 
-export default defineComponent({
-    name: "TheAddSocietyPage",
-    setup() {
-        const router = useRouter();
-        const name = ref("");
-        const description = ref("");
-        const imagePathBanner = ref("");
+const router = useRouter();
+const name = ref("");
+const description = ref("");
+const imagePathBanner = ref("");
 
-        const submitSociety = async () => {
-            try {
-                const society = new Society({
-                name: name.value,
-                description: description.value,
-                imagePathBanner: imagePathBanner.value,
-                });
+const submitSociety = async () => {
+  try {
+    const society = new Society({
+      name: name.value,
+      description: description.value,
+      imagePathBanner: imagePathBanner.value,
+    });
 
-                const response = await axios.post("api/societies/create", society);
-                alert(`Society Created: ${response.data.name}`);
-                router.push("/societies");
-            } catch (error) {
-                console.error("Error creating society:", error);
-                alert("Failed to create society. Please check the server logs for details.");
-            }
-        };
-
-        return {
-            submitSociety,
-            name, description, imagePathBanner
-        };
-    }
-});
+    const response = await axios.post("api/societies/create", society);
+    alert(`Society Created: ${response.data.name}`);
+    router.push("/societies");
+  } catch (error) {
+    console.error("Error creating society:", error);
+    alert("Failed to create society. Please check the server logs for details.");
+  }
+};
 </script>
 
 <style scoped>
+/* Main Container */
 .add-society-container {
-    max-width: 600px;
-    margin: auto;
-    padding: 2rem;
-    text-align: center;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
+/* Fullscreen Centering */
+.fill-height {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-label {
-    margin: 10px 0 5px;
-    font-weight: bold;
+/* Society Creation Card */
+.society-card {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-input, textarea {
-    padding: 10px;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+/* Input Fields */
+.v-text-field,
+.v-textarea {
+  margin-bottom: 15px;
 }
 
-button {
-    background-color: #4a90e2;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 10px;
-    cursor: pointer;
+/* Buttons */
+.button-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+/* Modern Buttons */
+.modern-btn {
+  background: linear-gradient(135deg, #007BFF, #00C6FF);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 30px;
+  transition: all 0.3s ease-in-out;
+}
+
+.modern-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Create Button */
+.create-btn {
+  background: linear-gradient(135deg, #28A745, #00C851);
+}
+
+.create-btn:hover {
+  background: linear-gradient(135deg, #218838, #007F3D);
 }
 </style>
