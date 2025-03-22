@@ -4,28 +4,42 @@ import CommentsDialog from "./CommentsDialog.vue";
 import AddCommentsDialog from "./AddCommentsDialog.vue";
 import axios from "axios";
 import { Post } from "../../apiClient";
+import imageUrls from "../../assets/imageUrls";
 
 const props = defineProps(["post"]);
 const post: Post = props.post;
-
-const imageUrls = [
-  "https://cdn.pixabay.com/photo/2022/10/11/16/43/french-bulldog-7514725_640.jpg",
-  "https://cdn.pixabay.com/photo/2022/11/14/20/14/close-up-7592442_640.jpg",
-  "https://cdn.pixabay.com/photo/2022/11/17/17/46/cat-7598590_640.jpg",
-  "https://cdn.pixabay.com/photo/2025/03/07/10/19/woman-9452734_640.jpg",
-  "https://cdn.pixabay.com/photo/2022/05/14/15/49/mountain-7195958_640.jpg",
-  "https://cdn.pixabay.com/photo/2023/12/08/04/15/bridge-8436747_640.jpg",
-  "https://cdn.pixabay.com/photo/2022/10/07/08/59/sky-7504583_640.jpg",
-  "https://cdn.pixabay.com/photo/2025/02/02/01/12/woman-9375864_640.jpg",
-  "https://cdn.pixabay.com/photo/2025/02/22/17/45/food-9424463_640.jpg",
-  "https://cdn.pixabay.com/photo/2025/02/21/11/06/woman-9421843_640.jpg"
-];
 
 var topCommentLiked = ref(false);
 var liked = ref(false);
 var commentIconEnabled = ref(false);
 var commentsDialogActive = ref(false);
 var addCommentsDialogActive = ref(false);
+
+var descMaxLength = 200;
+var isLongContent = post.content?.length ?? 0 > descMaxLength;
+var showFullContent = ref(false);
+
+function formatDate(dateString: string): string {
+	if (!dateString) return "";
+
+	const date = new Date(dateString);
+	const now = new Date();
+
+	if (isNaN(date.getTime())) return "";
+
+	const diffTime = now.getTime() - date.getTime();
+	const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+	if (diffDays === 0) {
+		return "Today";
+	} else if (diffDays < 8) {
+		return diffDays === 1 ? "1 day ago" : `${diffDays} days ago`;
+	} else {
+		return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+	}
+}
+
+const formattedTime = ref(formatDate(post.createdAt?.toString() ?? ""));
 
 watch(commentsDialogActive, () => {
 	if (!commentsDialogActive.value) {
@@ -49,11 +63,18 @@ watch(liked, async () => {
 	}
 });
 
+const usedIndices = ref(new Set<number>());
 function getRandomImageUrl(): string {
-	const randomIndex = Math.floor(Math.random() * imageUrls.length);
-	return imageUrls[randomIndex] ?? '';
+	if (usedIndices.value.size >= imageUrls.length) {
+		usedIndices.value.clear();
+	}
+	let randomIndex: number;
+	do {
+		randomIndex = Math.floor(Math.random() * imageUrls.length);
+	} while (usedIndices.value.has(randomIndex));
+	usedIndices.value.add(randomIndex);
+	return imageUrls[randomIndex] ?? "";
 }
-
 </script>
 
 <template>
@@ -62,20 +83,19 @@ function getRandomImageUrl(): string {
 			<!-- Top Bar -->
 			<div class="d-flex align-center ma-2">
 				<v-avatar class="mr-3" size="32">
-					<!-- <v-img
+					<v-img
 						:src="
 							post.author?.imagePath?.length == 0
 								? '/pp-fallback.png'
 								: post.author?.imagePath
 						"
 						alt="Profile Picture"
-					></v-img> -->
-					<v-img :src="'/pp-fallback.png'" alt="Profile Picture"></v-img>
+					></v-img>
 				</v-avatar>
 				<p class="font-weight-bold">{{ post.author?.name }}</p>
 			</div>
 			<v-spacer color="black"></v-spacer>
-			<p class="ma-2">{{ post.community?.name }}</p>
+			<p class="ma-2 text-caption">{{ post.community?.name }}</p>
 		</div>
 		<div>
 			<v-img alt="Post Image" :src="getRandomImageUrl()" />
@@ -103,34 +123,64 @@ function getRandomImageUrl(): string {
 			<p class="my-2 mr-8">{{ post.upvotes! + (liked ? 1 : 0) }} likes</p>
 		</div>
 		<v-divider></v-divider>
-		<div class="d-flex description-wrapper">
+		<div class="description-wrapper">
 			<!-- Username & Description -->
-			<p class="ma-3 font-weight-bold">{{ post.author?.name }}</p>
+			<p class="text-left ml-3 my-1">
+				<strong>{{ post.author?.name }}</strong> •
+				<span class="font-weight-thin">{{ formattedTime }}</span>
+			</p>
 			<v-spacer></v-spacer>
-			<p class="ma-3">{{ post.content }}</p>
+			<div class="mx-3 text-body-2">
+				<p v-if="!isLongContent || showFullContent" class="text-left">
+					{{ post.content }}
+				</p>
+				<p v-else class="text-left">
+					{{
+						post.content?.substring(
+							0,
+							post.content.lastIndexOf(" ", descMaxLength)
+						)
+					}}...
+				</p>
+				<v-btn
+					v-if="isLongContent"
+					variant="text"
+					density="compact"
+					class="px-0 text-caption"
+					@click="showFullContent = !showFullContent"
+				>
+					{{ showFullContent ? "Show less" : "Show more" }}
+				</v-btn>
+			</div>
 		</div>
 		<v-divider></v-divider>
 		<div>
 			<!-- Comments -->
 			<div>
-				<p class="text-left ml-3 mb-2 font-weight-medium mt-2">
-					{{
-						post.comments && post.comments.length > 0
-							? "Comments"
-							: "No Comments"
-					}}
+				<p
+					v-if="post.comments && post.comments.length > 0"
+					class="text-left ml-3 mb-2 font-weight-light mt-2"
+				>
+					COMMENTS
 				</p>
-				<div class="d-flex" v-if="post.comments && post.comments.length > 0">
-					<p class="mx-3 font-weight-bold">{{ post.comments?.at(0)?.author?.name }}</p>
-					<p class="mx-3">
-						{{ post.comments?.at(0)?.content }}
-					</p>
-					<!-- <v-icon
-						:color="topCommentLiked ? 'red' : 'black'"
-						:icon="topCommentLiked ? 'mdi-heart' : 'mdi-heart-outline'"
-						class="mr-3"
-						@click="topCommentLiked = !topCommentLiked"
-					></v-icon> -->
+				<p v-else class="text-left ml-3 mb-2 font-weight-medium mt-2">
+					No Comments
+				</p>
+				<div class="d-flex align-center" v-if="post.comments && post.comments.length > 0">
+					<v-avatar class="ml-3" size="28">
+						<v-img
+							:src="post.comments?.at(0)?.author?.imagePath"
+							alt="Profile Picture"
+						></v-img>
+					</v-avatar>
+					<div class="d-flex align-center flex-grow-1 ml-2 mr-3">
+						<p class="font-weight-bold text-truncate mr-3 flex-shrink-0">
+							{{ post.comments?.at(0)?.author?.name }}
+						</p>
+						<p class="text-caption text-left flex-grow-1">
+							{{ post.comments?.at(0)?.content }}
+						</p>
+					</div>
 				</div>
 			</div>
 			<div class="mt-1">
@@ -156,7 +206,11 @@ function getRandomImageUrl(): string {
 			</div>
 		</div>
 	</v-card>
-	<comments-dialog v-model:enabled="commentsDialogActive" :comments="post.comments" :topCommentLiked="topCommentLiked"/>
+	<comments-dialog
+		v-model:enabled="commentsDialogActive"
+		:comments="post.comments"
+		:topCommentLiked="topCommentLiked"
+	/>
 	<add-comments-dialog v-model:enabled="addCommentsDialogActive" />
 </template>
 

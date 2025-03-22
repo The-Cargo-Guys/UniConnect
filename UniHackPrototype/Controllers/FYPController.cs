@@ -38,7 +38,7 @@ namespace UniHack.Controllers
 			var user = _userService.GetUserById(userId);
 			if (user == null)
 			{
-				return NotFound("User not found");
+				return Ok(_postService.GetAllRandomPosts());
 			}
 
             List<Post> posts = _forYouPageLogic.GetForYouPage(user);

@@ -8,8 +8,9 @@ namespace UniHack.Services
 	public class PostService : IPostService
 	{
 		private readonly IPostRepository _postRepository;
+        private static readonly Random _random = new Random();
 
-		public PostService(IPostRepository postRepository)
+        public PostService(IPostRepository postRepository)
 		{
 			_postRepository = postRepository;
 		}
@@ -18,6 +19,12 @@ namespace UniHack.Services
 		{
 			return _postRepository.GetAllAsync().Result;
 		}
+
+        public List<Post> GetAllRandomPosts()
+        {
+            var posts = _postRepository.GetAllAsync().Result;
+            return posts.OrderBy(x => _random.Next()).ToList();
+        }
 
 		public Post? GetPostById(Guid id)
 		{

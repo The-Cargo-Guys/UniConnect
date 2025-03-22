@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
 import { RouterView } from "vue-router";
-import TheNavBar from "./components/TheNavBar.vue";
-import TheUserNavBar from "./components/TheUserNavBar.vue";
-import Auth from "./views/Auth.vue"; // ✅ Correct import
+import { TheNavBar, TheTopNavBar } from "./components";
+import Auth from "./views/Auth.vue";
 import { ref, onMounted, watch } from "vue";
 
 const router = useRouter();
 const route = useRoute();
 const isLoggedIn = ref(false);
 
-// 🚀 **Check authentication on app load BEFORE rendering**
+// Auth before rendering
 onMounted(() => {
 	const userId = localStorage.getItem("userId");
 
@@ -21,14 +20,13 @@ onMounted(() => {
 		console.log("❌ No userId found, checking if on /auth");
 		isLoggedIn.value = false;
 
-		// **Only redirect to /auth if NOT already there**
 		if (route.path !== "/auth") {
 			router.push("/auth");
 		}
 	}
 });
 
-// 🔄 **Watch localStorage for login/logout changes**
+// Watch localStorage for login/logout changes
 watch(
 	() => localStorage.getItem("userId"),
 	(newUserId) => {
@@ -44,7 +42,6 @@ watch(
 	}
 );
 
-// ✅ **Handle Logout - Clears storage**
 const handleLogout = () => {
 	localStorage.removeItem("userId");
 	sessionStorage.clear();
@@ -54,20 +51,19 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <v-app class="fade-in">
-    <template v-if="!isLoggedIn">
-      <Auth />
-    </template>
-    <template v-else>
-      <TheNavBar @logout="handleLogout" />
-      <TheUserNavBar @logout="handleLogout" />
-      <v-main>
-        <RouterView />
-      </v-main>
-    </template>
-  </v-app>
+	<v-app class="fade-in" ref="el">
+		<template v-if="!isLoggedIn">
+			<Auth />
+		</template>
+		<template v-else>
+			<TheNavBar @logout="handleLogout"/>
+			<TheTopNavBar @logout="handleLogout" />
+			<v-main>
+				<RouterView />
+			</v-main>
+		</template>
+	</v-app>
 </template>
-
 
 <style scoped>
 .loading-screen {
@@ -82,7 +78,7 @@ const handleLogout = () => {
 .logo-wrapper {
 	position: fixed;
 	background-color: rgb(255, 255, 255);
-	margin-top: 10px;	
+	margin-top: 10px;
 	height: 110px;
 	width: 110px;
 }

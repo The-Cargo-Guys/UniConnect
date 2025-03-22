@@ -7,6 +7,7 @@ namespace UniHack.Services.Interfaces
 	{
 		List<Post> GetPostsByTags(List<Tag> Tags);
         List<Post> GetAllPosts();
+		List<Post> GetAllRandomPosts();
 		Post? GetPostById(Guid id);
 		List<Post> GetPostsByCommunity(Guid communityId);
 		List<Post> GetPostsByAuthor(Guid authorId);
